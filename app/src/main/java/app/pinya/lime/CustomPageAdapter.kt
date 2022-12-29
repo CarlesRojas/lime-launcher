@@ -16,7 +16,11 @@ class CustomPagerAdapter(context: Context) : PagerAdapter() {
 
     override fun instantiateItem(collection: ViewGroup, position: Int): Any {
         val inflater = LayoutInflater.from(context)
-        val layout =  inflater.inflate(if (position == 0) R.layout.view_home else R.layout.view_drawer, collection, false) as ViewGroup
+        val layout = inflater.inflate(
+            if (position == 0) R.layout.view_home else R.layout.view_drawer,
+            collection,
+            false
+        ) as ViewGroup
         collection.addView(layout)
         return layout
     }

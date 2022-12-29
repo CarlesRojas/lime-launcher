@@ -18,12 +18,13 @@ class MainActivity : AppCompatActivity() {
         linkAdapters()
     }
 
+
     private fun linkAdapters() {
         val viewPager = findViewById<View>(R.id.viewPager) as ViewPager
         viewPager.adapter = CustomPagerAdapter(this)
 
 
         val viewHome = findViewById<View>(R.id.homeListView) as ListView
-        viewHome.adapter = HomeAdapter(this, appList )
+        viewHome.adapter = HomeAdapter(this, appList)
     }
 }

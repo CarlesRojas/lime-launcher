@@ -5,8 +5,8 @@
     android:background="@android:color/holo_blue_light">
 
     <ListView
+        android:id="@+id/drawerListView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/drawerListView"/>
+        android:layout_height="match_parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

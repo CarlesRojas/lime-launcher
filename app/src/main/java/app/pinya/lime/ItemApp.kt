@@ -2,7 +2,7 @@ package app.pinya.lime
 
 import android.graphics.drawable.Drawable
 
-class ItemApp(name: String, packageName: String,  icon: Drawable) {
+class ItemApp(name: String, packageName: String, icon: Drawable) {
     private var name: String
     private var packageName: String
     private var icon: Drawable
@@ -13,7 +13,15 @@ class ItemApp(name: String, packageName: String,  icon: Drawable) {
         this.icon = icon
     }
 
-    fun getPackageName(): String { return this.packageName }
-    fun getName(): String { return this.name }
-    fun getIcon(): Drawable { return this.icon }
+    fun getPackageName(): String {
+        return this.packageName
+    }
+
+    fun getName(): String {
+        return this.name
+    }
+
+    fun getIcon(): Drawable {
+        return this.icon
+    }
 }

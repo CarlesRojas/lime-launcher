@@ -8,11 +8,11 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 
-class HomeAdapter(context: Context, appList: MutableList<ItemApp>): BaseAdapter() {
+class HomeAdapter(context: Context, appList: MutableList<ItemApp>) : BaseAdapter() {
     private val context: Context
     private val appList: MutableList<ItemApp>
 
-    init{
+    init {
         this.context = context
         this.appList = appList
     }
