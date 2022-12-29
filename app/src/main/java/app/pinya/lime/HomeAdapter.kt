@@ -1,44 +1,40 @@
 package app.pinya.lime
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 
-class HomeAdapter(context: Context, appList: MutableList<ItemApp>) : BaseAdapter() {
-    private val context: Context
-    private val appList: MutableList<ItemApp>
+class ItemAppViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+class HomeAdapter(installedAppList: MutableList<ItemApp>) :
+    RecyclerView.Adapter<ItemAppViewHolder>() {
+    private val installedAppList: MutableList<ItemApp>
 
     init {
-        this.context = context
-        this.appList = appList
+        this.installedAppList = installedAppList
     }
 
-    override fun getCount(): Int {
-        return this.appList.size
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemAppViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        return ItemAppViewHolder(
+            inflater.inflate(R.layout.item_app, parent, false)
+        )
     }
 
-    override fun getItem(position: Int): Any {
-        return this.appList[position]
+    override fun onBindViewHolder(holder: ItemAppViewHolder, position: Int) {
+        val currentApp = this.installedAppList[position]
+
+        val imageView: ImageView = holder.itemView.findViewById(R.id.appIcon)
+        val textView: TextView = holder.itemView.findViewById(R.id.appName)
+
+        imageView.setImageDrawable(currentApp.getIcon())
+        textView.text = currentApp.getName()
     }
 
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
-
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        val inflater = LayoutInflater.from(context)
-        val view: View = convertView ?: inflater.inflate(R.layout.item_app, parent, false)
-
-        val imageView: ImageView = view.findViewById(R.id.appIcon)
-        val textView: TextView = view.findViewById(R.id.appName)
-
-        imageView.setImageDrawable(this.appList[position].getIcon())
-        textView.text = this.appList[position].getName()
-
-        return view
+    override fun getItemCount(): Int {
+        return this.installedAppList.size
     }
 }

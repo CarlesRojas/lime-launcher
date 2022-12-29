@@ -15,9 +15,9 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.Lime"
             android:launchMode="singleTask"
-            android:stateNotNeeded="true">
+            android:stateNotNeeded="true"
+            android:theme="@style/Theme.Lime">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,5 +31,11 @@
                 android:value="" />
         </activity>
     </application>
+
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+        </intent>
+    </queries>
 
 </manifest>
