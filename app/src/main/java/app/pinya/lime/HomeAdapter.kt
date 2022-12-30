@@ -11,15 +11,15 @@ import androidx.recyclerview.widget.RecyclerView
 
 class ItemAppViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-class HomeAdapter(context: Context, installedAppList: MutableList<ItemApp>) :
+class HomeAdapter(context: Context, state: State) :
     RecyclerView.Adapter<ItemAppViewHolder>() {
 
-    private val installedAppList: MutableList<ItemApp>
     private val context: Context
+    private val state: State
 
     init {
-        this.installedAppList = installedAppList
         this.context = context
+        this.state = state
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemAppViewHolder {
@@ -30,7 +30,7 @@ class HomeAdapter(context: Context, installedAppList: MutableList<ItemApp>) :
     }
 
     override fun onBindViewHolder(holder: ItemAppViewHolder, position: Int) {
-        val currentApp = this.installedAppList[position]
+        val currentApp = this.state.getInstalledAppList()[position]
 
         val imageView: ImageView = holder.itemView.findViewById(R.id.appIcon)
         val textView: TextView = holder.itemView.findViewById(R.id.appName)
@@ -38,15 +38,15 @@ class HomeAdapter(context: Context, installedAppList: MutableList<ItemApp>) :
 
         imageView.setImageDrawable(currentApp.getIcon())
         textView.text = currentApp.getName()
-        linearLayout.setOnClickListener(View.OnClickListener {
+        linearLayout.setOnClickListener {
             val launchAppIntent =
                 context.packageManager.getLaunchIntentForPackage(currentApp.getPackageName())
 
             if (launchAppIntent !== null) context.startActivity(launchAppIntent)
-        })
+        }
     }
 
     override fun getItemCount(): Int {
-        return this.installedAppList.size
+        return this.state.getInstalledAppList().size
     }
 }
