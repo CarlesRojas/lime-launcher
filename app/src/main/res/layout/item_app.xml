@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="horizontal"
-    android:padding="12sp">
+    android:paddingTop="12sp"
+    android:paddingBottom="12sp">
 
     <ImageView
         android:id="@+id/appIcon"
@@ -21,6 +22,6 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat"
         android:text="@string/app_name"
-        android:textColor="@android:color/white"
+        android:textColor="@color/white"
         android:textSize="18sp" />
 </LinearLayout>
