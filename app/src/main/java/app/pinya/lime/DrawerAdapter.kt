@@ -6,10 +6,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.RecyclerView
 
@@ -22,6 +19,8 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
     private val layout: ViewGroup
 
     private lateinit var searchBar: EditText
+    private lateinit var appList: RecyclerView
+
     private var searchBarText: String = ""
 
 
@@ -31,6 +30,8 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         this.layout = layout
 
         initSearchBar()
+        initLayout()
+        initAppList()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -57,10 +58,27 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
 
             view.performClick()
         }
-
     }
 
-    private fun clearText() {
+    private fun initLayout() {
+        layout.setOnClickListener {
+            clearText()
+            hideKeyboard()
+        }
+    }
+
+    private fun initAppList() {
+        appList = layout.findViewById(R.id.drawerAppList)
+        appList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                clearText()
+                hideKeyboard()
+            }
+        })
+    }
+
+    fun clearText() {
         searchBar.text.clear()
     }
 

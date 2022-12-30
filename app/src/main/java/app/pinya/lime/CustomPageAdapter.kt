@@ -25,6 +25,7 @@ class CustomPagerAdapter(context: Context, state: State) :
 
     fun onHomePageSelected() {
         this.drawer.hideKeyboard()
+        this.drawer.clearText()
     }
 
     fun onDrawerPageSelected() {
@@ -56,7 +57,7 @@ class CustomPagerAdapter(context: Context, state: State) :
     private fun instantiateDrawer(collection: ViewGroup): ViewGroup {
         val inflater = LayoutInflater.from(context)
         val layout = inflater.inflate(R.layout.view_drawer, collection, false) as ViewGroup
-        val viewDrawer = layout.findViewById<View>(R.id.drawerRecyclerView) as RecyclerView
+        val viewDrawer = layout.findViewById<View>(R.id.drawerAppList) as RecyclerView
 
         this.drawer = DrawerAdapter(context, state, layout).also {
             viewDrawer.adapter = it
