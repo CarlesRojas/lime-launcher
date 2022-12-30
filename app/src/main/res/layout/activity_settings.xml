@@ -63,6 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings_title"
+            android:textColor="@color/white"
             android:textSize="24sp"
             app:layout_constraintStart_toStartOf="@+id/guidelineV1"
             app:layout_constraintTop_toTopOf="@+id/guidelineH1" />
@@ -93,20 +94,77 @@
                 app:layout_constraintStart_toStartOf="@+id/guidelineV1"
                 app:layout_constraintTop_toTopOf="@+id/guidelineH1">
 
-                <SeekBar
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:max="4"
-                    android:min="1"
-                    android:progress="4" />
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:text="@string/settings_dateFormat"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/dateExample"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="8dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:text="@string/placeholder_date"
+                    android:textColor="@color/white_low"
+                    android:textSize="14sp" />
 
                 <SeekBar
-                    android:id="@+id/seekBar_luminosite"
+                    android:id="@+id/dateFormat"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:max="4"
-                    android:min="1"
-                    android:progress="4"
+                    android:max="3"
+                    android:min="0"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:progress="1"
+                    android:progressDrawable="@drawable/seekbar_style"
+                    android:splitTrack="false"
+                    android:thumb="@drawable/seekbar_thumb" />
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@android:color/transparent" />
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:text="@string/settings_timeFormat"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/timeExample"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="8dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:text="@string/placeholder_time"
+                    android:textColor="@color/white_low"
+                    android:textSize="14sp" />
+
+                <SeekBar
+                    android:id="@+id/timeFormat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="2"
+                    android:min="0"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:progress="0"
                     android:progressDrawable="@drawable/seekbar_style"
                     android:splitTrack="false"
                     android:thumb="@drawable/seekbar_thumb" />

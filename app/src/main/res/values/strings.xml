@@ -1,8 +1,14 @@
 <resources>
     <string name="app_name">Lime</string>
+
     <string name="back_button_description">Back Button</string>
     <string name="app_icon_description">App Icon</string>
+
     <string name="settings_title">Settings</string>
+    <string name="settings_dateFormat">Date format</string>
+    <string name="settings_timeFormat">Time format</string>
+
+
     <string name="placeholder_time">19:35</string>
     <string name="placeholder_date">Monday, 23 August</string>
 

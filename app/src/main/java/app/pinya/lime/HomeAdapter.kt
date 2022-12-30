@@ -38,11 +38,19 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
     }
 
     private fun startTimerToUpdateDateTime() {
+
         timer?.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
                 (context as Activity).runOnUiThread {
-                    date.text = SimpleDateFormat.getDateInstance(DateFormat.FULL).format(Date())
-                    time.text = SimpleDateFormat.getTimeInstance(DateFormat.SHORT).format(Date())
+                    val dateStateValue = state.getData(DataKey.DATE_FORMAT, 1)
+                    val timeStateValue = state.getData(DataKey.TIME_FORMAT, 0)
+
+                    date.text =
+                        SimpleDateFormat.getDateInstance(SettingsActivity.mapFormat(dateStateValue))
+                            .format(Date())
+                    time.text =
+                        SimpleDateFormat.getTimeInstance(SettingsActivity.mapFormat(timeStateValue))
+                            .format(Date())
                 }
             }
         }, 0, 1000)
