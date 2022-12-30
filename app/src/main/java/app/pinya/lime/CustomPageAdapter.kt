@@ -30,7 +30,7 @@ class CustomPagerAdapter(context: Context, state: State) :
         val layout = inflater.inflate(R.layout.view_home, collection, false) as ViewGroup
         val viewHome = layout.findViewById<View>(R.id.homeRecyclerView) as RecyclerView
 
-        HomeAdapter(context, state).also {
+        HomeAdapter(context, state, layout).also {
             viewHome.adapter = it
             viewHome.layoutManager = LinearLayoutManager(context)
             layout.setOnClickListener {

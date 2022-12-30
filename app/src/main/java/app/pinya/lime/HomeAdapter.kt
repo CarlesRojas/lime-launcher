@@ -1,5 +1,6 @@
 package app.pinya.lime
 
+import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -8,18 +9,43 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ItemAppViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-class HomeAdapter(context: Context, state: State) :
+class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
     RecyclerView.Adapter<ItemAppViewHolder>() {
 
     private val context: Context
     private val state: State
+    private val layout: ViewGroup
+    private val date: TextView
+    private val time: TextView
+
+    private var timer: Timer? = Timer()
 
     init {
         this.context = context
         this.state = state
+        this.layout = layout
+
+        date = layout.findViewById(R.id.homeDate)
+        time = layout.findViewById(R.id.homeTime)
+
+        startTimerToUpdateDateTime()
+    }
+
+    private fun startTimerToUpdateDateTime() {
+        timer?.scheduleAtFixedRate(object : TimerTask() {
+            override fun run() {
+                (context as Activity).runOnUiThread {
+                    date.text = SimpleDateFormat.getDateInstance(DateFormat.FULL).format(Date())
+                    time.text = SimpleDateFormat.getTimeInstance(DateFormat.SHORT).format(Date())
+                }
+            }
+        }, 0, 1000)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemAppViewHolder {
