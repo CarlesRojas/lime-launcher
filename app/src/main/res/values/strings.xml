@@ -7,6 +7,7 @@
     <string name="settings_title">Settings</string>
     <string name="settings_dateFormat">Date format</string>
     <string name="settings_timeFormat">Time format</string>
+    <string name="settings_autoShowKeyboard">Show keyboard automatically</string>
 
     <string name="drawer_searchHint">Search Apps</string>
 

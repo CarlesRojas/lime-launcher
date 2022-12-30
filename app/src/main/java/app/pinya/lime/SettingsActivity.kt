@@ -2,12 +2,11 @@ package app.pinya.lime
 
 import android.app.Activity
 import android.os.Bundle
-import android.widget.ImageButton
-import android.widget.SeekBar
-import android.widget.TextView
+import android.widget.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class SettingsActivity : Activity() {
     private lateinit var state: State
@@ -21,6 +20,7 @@ class SettingsActivity : Activity() {
         initializeBackButton()
         initializeDateSeekBar()
         initializeTimeSeekBar()
+        initializeAutoKeyboard()
     }
 
     private fun initializeBackButton() {
@@ -78,7 +78,17 @@ class SettingsActivity : Activity() {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
+    }
 
+    private fun initializeAutoKeyboard() {
+        val autoKeyboardSwitch = findViewById<Switch>(R.id.autoKeyboardSwitch)
+        val stateValue = state.getData(DataKey.AUTO_SHOW_KEYBOARD, true)
+
+        autoKeyboardSwitch.isChecked = stateValue
+
+        autoKeyboardSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            state.saveData(DataKey.AUTO_SHOW_KEYBOARD, isChecked)
+        }
     }
 
     companion object {

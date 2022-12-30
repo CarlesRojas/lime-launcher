@@ -91,7 +91,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
     }
 
     fun showKeyboard() {
-        val autoOpenKeyboard = state.getData(DataKey.AUTOSHOW_KEYBOARD, true)
+        val autoOpenKeyboard = state.getData(DataKey.AUTO_SHOW_KEYBOARD, true)
 
         if (autoOpenKeyboard) {
             searchBar.requestFocus()

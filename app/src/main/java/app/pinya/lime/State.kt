@@ -11,7 +11,7 @@ enum class DataKey {
     RENAMED_APPS,
     DATE_FORMAT,
     TIME_FORMAT,
-    AUTOSHOW_KEYBOARD
+    AUTO_SHOW_KEYBOARD
 }
 
 class State(context: Context) {

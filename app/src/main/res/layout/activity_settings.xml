@@ -169,9 +169,27 @@
                     android:splitTrack="false"
                     android:thumb="@drawable/seekbar_thumb" />
 
+                <View
+                    android:id="@+id/divider2"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@android:color/transparent" />
 
+                <Switch
+                    android:id="@+id/autoKeyboardSwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:text="@string/settings_autoShowKeyboard"
+                    android:textColor="@color/white"
+                    android:textOff=""
+                    android:textOn=""
+                    android:textSize="20sp"
+                    android:thumb="@drawable/switch_thumb"
+                    android:track="@drawable/switch_track"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
             </LinearLayout>
-
 
         </com.bosphere.fadingedgelayout.FadingEdgeLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
