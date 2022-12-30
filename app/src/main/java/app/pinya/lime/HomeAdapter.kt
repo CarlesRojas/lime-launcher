@@ -2,6 +2,7 @@ package app.pinya.lime
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +10,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -35,6 +35,7 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
         time = layout.findViewById(R.id.homeTime)
 
         startTimerToUpdateDateTime()
+        initGestureDetector()
     }
 
     private fun startTimerToUpdateDateTime() {
@@ -54,6 +55,13 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
                 }
             }
         }, 0, 1000)
+    }
+
+    private fun initGestureDetector() {
+        layout.setOnLongClickListener {
+            context.startActivity(Intent(context, SettingsActivity::class.java))
+            true
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemAppViewHolder {

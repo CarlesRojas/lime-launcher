@@ -45,9 +45,6 @@ class CustomPagerAdapter(context: Context, state: State) :
         this.home = HomeAdapter(context, state, layout).also {
             viewHome.adapter = it
             viewHome.layoutManager = LinearLayoutManager(context)
-            layout.setOnClickListener {
-                context.startActivity(Intent(context, SettingsActivity::class.java))
-            }
         }
 
         collection.addView(layout)
