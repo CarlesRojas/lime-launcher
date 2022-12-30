@@ -9,9 +9,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class ItemAppViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-class HomeAdapter(context: Context, installedAppList: MutableList<ItemApp>) :
+class DrawerAdapter(context: Context, installedAppList: MutableList<ItemApp>) :
     RecyclerView.Adapter<ItemAppViewHolder>() {
 
     private val installedAppList: MutableList<ItemApp>

@@ -26,7 +26,7 @@ class CustomPagerAdapter(context: Context, installedAppList: MutableList<ItemApp
             val layout = inflater.inflate(R.layout.view_home, collection, false) as ViewGroup
             val viewHome = layout.findViewById<View>(R.id.homeRecyclerView) as RecyclerView
 
-            HomeAdapter(installedAppList).also {
+            HomeAdapter(context, installedAppList).also {
                 viewHome.adapter = it
                 viewHome.layoutManager = LinearLayoutManager(context)
             }
@@ -37,8 +37,7 @@ class CustomPagerAdapter(context: Context, installedAppList: MutableList<ItemApp
             val layout = inflater.inflate(R.layout.view_drawer, collection, false) as ViewGroup
             val viewDrawer = layout.findViewById<View>(R.id.drawerRecyclerView) as RecyclerView
 
-            // TODO Change to Drawer Adapter
-            HomeAdapter(installedAppList).also {
+            DrawerAdapter(context, installedAppList).also {
                 viewDrawer.adapter = it
                 viewDrawer.layoutManager = LinearLayoutManager(context)
             }
