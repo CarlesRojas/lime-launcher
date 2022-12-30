@@ -2,10 +2,10 @@
 <resources>
     <color name="black">#BF000000</color>
     <color name="black_low">#99000000</color>
-    <color name="black_extra_low">#4A000000</color>
+    <color name="black_extra_low">#23000000</color>
     <color name="white">#BFFFFFFF</color>
     <color name="white_low">#99FFFFFF</color>
-    <color name="white_extra_low">#4AFFFFFF</color>
+    <color name="white_extra_low">#23FFFFFF</color>
 
     <color name="primary">#88FF00</color>
     <color name="primary_variant">#69C500</color>

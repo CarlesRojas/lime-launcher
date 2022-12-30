@@ -8,6 +8,7 @@
     <string name="settings_dateFormat">Date format</string>
     <string name="settings_timeFormat">Time format</string>
 
+    <string name="drawer_searchHint">Search Apps</string>
 
     <string name="placeholder_time">19:35</string>
     <string name="placeholder_date">Monday, 23 August</string>

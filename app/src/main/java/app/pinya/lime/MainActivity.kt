@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import androidx.viewpager.widget.ViewPager
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 
 
 class MainActivity : Activity() {
@@ -23,6 +24,23 @@ class MainActivity : Activity() {
         val viewPager = findViewById<View>(R.id.viewPager) as ViewPager
         CustomPagerAdapter(this, state).also {
             viewPager.adapter = it
+
+            viewPager.addOnPageChangeListener(object : OnPageChangeListener {
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+                }
+
+                override fun onPageSelected(position: Int) {
+                    if (position == 0) it.onHomePageSelected() else it.onDrawerPageSelected()
+                }
+
+                override fun onPageScrollStateChanged(state: Int) {}
+            })
         }
+
+
     }
 }

@@ -15,9 +15,20 @@ class CustomPagerAdapter(context: Context, state: State) :
     private val context: Context
     private val state: State
 
+    private lateinit var home: HomeAdapter
+    private lateinit var drawer: DrawerAdapter
+
     init {
         this.context = context
         this.state = state
+    }
+
+    fun onHomePageSelected() {
+        this.drawer.hideKeyboard()
+    }
+
+    fun onDrawerPageSelected() {
+        this.drawer.showKeyboard()
     }
 
     override fun instantiateItem(collection: ViewGroup, position: Int): Any {
@@ -30,7 +41,7 @@ class CustomPagerAdapter(context: Context, state: State) :
         val layout = inflater.inflate(R.layout.view_home, collection, false) as ViewGroup
         val viewHome = layout.findViewById<View>(R.id.homeRecyclerView) as RecyclerView
 
-        HomeAdapter(context, state, layout).also {
+        this.home = HomeAdapter(context, state, layout).also {
             viewHome.adapter = it
             viewHome.layoutManager = LinearLayoutManager(context)
             layout.setOnClickListener {
@@ -47,7 +58,7 @@ class CustomPagerAdapter(context: Context, state: State) :
         val layout = inflater.inflate(R.layout.view_drawer, collection, false) as ViewGroup
         val viewDrawer = layout.findViewById<View>(R.id.drawerRecyclerView) as RecyclerView
 
-        DrawerAdapter(context, state).also {
+        this.drawer = DrawerAdapter(context, state, layout).also {
             viewDrawer.adapter = it
             viewDrawer.layoutManager = LinearLayoutManager(context)
         }
@@ -71,4 +82,5 @@ class CustomPagerAdapter(context: Context, state: State) :
     override fun getPageTitle(position: Int): CharSequence {
         return if (position == 0) "Home" else "Drawer"
     }
+
 }

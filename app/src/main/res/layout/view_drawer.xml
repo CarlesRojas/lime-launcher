@@ -26,11 +26,38 @@
         app:layout_constraintGuide_percent="0.1" />
 
     <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineH2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2" />
+
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineH3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.9" />
+
+
+    <EditText
+        android:id="@+id/drawerSearchBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edittext_background"
+        android:drawableStart="@drawable/search_line"
+        android:inputType="text"
+        android:autofillHints="none"
+        android:drawablePadding="12sp"
+        android:hint="@string/drawer_searchHint"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white_low"
+        android:textSize="18sp"
+        android:singleLine="true"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineV2"
+        app:layout_constraintStart_toStartOf="@+id/guidelineV1"
+        app:layout_constraintTop_toTopOf="@+id/guidelineH1" />
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
@@ -38,24 +65,27 @@
         app:layout_constraintBottom_toTopOf="@+id/guidelineH3"
         app:layout_constraintEnd_toStartOf="@+id/guidelineV2"
         app:layout_constraintStart_toStartOf="@+id/guidelineV1"
-        app:layout_constraintTop_toBottomOf="@+id/guidelineH1">
+        app:layout_constraintTop_toTopOf="@+id/guidelineH2">
 
         <com.bosphere.fadingedgelayout.FadingEdgeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             app:fel_edge="bottom|top"
             app:fel_size_bottom="14sp"
-            app:fel_size_top="14sp">
+            app:fel_size_top="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/drawerRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:overScrollMode="never"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
         </com.bosphere.fadingedgelayout.FadingEdgeLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
