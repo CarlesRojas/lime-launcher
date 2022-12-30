@@ -28,6 +28,13 @@
         app:layout_constraintGuide_percent="0.1" />
 
     <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineH2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2" />
+
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineH3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -61,6 +68,55 @@
             app:layout_constraintTop_toTopOf="@+id/guidelineH1" />
 
     </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineH3"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineV2"
+        app:layout_constraintStart_toStartOf="@+id/guidelineV1"
+        app:layout_constraintTop_toTopOf="@+id/guidelineH2">
+
+        <com.bosphere.fadingedgelayout.FadingEdgeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:fel_edge="bottom|top"
+            app:fel_size_bottom="14sp"
+            app:fel_size_top="14sp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toStartOf="@+id/guidelineV2"
+                app:layout_constraintStart_toStartOf="@+id/guidelineV1"
+                app:layout_constraintTop_toTopOf="@+id/guidelineH1">
+
+                <SeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="4"
+                    android:min="1"
+                    android:progress="4" />
+
+                <SeekBar
+                    android:id="@+id/seekBar_luminosite"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="4"
+                    android:min="1"
+                    android:progress="4"
+                    android:progressDrawable="@drawable/seekbar_style"
+                    android:splitTrack="false"
+                    android:thumb="@drawable/seekbar_thumb" />
+
+
+            </LinearLayout>
+
+
+        </com.bosphere.fadingedgelayout.FadingEdgeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

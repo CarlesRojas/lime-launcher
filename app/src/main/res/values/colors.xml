@@ -4,4 +4,9 @@
     <color name="black_low">#99000000</color>
     <color name="white">#BFFFFFFF</color>
     <color name="white_low">#99FFFFFF</color>
+
+    <color name="primary">#88FF00</color>
+    <color name="primary_variant">#69C500</color>
+    <color name="secondary">#88FF00</color>
+    <color name="secondary_variant">#69C500</color>
 </resources>
