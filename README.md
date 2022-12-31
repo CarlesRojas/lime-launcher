@@ -1,5 +1,11 @@
 # Lime Launcher
 
+## Short description
+
+Clean and efficient Android launcher with strong privacy and no ads.
+
+## Long description
+
 Introducing Lime Launcher - the minimalistic Android launcher that puts simplicity and efficiency first. With a clean and straightforward design, this launcher makes it easy to access and organize your apps.
 
 Some of the key features of Lime Launcher include:

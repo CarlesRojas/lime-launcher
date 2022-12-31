@@ -86,194 +86,211 @@
             app:fel_size_bottom="14sp"
             app:fel_size_top="14sp">
 
-            <LinearLayout
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:orientation="vertical"
-                app:layout_constraintEnd_toStartOf="@+id/guidelineV2"
-                app:layout_constraintStart_toStartOf="@+id/guidelineV1"
-                app:layout_constraintTop_toTopOf="@+id/guidelineH1">
+                android:layout_height="match_parent">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    android:text="@string/settings_dateFormat"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toStartOf="@+id/guidelineV2"
+                    app:layout_constraintStart_toStartOf="@+id/guidelineV1"
+                    app:layout_constraintTop_toTopOf="@+id/guidelineH1">
 
-                <TextView
-                    android:id="@+id/dateExample"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="8dp"
-                    android:fontFamily="@font/montserrat"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    android:text="@string/placeholder_date"
-                    android:textColor="@color/white_low"
-                    android:textSize="14sp" />
+                    <View
+                        android:id="@+id/divider0"
+                        android:layout_width="match_parent"
+                        android:layout_height="16dp"
+                        android:background="@android:color/transparent" />
 
-                <SeekBar
-                    android:id="@+id/dateFormat"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:max="3"
-                    android:min="0"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    android:progress="1"
-                    android:progressDrawable="@drawable/seekbar_style"
-                    android:splitTrack="false"
-                    android:thumb="@drawable/seekbar_thumb" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:text="@string/settings_dateFormat"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
-                <View
-                    android:id="@+id/divider1"
-                    android:layout_width="match_parent"
-                    android:layout_height="64dp"
-                    android:background="@android:color/transparent" />
+                    <TextView
+                        android:id="@+id/dateExample"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="8dp"
+                        android:fontFamily="@font/montserrat"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:text="@string/placeholder_date"
+                        android:textColor="@color/white_low"
+                        android:textSize="14sp" />
 
+                    <SeekBar
+                        android:id="@+id/dateFormat"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:max="3"
+                        android:min="0"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:progress="1"
+                        android:progressDrawable="@drawable/seekbar_style"
+                        android:splitTrack="false"
+                        android:thumb="@drawable/seekbar_thumb" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    android:text="@string/settings_timeFormat"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/timeExample"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="8dp"
-                    android:fontFamily="@font/montserrat"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    android:text="@string/placeholder_time"
-                    android:textColor="@color/white_low"
-                    android:textSize="14sp" />
-
-                <SeekBar
-                    android:id="@+id/timeFormat"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:max="2"
-                    android:min="0"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    android:progress="0"
-                    android:progressDrawable="@drawable/seekbar_style"
-                    android:splitTrack="false"
-                    android:thumb="@drawable/seekbar_thumb" />
-
-                <View
-                    android:id="@+id/divider2"
-                    android:layout_width="match_parent"
-                    android:layout_height="64dp"
-                    android:background="@android:color/transparent" />
-
-                <Switch
-                    android:id="@+id/autoKeyboardSwitch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    android:text="@string/settings_autoShowKeyboard"
-                    android:textColor="@color/white"
-                    android:textOff=""
-                    android:textOn=""
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:thumb="@drawable/switch_thumb"
-                    android:track="@drawable/switch_track"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-                <View
-                    android:id="@+id/divider4"
-                    android:layout_width="match_parent"
-                    android:layout_height="64dp"
-                    android:background="@android:color/transparent" />
-
-                <Switch
-                    android:id="@+id/iconsInHomeSwitch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    android:switchPadding="16sp"
-                    android:text="@string/settings_iconsInHome"
-                    android:textColor="@color/white"
-                    android:textOff=""
-                    android:textOn=""
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:thumb="@drawable/switch_thumb"
-                    android:track="@drawable/switch_track"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+                    <View
+                        android:id="@+id/divider1"
+                        android:layout_width="match_parent"
+                        android:layout_height="64dp"
+                        android:background="@android:color/transparent" />
 
 
-                <View
-                    android:id="@+id/divider5"
-                    android:layout_width="match_parent"
-                    android:layout_height="64dp"
-                    android:background="@android:color/transparent" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:text="@string/settings_timeFormat"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
-                <Switch
-                    android:id="@+id/iconsInDrawerSwitch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    android:switchPadding="16sp"
-                    android:text="@string/settings_iconsInDrawer"
-                    android:textColor="@color/white"
-                    android:textOff=""
-                    android:textOn=""
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:thumb="@drawable/switch_thumb"
-                    android:track="@drawable/switch_track"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+                    <TextView
+                        android:id="@+id/timeExample"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="8dp"
+                        android:fontFamily="@font/montserrat"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:text="@string/placeholder_time"
+                        android:textColor="@color/white_low"
+                        android:textSize="14sp" />
+
+                    <SeekBar
+                        android:id="@+id/timeFormat"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:max="2"
+                        android:min="0"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:progress="0"
+                        android:progressDrawable="@drawable/seekbar_style"
+                        android:splitTrack="false"
+                        android:thumb="@drawable/seekbar_thumb" />
+
+                    <View
+                        android:id="@+id/divider2"
+                        android:layout_width="match_parent"
+                        android:layout_height="64dp"
+                        android:background="@android:color/transparent" />
+
+                    <Switch
+                        android:id="@+id/autoKeyboardSwitch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:text="@string/settings_autoShowKeyboard"
+                        android:textColor="@color/white"
+                        android:textOff=""
+                        android:textOn=""
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:thumb="@drawable/switch_thumb"
+                        android:track="@drawable/switch_track"
+                        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+                    <View
+                        android:id="@+id/divider4"
+                        android:layout_width="match_parent"
+                        android:layout_height="64dp"
+                        android:background="@android:color/transparent" />
+
+                    <Switch
+                        android:id="@+id/iconsInHomeSwitch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:switchPadding="16sp"
+                        android:text="@string/settings_iconsInHome"
+                        android:textColor="@color/white"
+                        android:textOff=""
+                        android:textOn=""
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:thumb="@drawable/switch_thumb"
+                        android:track="@drawable/switch_track"
+                        tools:ignore="UseSwitchCompatOrMaterialXml" />
 
 
-                <View
-                    android:id="@+id/divider3"
-                    android:layout_width="match_parent"
-                    android:layout_height="64dp"
-                    android:background="@android:color/transparent" />
+                    <View
+                        android:id="@+id/divider5"
+                        android:layout_width="match_parent"
+                        android:layout_height="64dp"
+                        android:background="@android:color/transparent" />
 
-                <Switch
-                    android:id="@+id/autoOpenAppsSwitch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    android:switchPadding="16sp"
-                    android:text="@string/settings_autoOpenApps"
-                    android:textColor="@color/white"
-                    android:textOff=""
-                    android:textOn=""
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:thumb="@drawable/switch_thumb"
-                    android:track="@drawable/switch_track"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+                    <Switch
+                        android:id="@+id/iconsInDrawerSwitch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:switchPadding="16sp"
+                        android:text="@string/settings_iconsInDrawer"
+                        android:textColor="@color/white"
+                        android:textOff=""
+                        android:textOn=""
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:thumb="@drawable/switch_thumb"
+                        android:track="@drawable/switch_track"
+                        tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-            </LinearLayout>
+
+                    <View
+                        android:id="@+id/divider3"
+                        android:layout_width="match_parent"
+                        android:layout_height="64dp"
+                        android:background="@android:color/transparent" />
+
+                    <Switch
+                        android:id="@+id/autoOpenAppsSwitch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:switchPadding="16sp"
+                        android:text="@string/settings_autoOpenApps"
+                        android:textColor="@color/white"
+                        android:textOff=""
+                        android:textOn=""
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:thumb="@drawable/switch_thumb"
+                        android:track="@drawable/switch_track"
+                        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+                    <View
+                        android:id="@+id/dividerLast"
+                        android:layout_width="match_parent"
+                        android:layout_height="16dp"
+                        android:background="@android:color/transparent" />
+
+                </LinearLayout>
+            </ScrollView>
 
         </com.bosphere.fadingedgelayout.FadingEdgeLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
