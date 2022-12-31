@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
@@ -65,6 +66,7 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
 
     var showNotificationsJob: Job? = null
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun initGestureDetector() {
         layout.setOnLongClickListener {
             context.startActivity(Intent(context, SettingsActivity::class.java))
@@ -72,7 +74,7 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
         }
 
         layout.setOnTouchListener(object : OnSwipeTouchListener(context) {
-            override fun onSwipeBottom() {
+            override fun onFlingDown() {
                 expandNotificationBar()
             }
         })

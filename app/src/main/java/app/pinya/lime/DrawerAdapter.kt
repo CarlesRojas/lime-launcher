@@ -60,29 +60,33 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
     }
 
     private fun initLayout() {
-
         layout.setOnTouchListener(object : OnSwipeTouchListener(context) {
             override fun onAnyTouch() {
                 hideKeyboard()
             }
 
-            override fun onSwipeBottom() {
+            override fun onFlingDown() {
                 expandNotificationBar()
             }
         })
     }
 
     var showNotificationsJob: Job? = null
+    var noScroll = false
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun initAppList() {
         appList = layout.findViewById(R.id.drawerAppList)
+        noScroll = !appList.canScrollVertically(-1) && !appList.canScrollVertically(1)
 
         appList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
+                noScroll = !appList.canScrollVertically(-1) && !appList.canScrollVertically(1)
+
                 if (newState != RecyclerView.SCROLL_STATE_DRAGGING) return
 
-                if (!recyclerView.canScrollVertically(-1)) {
+                if (!recyclerView.canScrollVertically(-1) && recyclerView.canScrollVertically(1)) {
                     showNotificationsJob = GlobalScope.launch(Dispatchers.Main) {
                         delay(50)
                         expandNotificationBar()
@@ -94,6 +98,13 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
                 if (dy >= 0) showNotificationsJob?.cancel()
             }
         })
+
+        appList.setOnTouchListener(object : OnSwipeTouchListener(context) {
+            /*override fun onFlingDown() {
+                expandNotificationBar()
+            }*/
+        })
+
     }
 
     @SuppressLint("WrongConstant", "PrivateApi")
@@ -171,6 +182,8 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
     }
 
     var indexDisplacement = 0
+
+    @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: ItemAppViewHolder, position: Int) {
         var currentApp: ItemApp? = null
         while (currentApp == null) {
