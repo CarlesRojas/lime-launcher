@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 
 class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
-    RecyclerView.Adapter<ItemAppViewHolder>() {
+    RecyclerView.Adapter<ItemAppViewHolder>(), SectionIndexer {
 
     private val context: Context
     private val state: State
@@ -164,5 +164,17 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
 
     override fun getItemCount(): Int {
         return shownAppList.size
+    }
+
+    override fun getSections(): Array<Any> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getPositionForSection(p0: Int): Int {
+        TODO("Not yet implemented")
+    }
+
+    override fun getSectionForPosition(p0: Int): Int {
+        TODO("Not yet implemented")
     }
 }
