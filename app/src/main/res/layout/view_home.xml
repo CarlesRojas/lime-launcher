@@ -80,7 +80,7 @@
             app:fel_size_top="14sp">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/homeRecyclerView"
+                android:id="@+id/homeAppList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:overScrollMode="never"

@@ -1,17 +1,22 @@
 package app.pinya.lime
 
+import OnSwipeTouchListener
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class ItemAppViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
@@ -57,10 +62,52 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
         }, 0, 1000)
     }
 
+
+    var showNotificationsJob: Job? = null
+
+    @SuppressLint("ClickableViewAccessibility")
     private fun initGestureDetector() {
         layout.setOnLongClickListener {
             context.startActivity(Intent(context, SettingsActivity::class.java))
             true
+        }
+
+        layout.setOnTouchListener(object : OnSwipeTouchListener(context) {
+            override fun onSwipeBottom() {
+                expandNotificationBar()
+            }
+        })
+
+        val appList = layout.findViewById<RecyclerView>(R.id.homeAppList)
+
+        appList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState != RecyclerView.SCROLL_STATE_DRAGGING) return
+
+                if (!recyclerView.canScrollVertically(-1) && recyclerView.canScrollVertically(1)) {
+                    showNotificationsJob = GlobalScope.launch(Dispatchers.Main) {
+                        delay(50)
+                        expandNotificationBar()
+                    }
+                }
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (dy >= 0) showNotificationsJob?.cancel()
+            }
+        })
+    }
+
+
+    @SuppressLint("WrongConstant", "PrivateApi")
+    private fun expandNotificationBar() {
+        try {
+            val statusBarService = context.getSystemService("statusbar")
+            val statusBarManager = Class.forName("android.app.StatusBarManager")
+            val method = statusBarManager.getMethod("expandNotificationsPanel")
+            method.invoke(statusBarService)
+        } catch (e: Error) {
         }
     }
 

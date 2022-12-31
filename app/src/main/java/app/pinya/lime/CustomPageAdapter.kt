@@ -40,7 +40,7 @@ class CustomPagerAdapter(context: Context, state: State) :
     private fun instantiateHome(collection: ViewGroup): ViewGroup {
         val inflater = LayoutInflater.from(context)
         val layout = inflater.inflate(R.layout.view_home, collection, false) as ViewGroup
-        val viewHome = layout.findViewById<View>(R.id.homeRecyclerView) as RecyclerView
+        val viewHome = layout.findViewById<View>(R.id.homeAppList) as RecyclerView
 
         this.home = HomeAdapter(context, state, layout).also {
             viewHome.adapter = it
