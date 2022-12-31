@@ -10,6 +10,7 @@ import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 class MainActivity : Activity() {
 
     private lateinit var state: State
+    private lateinit var customPageAdapter: CustomPagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,7 +23,7 @@ class MainActivity : Activity() {
 
     private fun linkAdapters() {
         val viewPager = findViewById<View>(R.id.viewPager) as ViewPager
-        CustomPagerAdapter(this, state).also {
+        customPageAdapter = CustomPagerAdapter(this, state).also {
             viewPager.adapter = it
 
             viewPager.addOnPageChangeListener(object : OnPageChangeListener {
@@ -40,7 +41,12 @@ class MainActivity : Activity() {
                 override fun onPageScrollStateChanged(state: Int) {}
             })
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
 
+        state.fetchInstalledAppsAgain()
+        customPageAdapter.onResume()
     }
 }

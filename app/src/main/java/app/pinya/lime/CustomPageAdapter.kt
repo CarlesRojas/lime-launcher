@@ -1,7 +1,6 @@
 package app.pinya.lime
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +20,11 @@ class CustomPagerAdapter(context: Context, state: State) :
     init {
         this.context = context
         this.state = state
+    }
+
+    fun onResume() {
+        if (this::home.isInitialized) home.onResume()
+        if (this::drawer.isInitialized) drawer.onResume()
     }
 
     fun onHomePageSelected() {

@@ -24,15 +24,21 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
 
     private var searchBarText: String = ""
 
+    private var shownAppList: MutableList<ItemApp> = mutableListOf()
 
     init {
         this.context = context
         this.state = state
         this.layout = layout
 
+        filterAppList()
         initSearchBar()
         initLayout()
         initAppList()
+    }
+
+    fun onResume() {
+        filterAppList()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -94,7 +100,6 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         val inputManager =
             context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputManager.hideSoftInputFromWindow(searchBar.windowToken, 0)
-
     }
 
     private fun showClearText() {
@@ -106,26 +111,25 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
     }
 
     private fun filterAppList() {
+        shownAppList = mutableListOf()
         this.state.getInstalledAppList().forEach {
-            it.filtered =
-                if (searchBarText == "") false else !it.getName().contains(searchBarText, true)
+            val included =
+                if (searchBarText == "") true else it.getName().contains(searchBarText, true)
+
+            if (included) shownAppList.add(it)
         }
 
-        val numAppsInTheList = itemCount
         val autoOpenApps = state.getData(DataKey.AUTO_OPEN_APPS, true)
+        val moreThanOneInstalledApp = this.state.getInstalledAppList().size > 1
 
-        if (autoOpenApps && numAppsInTheList == 1) {
-            val app = this.state.getInstalledAppList().find { !it.filtered }
-
-            if (app != null) {
-                clearText()
-                val launchAppIntent =
-                    context.packageManager.getLaunchIntentForPackage(app.getPackageName())
-                if (launchAppIntent != null) context.startActivity(launchAppIntent)
-            }
+        if (autoOpenApps && moreThanOneInstalledApp && shownAppList.size == 1) {
+            val app = shownAppList[0]
+            clearText()
+            val launchAppIntent =
+                context.packageManager.getLaunchIntentForPackage(app.getPackageName())
+            if (launchAppIntent != null) context.startActivity(launchAppIntent)
         }
 
-        indexDisplacement = 0;
         this.notifyDataSetChanged();
     }
 
@@ -136,14 +140,8 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         )
     }
 
-    var indexDisplacement = 0
     override fun onBindViewHolder(holder: ItemAppViewHolder, position: Int) {
-        var currentApp: ItemApp? = null
-        while (currentApp == null) {
-            val newApp = this.state.getInstalledAppList()[position + indexDisplacement]
-            if (newApp.filtered) indexDisplacement++
-            else currentApp = newApp
-        }
+        val currentApp = shownAppList[position]
 
         val imageView: ImageView = holder.itemView.findViewById(R.id.appIcon)
         val textView: TextView = holder.itemView.findViewById(R.id.appName)
@@ -160,6 +158,6 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
     }
 
     override fun getItemCount(): Int {
-        return this.state.getInstalledAppList().filter { !it.filtered }.size
+        return shownAppList.size
     }
 }

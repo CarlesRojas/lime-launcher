@@ -27,11 +27,15 @@ class State(context: Context) {
         this.sharedPreferences =
             context.getSharedPreferences(this.preferencesName, Context.MODE_PRIVATE)
 
-        getInstalledApps()
+        fetchInstalledAppsAgain()
     }
 
     fun getInstalledAppList(): MutableList<ItemApp> {
         return this.installedAppList
+    }
+
+    fun fetchInstalledAppsAgain() {
+        getInstalledApps()
     }
 
     private fun getInstalledApps() {

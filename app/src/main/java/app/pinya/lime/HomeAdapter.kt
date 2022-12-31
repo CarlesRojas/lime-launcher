@@ -39,6 +39,8 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
         initGestureDetector()
     }
 
+    fun onResume() {}
+
     private fun startTimerToUpdateDateTime() {
 
         timer?.scheduleAtFixedRate(object : TimerTask() {
