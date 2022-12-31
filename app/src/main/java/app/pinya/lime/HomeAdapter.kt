@@ -1,5 +1,6 @@
 package app.pinya.lime
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -55,6 +56,17 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
                 }
             }
         }, 0, 1000)
+    }
+
+    @SuppressLint("WrongConstant", "PrivateApi")
+    private fun expandNotificationBar() {
+        try {
+            val statusBarService = context.getSystemService("statusbar")
+            val statusBarManager = Class.forName("android.app.StatusBarManager")
+            val method = statusBarManager.getMethod("expandNotificationsPanel")
+            method.invoke(statusBarService)
+        } catch (e: Error) {
+        }
     }
 
     private fun initGestureDetector() {
