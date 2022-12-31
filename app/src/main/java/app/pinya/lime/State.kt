@@ -7,11 +7,10 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 enum class DataKey {
-    FONT_SIZE,
-    RENAMED_APPS,
     DATE_FORMAT,
     TIME_FORMAT,
-    AUTO_SHOW_KEYBOARD
+    AUTO_SHOW_KEYBOARD,
+    AUTO_OPEN_APPS
 }
 
 class State(context: Context) {
@@ -49,6 +48,8 @@ class State(context: Context) {
 
             if (!installedAppList.contains(app)) installedAppList.add(app)
         }
+
+        installedAppList.sortBy { it.getName() }
     }
 
 

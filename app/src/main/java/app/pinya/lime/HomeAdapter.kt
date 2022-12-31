@@ -84,7 +84,7 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
             val launchAppIntent =
                 context.packageManager.getLaunchIntentForPackage(currentApp.getPackageName())
 
-            if (launchAppIntent !== null) context.startActivity(launchAppIntent)
+            if (launchAppIntent != null) context.startActivity(launchAppIntent)
         }
     }
 

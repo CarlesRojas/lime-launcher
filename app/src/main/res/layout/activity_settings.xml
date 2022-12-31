@@ -62,6 +62,7 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat"
             android:text="@string/settings_title"
             android:textColor="@color/white"
             android:textSize="24sp"
@@ -97,11 +98,13 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
                     android:text="@string/settings_dateFormat"
                     android:textColor="@color/white"
-                    android:textSize="20sp" />
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/dateExample"
@@ -109,6 +112,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/montserrat"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
                     android:text="@string/placeholder_date"
@@ -129,20 +133,22 @@
                     android:thumb="@drawable/seekbar_thumb" />
 
                 <View
-                    android:id="@+id/divider"
+                    android:id="@+id/divider1"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="64dp"
                     android:background="@android:color/transparent" />
 
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
                     android:text="@string/settings_timeFormat"
                     android:textColor="@color/white"
-                    android:textSize="20sp" />
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/timeExample"
@@ -150,6 +156,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/montserrat"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
                     android:text="@string/placeholder_time"
@@ -172,23 +179,50 @@
                 <View
                     android:id="@+id/divider2"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="64dp"
                     android:background="@android:color/transparent" />
 
                 <Switch
                     android:id="@+id/autoKeyboardSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
                     android:text="@string/settings_autoShowKeyboard"
                     android:textColor="@color/white"
                     android:textOff=""
                     android:textOn=""
-                    android:textSize="20sp"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
                     android:thumb="@drawable/switch_thumb"
                     android:track="@drawable/switch_track"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+                <View
+                    android:id="@+id/divider3"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:background="@android:color/transparent" />
+
+                <Switch
+                    android:id="@+id/autoOpenAppsSwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:switchPadding="16sp"
+                    android:text="@string/settings_autoOpenApps"
+                    android:textColor="@color/white"
+                    android:textOff=""
+                    android:textOn=""
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:thumb="@drawable/switch_thumb"
+                    android:track="@drawable/switch_track"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
             </LinearLayout>
 
         </com.bosphere.fadingedgelayout.FadingEdgeLayout>

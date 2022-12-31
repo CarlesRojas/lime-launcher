@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
@@ -38,17 +39,13 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
     private fun initSearchBar() {
         searchBar = layout.findViewById(R.id.drawerSearchBar)
 
-        searchBar.setOnFocusChangeListener { _, focus ->
-            print(focus)
-        }
-
         searchBar.doAfterTextChanged {
             if (it.toString() == "") hideClearText() else showClearText()
             searchBarText = it.toString()
+            filterAppList()
         }
 
         searchBar.setOnTouchListener { view, event ->
-
             if (event.action == MotionEvent.ACTION_UP && searchBarText != "") {
                 val padding: Int = searchBar.paddingRight * 2
                 val iconWidth: Int = searchBar.compoundDrawables[2].bounds.width()
@@ -62,32 +59,22 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
 
     private fun initLayout() {
         layout.setOnClickListener {
-            clearText()
             hideKeyboard()
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun initAppList() {
         appList = layout.findViewById(R.id.drawerAppList)
-        appList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                clearText()
-                hideKeyboard()
-            }
-        })
+
+        appList.setOnTouchListener { view, _ ->
+            hideKeyboard()
+            view.performClick()
+        }
     }
 
     fun clearText() {
         searchBar.text.clear()
-    }
-
-    private fun showClearText() {
-        searchBar.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.close_line, 0)
-    }
-
-    private fun hideClearText() {
-        searchBar.setCompoundDrawablesWithIntrinsicBounds(R.drawable.search_line, 0, 0, 0)
     }
 
     fun showKeyboard() {
@@ -110,16 +97,53 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
 
     }
 
+    private fun showClearText() {
+        searchBar.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.close_line, 0)
+    }
+
+    private fun hideClearText() {
+        searchBar.setCompoundDrawablesWithIntrinsicBounds(R.drawable.search_line, 0, 0, 0)
+    }
+
+    private fun filterAppList() {
+        this.state.getInstalledAppList().forEach {
+            it.filtered =
+                if (searchBarText == "") false else !it.getName().contains(searchBarText, true)
+        }
+
+        val numAppsInTheList = itemCount
+        val autoOpenApps = state.getData(DataKey.AUTO_OPEN_APPS, true)
+
+        if (autoOpenApps && numAppsInTheList == 1) {
+            val app = this.state.getInstalledAppList().find { !it.filtered }
+
+            if (app != null) {
+                clearText()
+                val launchAppIntent =
+                    context.packageManager.getLaunchIntentForPackage(app.getPackageName())
+                if (launchAppIntent != null) context.startActivity(launchAppIntent)
+            }
+        }
+
+        indexDisplacement = 0;
+        this.notifyDataSetChanged();
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemAppViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return ItemAppViewHolder(
             inflater.inflate(R.layout.item_app, parent, false)
         )
-
     }
 
+    var indexDisplacement = 0
     override fun onBindViewHolder(holder: ItemAppViewHolder, position: Int) {
-        val currentApp = this.state.getInstalledAppList()[position]
+        var currentApp: ItemApp? = null
+        while (currentApp == null) {
+            val newApp = this.state.getInstalledAppList()[position + indexDisplacement]
+            if (newApp.filtered) indexDisplacement++
+            else currentApp = newApp
+        }
 
         val imageView: ImageView = holder.itemView.findViewById(R.id.appIcon)
         val textView: TextView = holder.itemView.findViewById(R.id.appName)
@@ -131,11 +155,11 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
             val launchAppIntent =
                 context.packageManager.getLaunchIntentForPackage(currentApp.getPackageName())
 
-            if (launchAppIntent !== null) context.startActivity(launchAppIntent)
+            if (launchAppIntent != null) context.startActivity(launchAppIntent)
         }
     }
 
     override fun getItemCount(): Int {
-        return this.state.getInstalledAppList().size
+        return this.state.getInstalledAppList().filter { !it.filtered }.size
     }
 }

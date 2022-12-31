@@ -20,7 +20,8 @@ class SettingsActivity : Activity() {
         initializeBackButton()
         initializeDateSeekBar()
         initializeTimeSeekBar()
-        initializeAutoKeyboard()
+        initializeAutoOpenKeyboard()
+        initializeAutoOpenApps()
     }
 
     private fun initializeBackButton() {
@@ -80,14 +81,26 @@ class SettingsActivity : Activity() {
         })
     }
 
-    private fun initializeAutoKeyboard() {
+    private fun initializeAutoOpenKeyboard() {
         val autoKeyboardSwitch = findViewById<Switch>(R.id.autoKeyboardSwitch)
         val stateValue = state.getData(DataKey.AUTO_SHOW_KEYBOARD, true)
 
         autoKeyboardSwitch.isChecked = stateValue
 
-        autoKeyboardSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+        autoKeyboardSwitch.setOnCheckedChangeListener { _, isChecked ->
             state.saveData(DataKey.AUTO_SHOW_KEYBOARD, isChecked)
+        }
+    }
+
+
+    private fun initializeAutoOpenApps() {
+        val autoOpenAppsSwitch = findViewById<Switch>(R.id.autoOpenAppsSwitch)
+        val stateValue = state.getData(DataKey.AUTO_OPEN_APPS, true)
+
+        autoOpenAppsSwitch.isChecked = stateValue
+
+        autoOpenAppsSwitch.setOnCheckedChangeListener { _, isChecked ->
+            state.saveData(DataKey.AUTO_OPEN_APPS, isChecked)
         }
     }
 
