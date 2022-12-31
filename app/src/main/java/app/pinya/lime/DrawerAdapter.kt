@@ -148,7 +148,12 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         val linearLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
 
         imageView.setImageDrawable(currentApp.getIcon())
+
+        val stateValue = state.getData(DataKey.ICONS_IN_DRAWER, true)
+        imageView.visibility = if (stateValue) View.VISIBLE else View.GONE
+
         textView.text = currentApp.getName()
+
         linearLayout.setOnClickListener {
             val launchAppIntent =
                 context.packageManager.getLaunchIntentForPackage(currentApp.getPackageName())

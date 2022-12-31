@@ -200,6 +200,56 @@
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
 
                 <View
+                    android:id="@+id/divider4"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:background="@android:color/transparent" />
+
+                <Switch
+                    android:id="@+id/iconsInHomeSwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:switchPadding="16sp"
+                    android:text="@string/settings_iconsInHome"
+                    android:textColor="@color/white"
+                    android:textOff=""
+                    android:textOn=""
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:thumb="@drawable/switch_thumb"
+                    android:track="@drawable/switch_track"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+
+                <View
+                    android:id="@+id/divider5"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:background="@android:color/transparent" />
+
+                <Switch
+                    android:id="@+id/iconsInDrawerSwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:switchPadding="16sp"
+                    android:text="@string/settings_iconsInDrawer"
+                    android:textColor="@color/white"
+                    android:textOff=""
+                    android:textOn=""
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:thumb="@drawable/switch_thumb"
+                    android:track="@drawable/switch_track"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+
+                <View
                     android:id="@+id/divider3"
                     android:layout_width="match_parent"
                     android:layout_height="64dp"

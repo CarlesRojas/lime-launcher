@@ -7,6 +7,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -39,7 +40,9 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
         initGestureDetector()
     }
 
-    fun onResume() {}
+    fun onResume() {
+        this.notifyDataSetChanged();
+    }
 
     private fun startTimerToUpdateDateTime() {
 
@@ -93,6 +96,10 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
         val linearLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
 
         imageView.setImageDrawable(currentApp.getIcon())
+
+        val stateValue = state.getData(DataKey.ICONS_IN_HOME, true)
+        imageView.visibility = if (stateValue) View.VISIBLE else View.GONE
+
         textView.text = currentApp.getName()
         linearLayout.setOnClickListener {
             val launchAppIntent =

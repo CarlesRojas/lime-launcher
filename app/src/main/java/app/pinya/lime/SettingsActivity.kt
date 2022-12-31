@@ -22,6 +22,8 @@ class SettingsActivity : Activity() {
         initializeTimeSeekBar()
         initializeAutoOpenKeyboard()
         initializeAutoOpenApps()
+        initializeShowIconsInHome()
+        initializeShowIconsInDrawer()
     }
 
     private fun initializeBackButton() {
@@ -101,6 +103,30 @@ class SettingsActivity : Activity() {
 
         autoOpenAppsSwitch.setOnCheckedChangeListener { _, isChecked ->
             state.saveData(DataKey.AUTO_OPEN_APPS, isChecked)
+        }
+    }
+
+
+    private fun initializeShowIconsInHome() {
+        val iconsInHomeSwitch = findViewById<Switch>(R.id.iconsInHomeSwitch)
+        val stateValue = state.getData(DataKey.ICONS_IN_HOME, true)
+
+        iconsInHomeSwitch.isChecked = stateValue
+
+        iconsInHomeSwitch.setOnCheckedChangeListener { _, isChecked ->
+            state.saveData(DataKey.ICONS_IN_HOME, isChecked)
+        }
+    }
+
+
+    private fun initializeShowIconsInDrawer() {
+        val iconsInDrawerSwitch = findViewById<Switch>(R.id.iconsInDrawerSwitch)
+        val stateValue = state.getData(DataKey.ICONS_IN_DRAWER, true)
+
+        iconsInDrawerSwitch.isChecked = stateValue
+
+        iconsInDrawerSwitch.setOnCheckedChangeListener { _, isChecked ->
+            state.saveData(DataKey.ICONS_IN_DRAWER, isChecked)
         }
     }
 

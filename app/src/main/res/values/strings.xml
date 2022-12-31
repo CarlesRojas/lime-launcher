@@ -9,6 +9,8 @@
     <string name="settings_timeFormat">Time format</string>
     <string name="settings_autoShowKeyboard">Show keyboard automatically</string>
     <string name="settings_autoOpenApps">Open apps automatically</string>
+    <string name="settings_iconsInHome">Show icons in home</string>
+    <string name="settings_iconsInDrawer">Show icons in drawer</string>
 
     <string name="drawer_searchHint">Search Apps</string>
 

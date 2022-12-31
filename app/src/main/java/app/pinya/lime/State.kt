@@ -10,7 +10,9 @@ enum class DataKey {
     DATE_FORMAT,
     TIME_FORMAT,
     AUTO_SHOW_KEYBOARD,
-    AUTO_OPEN_APPS
+    AUTO_OPEN_APPS,
+    ICONS_IN_HOME,
+    ICONS_IN_DRAWER
 }
 
 class State(context: Context) {
