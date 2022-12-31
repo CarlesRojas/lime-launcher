@@ -10,7 +10,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.RecyclerView
+import kotlin.math.floor
 
+
+val ALPHABET: List<Char> = listOf(
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+    'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+)
 
 class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
     RecyclerView.Adapter<ItemAppViewHolder>() {
@@ -21,10 +27,12 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
 
     private lateinit var searchBar: EditText
     private lateinit var appList: RecyclerView
+    private lateinit var alphabetLayout: LinearLayout
 
     private var searchBarText: String = ""
 
     private var shownAppList: MutableList<ItemApp> = mutableListOf()
+    private val currentAlphabet: MutableList<Char> = mutableListOf()
 
     init {
         this.context = context
@@ -35,6 +43,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         initSearchBar()
         initLayout()
         initAppList()
+        initAlphabet()
     }
 
     fun onResume() {
@@ -76,6 +85,50 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         appList.setOnTouchListener { view, _ ->
             hideKeyboard()
             view.performClick()
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun initAlphabet() {
+        alphabetLayout = layout.findViewById(R.id.alphabetLayout)
+        updateAlphabetLetters()
+
+        alphabetLayout.setOnTouchListener { _, event ->
+            clearText()
+            hideKeyboard()
+            val y = event.rawY
+            val startY = alphabetLayout.top;
+            val endY = alphabetLayout.bottom;
+            val perc = (y - startY) / (endY - startY)
+            val section = 1f / currentAlphabet.size
+            val currentSection = floor(perc / section).toInt()
+
+            if (currentSection < currentAlphabet.size) {
+                val currentChar = currentAlphabet[currentSection]
+                filterAppListBtAlphabet(currentChar)
+            } else filterAppListBtAlphabet(null)
+
+            true
+        }
+    }
+
+    private fun updateAlphabetLetters() {
+        currentAlphabet.clear()
+
+        for (app in shownAppList) {
+            val char = app.getName().first()
+
+            if (currentAlphabet.contains(char)) continue
+            if (ALPHABET.contains(char)) currentAlphabet.add(char)
+            else currentAlphabet.add('#')
+        }
+
+        alphabetLayout.removeAllViews();
+
+        for (char in currentAlphabet) {
+            val textView = View.inflate(context, R.layout.alphabet_character, null) as TextView
+            textView.setText(char.toString())
+            alphabetLayout.addView(textView)
         }
     }
 
@@ -128,6 +181,19 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
             val launchAppIntent =
                 context.packageManager.getLaunchIntentForPackage(app.getPackageName())
             if (launchAppIntent != null) context.startActivity(launchAppIntent)
+        }
+
+        this.notifyDataSetChanged();
+    }
+
+    private fun filterAppListBtAlphabet(char: Char?) {
+        shownAppList = mutableListOf()
+        this.state.getInstalledAppList().forEach {
+            val included =
+                if (char == null) true else it.getName().startsWith(char, true)
+
+            val name = it.getName()
+            if (included) shownAppList.add(it)
         }
 
         this.notifyDataSetChanged();
