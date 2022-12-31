@@ -105,9 +105,10 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
 
             if (currentSection < currentAlphabet.size) {
                 val currentChar = currentAlphabet[currentSection]
-                filterAppListBtAlphabet(currentChar)
-            } else filterAppListBtAlphabet(null)
+                searchBar.setText(currentChar.toString())
+            }
 
+            filterAppListBtAlphabet()
             true
         }
     }
@@ -186,13 +187,12 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         this.notifyDataSetChanged();
     }
 
-    private fun filterAppListBtAlphabet(char: Char?) {
+    private fun filterAppListBtAlphabet() {
         shownAppList = mutableListOf()
         this.state.getInstalledAppList().forEach {
             val included =
-                if (char == null) true else it.getName().startsWith(char, true)
+                if (searchBarText == null) true else it.getName().startsWith(searchBarText, true)
 
-            val name = it.getName()
             if (included) shownAppList.add(it)
         }
 
