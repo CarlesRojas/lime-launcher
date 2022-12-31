@@ -74,21 +74,15 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
 
     var showNotificationsJob: Job? = null
 
-    @SuppressLint("ClickableViewAccessibility")
     private fun initAppList() {
         appList = layout.findViewById(R.id.drawerAppList)
-
-        appList.setOnTouchListener { view, _ ->
-            hideKeyboard()
-            view.performClick()
-        }
 
         appList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState != RecyclerView.SCROLL_STATE_DRAGGING) return
 
-                if (!recyclerView.canScrollVertically(-1) && recyclerView.canScrollVertically(1)) {
+                if (!recyclerView.canScrollVertically(-1)) {
                     showNotificationsJob = GlobalScope.launch(Dispatchers.Main) {
                         delay(50)
                         expandNotificationBar()

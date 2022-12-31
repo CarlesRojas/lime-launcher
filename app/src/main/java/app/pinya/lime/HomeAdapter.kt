@@ -65,7 +65,6 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
 
     var showNotificationsJob: Job? = null
 
-    @SuppressLint("ClickableViewAccessibility")
     private fun initGestureDetector() {
         layout.setOnLongClickListener {
             context.startActivity(Intent(context, SettingsActivity::class.java))
@@ -85,7 +84,7 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState != RecyclerView.SCROLL_STATE_DRAGGING) return
 
-                if (!recyclerView.canScrollVertically(-1) && recyclerView.canScrollVertically(1)) {
+                if (!recyclerView.canScrollVertically(-1)) {
                     showNotificationsJob = GlobalScope.launch(Dispatchers.Main) {
                         delay(50)
                         expandNotificationBar()

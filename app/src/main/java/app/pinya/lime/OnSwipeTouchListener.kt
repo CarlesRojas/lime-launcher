@@ -16,23 +16,24 @@ abstract class OnSwipeTouchListener(context: Context?) : OnTouchListener {
         gestureDetector = GestureDetector(context, GestureListener())
     }
 
-    override fun onTouch(v: View, event: MotionEvent): Boolean {
+    override fun onTouch(v: View, event: MotionEvent?): Boolean {
         onAnyTouch()
         return gestureDetector.onTouchEvent(event)
     }
 
     private inner class GestureListener : SimpleOnGestureListener() {
-        override fun onDown(e: MotionEvent): Boolean {
+        override fun onDown(e: MotionEvent?): Boolean {
             return true
         }
 
         override fun onFling(
-            e1: MotionEvent,
-            e2: MotionEvent,
+            e1: MotionEvent?,
+            e2: MotionEvent?,
             velocityX: Float,
             velocityY: Float
         ): Boolean {
-            var result = false
+            if (e1 == null || e2 == null) return false
+
             try {
                 val diffY = e2.y - e1.y
                 val diffX = e2.x - e1.x
@@ -43,7 +44,6 @@ abstract class OnSwipeTouchListener(context: Context?) : OnTouchListener {
                         } else {
                             onSwipeLeft()
                         }
-                        result = true
                     }
                 } else if (abs(diffY) > SWIPE_THRESHOLD && abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
                     if (diffY > 0) {
@@ -51,12 +51,12 @@ abstract class OnSwipeTouchListener(context: Context?) : OnTouchListener {
                     } else {
                         onSwipeTop()
                     }
-                    result = true
                 }
             } catch (exception: Exception) {
                 exception.printStackTrace()
             }
-            return result
+
+            return super.onFling(e1, e2, velocityX, velocityY)
         }
     }
 
