@@ -14,6 +14,8 @@
     <string name="settings_showSearchBar">Show search bar</string>
     <string name="settings_showAlphabet">Show alphabet filter</string>
 
+    <string name="contextMenu_addToHome">Add to Home</string>
+    <string name="contextMenu_removeFromHome">Remove from Home</string>
 
     <string name="drawer_searchHint">Search Apps</string>
 

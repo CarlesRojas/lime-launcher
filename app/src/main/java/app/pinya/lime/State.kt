@@ -83,6 +83,11 @@ class State(context: Context) {
         saveData(DataKey.HOME_APPS, homeAppSet)
     }
 
+    fun isAppInHome(packageName: String): Boolean {
+        val app = installedAppList.find { it.getPackageName() == packageName } ?: return false
+        return app.home
+    }
+
     fun saveData(key: DataKey, data: String) {
         val editor = this.sharedPreferences.edit()
         editor.putString(key.toString(), data)

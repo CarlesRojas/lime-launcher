@@ -3,10 +3,7 @@ package app.pinya.lime
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.TypedValue
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -19,8 +16,32 @@ import kotlin.math.floor
 
 
 val ALPHABET: List<Char> = listOf(
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-    'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+    'A',
+    'B',
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+    'H',
+    'I',
+    'J',
+    'K',
+    'L',
+    'M',
+    'N',
+    'O',
+    'P',
+    'Q',
+    'R',
+    'S',
+    'T',
+    'U',
+    'V',
+    'W',
+    'X',
+    'Y',
+    'Z'
 )
 
 class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
@@ -169,10 +190,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
             textView.setTextColor(ContextCompat.getColor(context, R.color.white_extra_low))
             textView.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM)
             textView.setAutoSizeTextTypeUniformWithConfiguration(
-                8,
-                14,
-                1,
-                TypedValue.COMPLEX_UNIT_SP
+                8, 14, 1, TypedValue.COMPLEX_UNIT_SP
             )
             alphabetLayout.addView(textView)
         }
@@ -235,12 +253,11 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
     private fun filterAppListByAlphabet() {
         shownAppList = mutableListOf()
         this.state.getInstalledAppList().forEach {
-            val included =
-                when (searchBarText) {
-                    "" -> true
-                    "#" -> !ALPHABET.contains(it.getName().first().uppercaseChar())
-                    else -> it.getName().startsWith(searchBarText, true)
-                }
+            val included = when (searchBarText) {
+                "" -> true
+                "#" -> !ALPHABET.contains(it.getName().first().uppercaseChar())
+                else -> it.getName().startsWith(searchBarText, true)
+            }
 
             if (included) shownAppList.add(it)
         }
@@ -261,12 +278,9 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         val imageView: ImageView = holder.itemView.findViewById(R.id.appIcon)
         val textView: TextView = holder.itemView.findViewById(R.id.appName)
         val linearLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
-
         imageView.setImageDrawable(currentApp.getIcon())
-
         val stateValue = state.getData(DataKey.ICONS_IN_DRAWER, true)
         imageView.visibility = if (stateValue) View.VISIBLE else View.GONE
-
         textView.text = currentApp.getName()
 
         linearLayout.setOnClickListener {
@@ -275,9 +289,41 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
 
             if (launchAppIntent != null) context.startActivity(launchAppIntent)
         }
+
+        linearLayout.setOnLongClickListener {
+            val wrapper: Context = ContextThemeWrapper(context, R.style.PopupMenuStyle)
+            val popup = PopupMenu(wrapper, linearLayout)
+
+            if (currentApp.home) popup.menu.add(1, 0, 0, R.string.contextMenu_removeFromHome)
+            else popup.menu.add(1, 1, 1, R.string.contextMenu_addToHome)
+
+            popup.setOnMenuItemClickListener {
+                when (it.itemId) {
+                    0 -> { // Remove from home
+                        state.toggleHomeInApp(currentApp.getPackageName(), false)
+                        showToast("${currentApp.getName()} removed from Home")
+                        true
+                    }
+                    1 -> { // Add to home
+                        state.toggleHomeInApp(currentApp.getPackageName(), true)
+                        showToast("${currentApp.getName()} added to Home")
+                        true
+                    }
+                    else -> false
+                }
+            }
+
+            popup.show()
+            true
+        }
+
     }
 
     override fun getItemCount(): Int {
         return shownAppList.size
+    }
+
+    private fun showToast(text: String) {
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
     }
 }
