@@ -7,11 +7,13 @@
     <string name="settings_title">Settings</string>
     <string name="settings_dateFormat">Date format</string>
     <string name="settings_timeFormat">Time format</string>
-    <string name="settings_autoShowKeyboard">Show keyboard automatically</string>
-    <string name="settings_autoOpenApps">Open apps automatically</string>
+    <string name="settings_autoShowKeyboard">Auto show keyboard</string>
+    <string name="settings_autoOpenApps">Auto open apps</string>
     <string name="settings_iconsInHome">Show icons in home</string>
     <string name="settings_iconsInDrawer">Show icons in drawer</string>
-    <string name="settings_fontSize">Font Size</string>
+    <string name="settings_showSearchBar">Show search bar</string>
+    <string name="settings_showAlphabet">Show alphabet filter</string>
+
 
     <string name="drawer_searchHint">Search Apps</string>
 

@@ -12,14 +12,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.1" />
+        app:layout_constraintGuide_percent="0.05" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineV2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.9" />
+        app:layout_constraintGuide_percent="0.95" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineH1"
@@ -146,7 +146,7 @@
                     <View
                         android:id="@+id/divider1"
                         android:layout_width="match_parent"
-                        android:layout_height="64dp"
+                        android:layout_height="40dp"
                         android:background="@android:color/transparent" />
 
                     <TextView
@@ -187,39 +187,57 @@
                         android:thumb="@drawable/seekbar_thumb" />
 
                     <View
-                        android:id="@+id/divider2"
+                        android:id="@+id/divider7"
                         android:layout_width="match_parent"
-                        android:layout_height="64dp"
+                        android:layout_height="40dp"
                         android:background="@android:color/transparent" />
 
-                    <TextView
+                    <Switch
+                        android:id="@+id/showAlphabetSwitch"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat"
                         android:paddingLeft="16dp"
                         android:paddingRight="16dp"
-                        android:text="@string/settings_fontSize"
+                        android:switchPadding="16dp"
+                        android:text="@string/settings_showAlphabet"
                         android:textColor="@color/white"
+                        android:textOff=""
+                        android:textOn=""
                         android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <SeekBar
-                        android:id="@+id/fontSizeSlider"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:max="2"
-                        android:min="0"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
-                        android:progress="1"
-                        android:progressDrawable="@drawable/seekbar_style"
-                        android:splitTrack="false"
-                        android:thumb="@drawable/seekbar_thumb" />
+                        android:textStyle="bold"
+                        android:thumb="@drawable/switch_thumb"
+                        android:track="@drawable/switch_track"
+                        tools:ignore="UseSwitchCompatOrMaterialXml" />
 
                     <View
-                        android:id="@+id/divider3"
+                        android:id="@+id/divider6"
                         android:layout_width="match_parent"
-                        android:layout_height="64dp"
+                        android:layout_height="40dp"
+                        android:background="@android:color/transparent" />
+
+                    <Switch
+                        android:id="@+id/showSearchBarSwitch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:switchPadding="16dp"
+                        android:text="@string/settings_showSearchBar"
+                        android:textColor="@color/white"
+                        android:textOff=""
+                        android:textOn=""
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:thumb="@drawable/switch_thumb"
+                        android:track="@drawable/switch_track"
+                        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+                    <View
+                        android:id="@+id/divider2"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
                         android:background="@android:color/transparent" />
 
                     <Switch
@@ -240,9 +258,9 @@
                         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
                     <View
-                        android:id="@+id/divider4"
+                        android:id="@+id/divider3"
                         android:layout_width="match_parent"
-                        android:layout_height="64dp"
+                        android:layout_height="40dp"
                         android:background="@android:color/transparent" />
 
                     <Switch
@@ -264,9 +282,9 @@
                         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
                     <View
-                        android:id="@+id/divider5"
+                        android:id="@+id/divider4"
                         android:layout_width="match_parent"
-                        android:layout_height="64dp"
+                        android:layout_height="40dp"
                         android:background="@android:color/transparent" />
 
                     <Switch
@@ -288,9 +306,9 @@
                         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
                     <View
-                        android:id="@+id/divider6"
+                        android:id="@+id/divider5"
                         android:layout_width="match_parent"
-                        android:layout_height="64dp"
+                        android:layout_height="40dp"
                         android:background="@android:color/transparent" />
 
                     <Switch

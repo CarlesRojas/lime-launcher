@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#BF000000</color>
-    <color name="black_low">#64000000</color>
-    <color name="black_extra_low">#19000000</color>
+    <color name="black">#C8000000</color>
+    <color name="black_low">#96000000</color>
+    <color name="black_extra_low">#64000000</color>
 
-    <color name="white">#BFFFFFFF</color>
-    <color name="white_low">#99FFFFFF</color>
-    <color name="white_extra_low">#19FFFFFF</color>
+    <color name="white">#C8FFFFFF</color>
+    <color name="white_low">#96FFFFFF</color>
+    <color name="white_extra_low">#64FFFFFF</color>
 
     <color name="primary">#88FF00</color>
     <color name="primary_variant">#69C500</color>

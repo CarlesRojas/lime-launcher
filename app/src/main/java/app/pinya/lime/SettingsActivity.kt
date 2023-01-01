@@ -22,12 +22,13 @@ class SettingsActivity : Activity() {
 
         initializeDateSeekBar()
         initializeTimeSeekBar()
-        initializeFontSizeBar()
 
         initializeAutoOpenKeyboard()
         initializeAutoOpenApps()
         initializeShowIconsInHome()
         initializeShowIconsInDrawer()
+        initializeShowSearchBarInDrawer()
+        initializeShowAlphabetFilterInDrawer()
     }
 
     private fun initializeBackButton() {
@@ -88,28 +89,6 @@ class SettingsActivity : Activity() {
     }
 
 
-    private fun initializeFontSizeBar() {
-        val fontSizeSeekBar = findViewById<SeekBar>(R.id.fontSizeSlider)
-
-        val stateValue = state.getData(DataKey.FONT_SIZE, 1)
-
-        fontSizeSeekBar.progress = stateValue
-
-        fontSizeSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(
-                seekBar: SeekBar, progress: Int, fromUser: Boolean
-            ) {
-                if (progress < 0 || progress > 2) return
-
-                state.saveData(DataKey.FONT_SIZE, progress)
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar) {}
-        })
-    }
-
-
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private fun initializeAutoOpenKeyboard() {
         val autoKeyboardSwitch = findViewById<Switch>(R.id.autoKeyboardSwitch)
@@ -160,6 +139,31 @@ class SettingsActivity : Activity() {
             state.saveData(DataKey.ICONS_IN_DRAWER, isChecked)
         }
     }
+
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    private fun initializeShowSearchBarInDrawer() {
+        val switch = findViewById<Switch>(R.id.showSearchBarSwitch)
+        val stateValue = state.getData(DataKey.SHOW_SEARCH_BAR, true)
+
+        switch.isChecked = stateValue
+
+        switch.setOnCheckedChangeListener { _, isChecked ->
+            state.saveData(DataKey.SHOW_SEARCH_BAR, isChecked)
+        }
+    }
+
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    private fun initializeShowAlphabetFilterInDrawer() {
+        val switch = findViewById<Switch>(R.id.showAlphabetSwitch)
+        val stateValue = state.getData(DataKey.SHOW_ALPHABET_FILTER, true)
+
+        switch.isChecked = stateValue
+
+        switch.setOnCheckedChangeListener { _, isChecked ->
+            state.saveData(DataKey.SHOW_ALPHABET_FILTER, isChecked)
+        }
+    }
+
 
     companion object {
         fun mapFormat(num: Int): Int {

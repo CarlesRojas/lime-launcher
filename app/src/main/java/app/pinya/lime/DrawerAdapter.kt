@@ -2,16 +2,20 @@ package app.pinya.lime
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.floor
-import kotlin.math.max
 
 
 val ALPHABET: List<Char> = listOf(
@@ -28,9 +32,11 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
 
     private lateinit var searchBar: EditText
     private lateinit var appList: RecyclerView
+    private lateinit var drawerConstraintLayout: ConstraintLayout
     private lateinit var alphabetLayout: LinearLayout
 
     private var searchBarText: String = ""
+    private var filteringByAlphabet = false
 
     private var shownAppList: MutableList<ItemApp> = mutableListOf()
     private val currentAlphabet: MutableList<Char> = mutableListOf()
@@ -45,12 +51,35 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         initLayout()
         initAppList()
         initAlphabet()
+        showHideElements()
     }
 
     fun onResume() {
         clearText()
         hideKeyboard()
         filterAppList()
+        showHideElements()
+    }
+
+    private fun showHideElements() {
+        val showSearchBar = state.getData(DataKey.SHOW_SEARCH_BAR, true)
+        val showAlphabetFilter = state.getData(DataKey.SHOW_ALPHABET_FILTER, true)
+
+        searchBar.visibility = if (showSearchBar) View.VISIBLE else View.GONE
+        alphabetLayout.visibility = if (showAlphabetFilter) View.VISIBLE else View.GONE
+
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(drawerConstraintLayout)
+
+        constraintSet.connect(
+            R.id.appListConstraintLayout,
+            ConstraintSet.TOP,
+            if (showSearchBar) R.id.guidelineH2 else R.id.guidelineH1,
+            ConstraintSet.TOP,
+            0
+        )
+
+        constraintSet.applyTo(drawerConstraintLayout)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -60,7 +89,9 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         searchBar.doAfterTextChanged {
             if (it.toString() == "") hideClearText() else showClearText()
             searchBarText = it.toString()
-            filterAppList()
+            if (filteringByAlphabet) filterAppListByAlphabet() else filterAppList()
+            val filter = filteringByAlphabet
+            filteringByAlphabet = false
         }
 
         searchBar.setOnTouchListener { view, event ->
@@ -83,6 +114,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initAppList() {
+        drawerConstraintLayout = layout.findViewById(R.id.drawerConstraintLayout)
         appList = layout.findViewById(R.id.drawerAppList)
 
         appList.setOnTouchListener { view, _ ->
@@ -102,20 +134,20 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
             val startY = alphabetLayout.top;
             val endY = alphabetLayout.bottom;
             val perc = (event.rawY - startY) / (endY - startY)
-            val letterHeight = 1f / currentAlphabet.size
-            val currentSection = max(0, floor(perc / letterHeight).toInt())
+            val letterHeight = 1f / (ALPHABET.size + 1)
+            val currentSection = floor(perc / letterHeight).toInt()
 
-            if (currentSection < currentAlphabet.size) {
+            if (currentSection >= 0 && currentSection < currentAlphabet.size) {
                 val currentChar = currentAlphabet[currentSection]
+                filteringByAlphabet = true
                 searchBar.setText(currentChar.toString())
             }
 
-            filterAppListBtAlphabet()
             true
         }
     }
 
-    private fun updateAlphabetLetters() {
+    fun updateAlphabetLetters() {
         currentAlphabet.clear()
 
         for (app in shownAppList) {
@@ -127,10 +159,21 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         }
 
         alphabetLayout.removeAllViews();
+        val alphabetHeight = alphabetLayout.height
 
         for (char in currentAlphabet) {
             val textView = View.inflate(context, R.layout.alphabet_character, null) as TextView
             textView.text = char.toString()
+            textView.height = alphabetHeight / (ALPHABET.size + 1)
+            textView.typeface = ResourcesCompat.getFont(context, R.font.montserrat)
+            textView.setTextColor(ContextCompat.getColor(context, R.color.white_extra_low))
+            textView.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM)
+            textView.setAutoSizeTextTypeUniformWithConfiguration(
+                8,
+                14,
+                1,
+                TypedValue.COMPLEX_UNIT_SP
+            )
             alphabetLayout.addView(textView)
         }
     }
@@ -189,7 +232,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         this.notifyDataSetChanged();
     }
 
-    private fun filterAppListBtAlphabet() {
+    private fun filterAppListByAlphabet() {
         shownAppList = mutableListOf()
         this.state.getInstalledAppList().forEach {
             val included =
