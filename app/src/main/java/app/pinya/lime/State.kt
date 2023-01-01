@@ -14,7 +14,8 @@ enum class DataKey {
     ICONS_IN_HOME,
     ICONS_IN_DRAWER,
     SHOW_SEARCH_BAR,
-    SHOW_ALPHABET_FILTER
+    SHOW_ALPHABET_FILTER,
+    HOME_APPS
 }
 
 class State(context: Context) {
@@ -25,13 +26,10 @@ class State(context: Context) {
 
     private var installedAppList: MutableList<ItemApp> = mutableListOf()
 
-
     init {
         this.context = context
         this.sharedPreferences =
             context.getSharedPreferences(this.preferencesName, Context.MODE_PRIVATE)
-
-        fetchInstalledAppsAgain()
     }
 
     fun getInstalledAppList(): MutableList<ItemApp> {
@@ -40,6 +38,7 @@ class State(context: Context) {
 
     fun fetchInstalledAppsAgain() {
         getInstalledApps()
+        getHomeApps()
     }
 
     private fun getInstalledApps() {
@@ -60,6 +59,29 @@ class State(context: Context) {
         installedAppList.sortBy { it.getName() }
     }
 
+    private fun getHomeApps() {
+        val homeApps: MutableSet<String>? = getData(DataKey.HOME_APPS, mutableSetOf()) ?: return
+
+        if (homeApps != null) {
+            for (homeApp in homeApps) {
+                val app = installedAppList.find { it.getPackageName() == homeApp } ?: continue
+                app.home = true
+            }
+        }
+    }
+
+    fun toggleHomeInApp(packageName: String, homeNewValue: Boolean) {
+        val app = installedAppList.find { it.getPackageName() == packageName } ?: return
+
+        app.home = homeNewValue
+
+        val homeAppSet = mutableSetOf<String>()
+        installedAppList.forEach {
+            if (it.home) homeAppSet.add(it.getPackageName())
+        }
+
+        saveData(DataKey.HOME_APPS, homeAppSet)
+    }
 
     fun saveData(key: DataKey, data: String) {
         val editor = this.sharedPreferences.edit()
@@ -85,6 +107,12 @@ class State(context: Context) {
         editor.apply()
     }
 
+    fun saveData(key: DataKey, data: MutableSet<String>) {
+        val editor = this.sharedPreferences.edit()
+        editor.putStringSet(key.toString(), data)
+        editor.apply()
+    }
+
     fun saveData(key: DataKey, data: MutableMap<String, String>) {
         val editor = this.sharedPreferences.edit()
         val jsonData: String = Gson().toJson(data)
@@ -102,6 +130,10 @@ class State(context: Context) {
 
     fun getData(key: DataKey, defaultValue: Int): Int {
         return this.sharedPreferences.getInt(key.toString(), defaultValue)
+    }
+
+    fun getData(key: DataKey, defaultValue: MutableSet<String>): MutableSet<String>? {
+        return this.sharedPreferences.getStringSet(key.toString(), defaultValue)
     }
 
     fun getData(key: DataKey, defaultValue: Float): Float {

@@ -74,10 +74,12 @@
 
         <com.bosphere.fadingedgelayout.FadingEdgeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             app:fel_edge="bottom|top"
             app:fel_size_bottom="14dp"
-            app:fel_size_top="14dp">
+            app:fel_size_top="14dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/homeAppList"

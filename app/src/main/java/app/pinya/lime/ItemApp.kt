@@ -7,6 +7,7 @@ class ItemApp(name: String, packageName: String, icon: Drawable) {
     private var packageName: String
     private var icon: Drawable
 
+    var home: Boolean = false
 
     init {
         this.name = name

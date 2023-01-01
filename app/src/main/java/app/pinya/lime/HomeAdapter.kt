@@ -28,6 +28,8 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
 
     private var timer: Timer? = Timer()
 
+    private var homeAppList: List<ItemApp> = mutableListOf()
+
     init {
         this.context = context
         this.state = state
@@ -38,10 +40,12 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
 
         startTimerToUpdateDateTime()
         initGestureDetector()
+        getHomeAppList()
     }
 
     fun onResume() {
         this.notifyDataSetChanged();
+        getHomeAppList()
     }
 
     private fun startTimerToUpdateDateTime() {
@@ -81,6 +85,14 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
         }
     }
 
+    fun getHomeAppList() {
+        homeAppList = this.state.getInstalledAppList().filter {
+            it.home
+        }
+
+        this.notifyDataSetChanged();
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemAppViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return ItemAppViewHolder(
@@ -89,7 +101,7 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
     }
 
     override fun onBindViewHolder(holder: ItemAppViewHolder, position: Int) {
-        val currentApp = this.state.getInstalledAppList()[position]
+        val currentApp = homeAppList[position]
 
         val imageView: ImageView = holder.itemView.findViewById(R.id.appIcon)
         val textView: TextView = holder.itemView.findViewById(R.id.appName)
@@ -110,6 +122,6 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
     }
 
     override fun getItemCount(): Int {
-        return this.state.getInstalledAppList().size
+        return homeAppList.size
     }
 }

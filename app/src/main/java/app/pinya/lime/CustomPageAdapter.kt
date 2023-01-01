@@ -34,6 +34,7 @@ class CustomPagerAdapter(context: Context, state: State) : PagerAdapter() {
 
     fun onHomePageSelected() {
         drawer.hideKeyboard()
+        home.getHomeAppList()
         GlobalScope.launch(Dispatchers.Main) {
             delay(250)
             drawer.clearText()
