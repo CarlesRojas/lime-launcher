@@ -11,6 +11,7 @@ class MainActivity : Activity() {
 
     private lateinit var state: State
     private lateinit var customPageAdapter: CustomPagerAdapter
+    private lateinit var viewPager: ViewPager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,7 +23,7 @@ class MainActivity : Activity() {
     }
 
     private fun linkAdapters() {
-        val viewPager = findViewById<View>(R.id.viewPager) as ViewPager
+        viewPager = findViewById<ViewPager>(R.id.viewPager)
         customPageAdapter = CustomPagerAdapter(this, state).also {
             viewPager.adapter = it
 
@@ -47,6 +48,8 @@ class MainActivity : Activity() {
         super.onResume()
 
         state.fetchInstalledAppsAgain()
+        viewPager.currentItem = 0
         customPageAdapter.onResume()
+
     }
 }

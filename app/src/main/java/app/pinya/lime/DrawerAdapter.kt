@@ -11,6 +11,7 @@ import android.widget.*
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.floor
+import kotlin.math.max
 
 
 val ALPHABET: List<Char> = listOf(
@@ -47,6 +48,8 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
     }
 
     fun onResume() {
+        clearText()
+        hideKeyboard()
         filterAppList()
     }
 
@@ -96,12 +99,11 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         alphabetLayout.setOnTouchListener { _, event ->
             clearText()
             hideKeyboard()
-            val y = event.rawY
             val startY = alphabetLayout.top;
             val endY = alphabetLayout.bottom;
-            val perc = (y - startY) / (endY - startY)
-            val section = 1f / currentAlphabet.size
-            val currentSection = floor(perc / section).toInt()
+            val perc = (event.rawY - startY) / (endY - startY)
+            val letterHeight = 1f / currentAlphabet.size
+            val currentSection = max(0, floor(perc / letterHeight).toInt())
 
             if (currentSection < currentAlphabet.size) {
                 val currentChar = currentAlphabet[currentSection]
@@ -117,18 +119,18 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         currentAlphabet.clear()
 
         for (app in shownAppList) {
-            val char = app.getName().first()
+            val char = app.getName().first().uppercaseChar()
 
             if (currentAlphabet.contains(char)) continue
             if (ALPHABET.contains(char)) currentAlphabet.add(char)
-            else currentAlphabet.add('#')
+            else if (!currentAlphabet.contains('#')) currentAlphabet.add(0, '#')
         }
 
         alphabetLayout.removeAllViews();
 
         for (char in currentAlphabet) {
             val textView = View.inflate(context, R.layout.alphabet_character, null) as TextView
-            textView.setText(char.toString())
+            textView.text = char.toString()
             alphabetLayout.addView(textView)
         }
     }
@@ -191,7 +193,11 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         shownAppList = mutableListOf()
         this.state.getInstalledAppList().forEach {
             val included =
-                if (searchBarText == null) true else it.getName().startsWith(searchBarText, true)
+                when (searchBarText) {
+                    "" -> true
+                    "#" -> !ALPHABET.contains(it.getName().first().uppercaseChar())
+                    else -> it.getName().startsWith(searchBarText, true)
+                }
 
             if (included) shownAppList.add(it)
         }
