@@ -1,5 +1,6 @@
 package app.pinya.lime
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
 import android.widget.*
@@ -18,8 +19,11 @@ class SettingsActivity : Activity() {
         state = State(this)
 
         initializeBackButton()
+
         initializeDateSeekBar()
         initializeTimeSeekBar()
+        initializeFontSizeBar()
+
         initializeAutoOpenKeyboard()
         initializeAutoOpenApps()
         initializeShowIconsInHome()
@@ -71,7 +75,7 @@ class SettingsActivity : Activity() {
             override fun onProgressChanged(
                 seekBar: SeekBar, progress: Int, fromUser: Boolean
             ) {
-                if (progress < 0 || progress > 3) return
+                if (progress < 0 || progress > 2) return
                 timeExample.text =
                     SimpleDateFormat.getTimeInstance(mapFormat(progress)).format(Date())
 
@@ -83,6 +87,30 @@ class SettingsActivity : Activity() {
         })
     }
 
+
+    private fun initializeFontSizeBar() {
+        val fontSizeSeekBar = findViewById<SeekBar>(R.id.fontSizeSlider)
+
+        val stateValue = state.getData(DataKey.FONT_SIZE, 1)
+
+        fontSizeSeekBar.progress = stateValue
+
+        fontSizeSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(
+                seekBar: SeekBar, progress: Int, fromUser: Boolean
+            ) {
+                if (progress < 0 || progress > 2) return
+
+                state.saveData(DataKey.FONT_SIZE, progress)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+        })
+    }
+
+
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     private fun initializeAutoOpenKeyboard() {
         val autoKeyboardSwitch = findViewById<Switch>(R.id.autoKeyboardSwitch)
         val stateValue = state.getData(DataKey.AUTO_SHOW_KEYBOARD, true)
@@ -95,6 +123,7 @@ class SettingsActivity : Activity() {
     }
 
 
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     private fun initializeAutoOpenApps() {
         val autoOpenAppsSwitch = findViewById<Switch>(R.id.autoOpenAppsSwitch)
         val stateValue = state.getData(DataKey.AUTO_OPEN_APPS, true)
@@ -107,6 +136,7 @@ class SettingsActivity : Activity() {
     }
 
 
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     private fun initializeShowIconsInHome() {
         val iconsInHomeSwitch = findViewById<Switch>(R.id.iconsInHomeSwitch)
         val stateValue = state.getData(DataKey.ICONS_IN_HOME, true)
@@ -119,6 +149,7 @@ class SettingsActivity : Activity() {
     }
 
 
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     private fun initializeShowIconsInDrawer() {
         val iconsInDrawerSwitch = findViewById<Switch>(R.id.iconsInDrawerSwitch)
         val stateValue = state.getData(DataKey.ICONS_IN_DRAWER, true)

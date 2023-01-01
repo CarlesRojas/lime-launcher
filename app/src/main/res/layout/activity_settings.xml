@@ -53,9 +53,9 @@
 
         <ImageButton
             android:id="@+id/backButton"
-            android:layout_width="36sp"
-            android:layout_height="36sp"
-            android:layout_marginEnd="18sp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="18dp"
             android:background="@drawable/arrow_left_line"
             android:contentDescription="@string/back_button_description" />
 
@@ -84,8 +84,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:fel_edge="bottom|top"
-            app:fel_size_bottom="14sp"
-            app:fel_size_top="14sp">
+            app:fel_size_bottom="14dp"
+            app:fel_size_top="14dp">
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -149,7 +149,6 @@
                         android:layout_height="64dp"
                         android:background="@android:color/transparent" />
 
-
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -193,6 +192,36 @@
                         android:layout_height="64dp"
                         android:background="@android:color/transparent" />
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:text="@string/settings_fontSize"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <SeekBar
+                        android:id="@+id/fontSizeSlider"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:max="2"
+                        android:min="0"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:progress="1"
+                        android:progressDrawable="@drawable/seekbar_style"
+                        android:splitTrack="false"
+                        android:thumb="@drawable/seekbar_thumb" />
+
+                    <View
+                        android:id="@+id/divider3"
+                        android:layout_width="match_parent"
+                        android:layout_height="64dp"
+                        android:background="@android:color/transparent" />
+
                     <Switch
                         android:id="@+id/autoKeyboardSwitch"
                         android:layout_width="match_parent"
@@ -217,13 +246,37 @@
                         android:background="@android:color/transparent" />
 
                     <Switch
+                        android:id="@+id/autoOpenAppsSwitch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:switchPadding="16dp"
+                        android:text="@string/settings_autoOpenApps"
+                        android:textColor="@color/white"
+                        android:textOff=""
+                        android:textOn=""
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:thumb="@drawable/switch_thumb"
+                        android:track="@drawable/switch_track"
+                        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+                    <View
+                        android:id="@+id/divider5"
+                        android:layout_width="match_parent"
+                        android:layout_height="64dp"
+                        android:background="@android:color/transparent" />
+
+                    <Switch
                         android:id="@+id/iconsInHomeSwitch"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat"
                         android:paddingLeft="16dp"
                         android:paddingRight="16dp"
-                        android:switchPadding="16sp"
+                        android:switchPadding="16dp"
                         android:text="@string/settings_iconsInHome"
                         android:textColor="@color/white"
                         android:textOff=""
@@ -234,9 +287,8 @@
                         android:track="@drawable/switch_track"
                         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-
                     <View
-                        android:id="@+id/divider5"
+                        android:id="@+id/divider6"
                         android:layout_width="match_parent"
                         android:layout_height="64dp"
                         android:background="@android:color/transparent" />
@@ -248,33 +300,8 @@
                         android:fontFamily="@font/montserrat"
                         android:paddingLeft="16dp"
                         android:paddingRight="16dp"
-                        android:switchPadding="16sp"
+                        android:switchPadding="16dp"
                         android:text="@string/settings_iconsInDrawer"
-                        android:textColor="@color/white"
-                        android:textOff=""
-                        android:textOn=""
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:thumb="@drawable/switch_thumb"
-                        android:track="@drawable/switch_track"
-                        tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-
-                    <View
-                        android:id="@+id/divider3"
-                        android:layout_width="match_parent"
-                        android:layout_height="64dp"
-                        android:background="@android:color/transparent" />
-
-                    <Switch
-                        android:id="@+id/autoOpenAppsSwitch"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
-                        android:switchPadding="16sp"
-                        android:text="@string/settings_autoOpenApps"
                         android:textColor="@color/white"
                         android:textOff=""
                         android:textOn=""
@@ -295,6 +322,4 @@
 
         </com.bosphere.fadingedgelayout.FadingEdgeLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,7 +12,8 @@ enum class DataKey {
     AUTO_SHOW_KEYBOARD,
     AUTO_OPEN_APPS,
     ICONS_IN_HOME,
-    ICONS_IN_DRAWER
+    ICONS_IN_DRAWER,
+    FONT_SIZE
 }
 
 class State(context: Context) {
