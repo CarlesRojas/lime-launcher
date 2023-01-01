@@ -50,6 +50,5 @@ class MainActivity : Activity() {
         state.fetchInstalledAppsAgain()
         viewPager.currentItem = 0
         customPageAdapter.onResume()
-
     }
 }

@@ -22,6 +22,7 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
     private val context: Context
     private val state: State
     private val layout: ViewGroup
+
     private val date: TextView
     private val time: TextView
 
