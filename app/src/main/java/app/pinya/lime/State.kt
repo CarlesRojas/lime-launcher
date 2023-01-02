@@ -63,7 +63,7 @@ class State(context: Context) {
             if (!installedAppList.contains(app)) installedAppList.add(app)
         }
 
-        installedAppList.sortBy { it.getName() }
+        installedAppList.sortBy { it.getName().lowercase() }
     }
 
 

@@ -40,7 +40,7 @@ class CustomPagerAdapter(context: Context, state: State) : PagerAdapter() {
     fun onDrawerPageSelected() {
         this.drawer.clearText()
         this.drawer.showKeyboard()
-        this.drawer.updateAlphabetLetters()
+        this.drawer.initAlphabet()
     }
 
     override fun instantiateItem(collection: ViewGroup, position: Int): Any {

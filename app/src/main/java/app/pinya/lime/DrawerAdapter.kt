@@ -59,6 +59,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
 
     private var searchBarText: String = ""
     private var filteringByAlphabet = false
+    private var lastFilterWasAlphabet = false
 
     private var shownAppList: MutableList<ItemApp> = mutableListOf()
     private val currentAlphabet: MutableList<Char> = mutableListOf()
@@ -81,6 +82,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         clearText()
         hideKeyboard()
         filterAppList()
+        initAlphabet()
         showHideElements()
     }
 
@@ -114,6 +116,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
             searchBarText = it.toString()
             if (filteringByAlphabet) filterAppListByAlphabet() else filterAppList()
             filteringByAlphabet = false
+            lastFilterWasAlphabet = false
         }
 
         searchBar.setOnTouchListener { view, event ->
@@ -150,7 +153,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun initAlphabet() {
+    fun initAlphabet() {
         alphabetLayout = layout.findViewById(R.id.alphabetLayout)
         updateAlphabetLetters()
 
@@ -167,16 +170,17 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
                 val currentChar = currentAlphabet[currentSection]
                 filteringByAlphabet = true
                 searchBar.setText(currentChar.toString())
+                lastFilterWasAlphabet = true
             }
 
             true
         }
     }
 
-    fun updateAlphabetLetters() {
+    private fun updateAlphabetLetters() {
         currentAlphabet.clear()
 
-        for (app in shownAppList) {
+        for (app in this.state.getInstalledAppList()) {
             val char = app.getName().first().uppercaseChar()
 
             if (currentAlphabet.contains(char)) continue
@@ -235,7 +239,9 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
     @SuppressLint("NotifyDataSetChanged")
     private fun filterAppList() {
         shownAppList = mutableListOf()
-        this.state.getInstalledAppList().forEach {
+
+        val installedList = this.state.getInstalledAppList()
+        installedList.forEach {
             val included =
                 if (searchBarText == "") true else it.getName().contains(searchBarText, true)
 
@@ -243,7 +249,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         }
 
         val autoOpenApps = state.getData(DataKey.AUTO_OPEN_APPS, true)
-        val moreThanOneInstalledApp = this.state.getInstalledAppList().size > 1
+        val moreThanOneInstalledApp = installedList.size > 1
 
         if (autoOpenApps && moreThanOneInstalledApp && shownAppList.size == 1) {
             val app = shownAppList[0]
@@ -275,8 +281,14 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
 
     private fun onContextMenuClick(item: ContextMenuItem) {
         when (item) {
-            ContextMenuItem.HIDE_APP -> filterAppList()
-            ContextMenuItem.SHOW_APP -> filterAppList()
+            ContextMenuItem.HIDE_APP -> {
+                if (lastFilterWasAlphabet) filterAppListByAlphabet() else filterAppList()
+                initAlphabet()
+            }
+            ContextMenuItem.SHOW_APP -> {
+                if (lastFilterWasAlphabet) filterAppListByAlphabet() else filterAppList()
+                initAlphabet()
+            }
             else -> {}
         }
     }
