@@ -2,8 +2,12 @@ package app.pinya.lime
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.provider.AlarmClock
+import android.provider.CalendarContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +18,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class ItemAppViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
@@ -26,8 +31,8 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
 
     private lateinit var contextMenuContainer: ConstraintLayout
 
-    private val date: TextView
-    private val time: TextView
+    private lateinit var date: TextView
+    private lateinit var time: TextView
 
     private var timer: Timer? = Timer()
 
@@ -38,19 +43,46 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
         this.state = state
         this.layout = layout
 
-        date = layout.findViewById(R.id.homeDate)
-        time = layout.findViewById(R.id.homeTime)
-
+        initDateTime()
         startTimerToUpdateDateTime()
         initContextMenu()
         initGestureDetector()
         getHomeAppList()
     }
 
+
     @SuppressLint("NotifyDataSetChanged")
     fun onResume() {
         this.notifyDataSetChanged()
         getHomeAppList()
+    }
+
+    private fun initDateTime() {
+        date = layout.findViewById(R.id.homeDate)
+        time = layout.findViewById(R.id.homeTime)
+
+        time.setOnClickListener {
+            val intent = Intent(AlarmClock.ACTION_SHOW_ALARMS)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            context.startActivity(intent)
+        }
+
+        time.setOnLongClickListener {
+            context.startActivity(Intent(context, SettingsActivity::class.java))
+            true
+        }
+
+
+        date.setOnClickListener {
+            val builder: Uri.Builder = CalendarContract.CONTENT_URI.buildUpon().appendPath("time")
+            val intent = Intent(Intent.ACTION_VIEW).setData(builder.build())
+            context.startActivity(intent)
+        }
+
+        date.setOnLongClickListener {
+            context.startActivity(Intent(context, SettingsActivity::class.java))
+            true
+        }
     }
 
     private fun startTimerToUpdateDateTime() {

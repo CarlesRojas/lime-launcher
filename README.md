@@ -19,11 +19,9 @@ Whether you're looking for a launcher that's easy to use or one that simply gets
 
 ## TODO
 
-- [ ] Add uninstall to context menu
-- [ ] Add app info to context menu
 - [ ] Open notifications on swipe down in home screen
 - [ ] Reorder home apps (add it in context menu)
 - [ ] Rename apps
 - [ ] Change app icons
 - [ ] Wallpapers?
-- [ ] Shortcut to time and calendar in home screen
+- [ ] Let user choose what app the time and date opens
