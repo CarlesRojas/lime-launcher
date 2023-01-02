@@ -171,7 +171,7 @@ class State(context: Context) {
         contextMenuContainer: ConstraintLayout,
         onClickCallback: (item: ContextMenuItem) -> Unit = { }
     ) {
-        val contextMenuView = View.inflate(context, R.layout.context_menu, null)
+        val contextMenuView = View.inflate(context, R.layout.view_context_menu, null)
         val icon = contextMenuView.findViewById<ImageView>(R.id.appIcon)
         val appName = contextMenuView.findViewById<TextView>(R.id.appName)
         val close = contextMenuView.findViewById<ImageButton>(R.id.closeContextMenuButton)

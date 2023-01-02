@@ -8,7 +8,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/popup_window_background"
+        android:background="@drawable/background_popup_window"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -49,7 +49,7 @@
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:layout_marginStart="18dp"
-                android:background="@drawable/close_line"
+                android:background="@drawable/icon_close"
                 android:contentDescription="@string/close_button_description" />
 
         </LinearLayout>
@@ -97,7 +97,7 @@
                                 android:layout_width="28dp"
                                 android:layout_height="28dp"
                                 android:layout_marginEnd="18dp"
-                                android:background="@drawable/home_line"
+                                android:background="@drawable/icon_home"
                                 android:contentDescription="@string/close_button_description" />
 
                             <TextView
@@ -126,7 +126,7 @@
                                 android:layout_width="28dp"
                                 android:layout_height="28dp"
                                 android:layout_marginEnd="18dp"
-                                android:background="@drawable/close_line"
+                                android:background="@drawable/icon_close"
                                 android:contentDescription="@string/close_button_description" />
 
                             <TextView
@@ -155,7 +155,7 @@
                                 android:layout_width="28dp"
                                 android:layout_height="28dp"
                                 android:layout_marginEnd="18dp"
-                                android:background="@drawable/eye_line"
+                                android:background="@drawable/icon_show"
                                 android:contentDescription="@string/close_button_description" />
 
                             <TextView
@@ -183,7 +183,7 @@
                                 android:layout_width="28dp"
                                 android:layout_height="28dp"
                                 android:layout_marginEnd="18dp"
-                                android:background="@drawable/eye_off_line"
+                                android:background="@drawable/icon_hide"
                                 android:contentDescription="@string/close_button_description" />
 
                             <TextView

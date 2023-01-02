@@ -188,7 +188,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         val alphabetHeight = alphabetLayout.height
 
         for (char in currentAlphabet) {
-            val textView = View.inflate(context, R.layout.alphabet_character, null) as TextView
+            val textView = View.inflate(context, R.layout.view_alphabet_character, null) as TextView
             textView.text = char.toString()
             textView.height = alphabetHeight / (ALPHABET.size + 1)
             textView.typeface = ResourcesCompat.getFont(context, R.font.montserrat)
@@ -225,11 +225,11 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
     }
 
     private fun showClearText() {
-        searchBar.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.close_line, 0)
+        searchBar.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_close, 0)
     }
 
     private fun hideClearText() {
-        searchBar.setCompoundDrawablesWithIntrinsicBounds(R.drawable.search_line, 0, 0, 0)
+        searchBar.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_search, 0, 0, 0)
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -285,7 +285,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemAppViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return ItemAppViewHolder(
-            inflater.inflate(R.layout.item_app, parent, false)
+            inflater.inflate(R.layout.view_app, parent, false)
         )
     }
 
