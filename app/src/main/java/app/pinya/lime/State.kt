@@ -21,7 +21,7 @@ enum class DataKey {
 }
 
 enum class ContextMenuItem {
-    ADD_TO_HOME, REMOVE_FROM_HOME, HIDE_APP, SHOW_APP, APP_INFO, UNINSTALL
+    ADD_TO_HOME, REMOVE_FROM_HOME, HIDE_APP, SHOW_APP, APP_INFO, UNINSTALL, MOVE_UP, MOVE_DOWN
 }
 
 class State(context: Context) {
@@ -85,6 +85,16 @@ class State(context: Context) {
         installedAppList.sortBy { it.getName().lowercase() }
     }
 
+    private fun <T> MutableSet<T>.swap(index1: Int, index2: Int) {
+        val list = this.toMutableList()
+
+        val tmp = list[index1]
+        list[index1] = list[index2]
+        list[index2] = tmp
+        this.clear()
+
+        list.forEach { this.add(it) }
+    }
 
     private fun toggleHomeInApp(packageName: String, homeNewValue: Boolean) {
         val app = installedAppList.find { it.getPackageName() == packageName }
@@ -98,12 +108,32 @@ class State(context: Context) {
             false -> homeAppSet.remove(packageName)
         }
 
+        updateHomeAppOrder(homeAppSet)
+        saveData(DataKey.HOME_APPS, homeAppSet)
+    }
+
+    private fun changeHomeAppOrder(packageName: String, moveUp: Boolean) {
+        val homeAppSet: MutableSet<String> =
+            getData(DataKey.HOME_APPS, mutableSetOf()) ?: mutableSetOf()
+
+        var index = -1;
+        homeAppSet.forEachIndexed { i, elem ->
+            if (elem == packageName) index = i
+        }
+
+        if ((moveUp && index <= 0) || (!moveUp && index >= homeAppSet.size - 1) || index < 0 || index >= homeAppSet.size) return
+
+        homeAppSet.swap(index, if (moveUp) index - 1 else index + 1)
+
+        updateHomeAppOrder(homeAppSet)
+        saveData(DataKey.HOME_APPS, homeAppSet)
+    }
+
+    private fun updateHomeAppOrder(homeAppSet: MutableSet<String>) {
         homeAppSet.forEachIndexed { i, packageName ->
             val app = installedAppList.find { packageName == it.getPackageName() }
             if (app != null) app.homeOrderIndex = i
         }
-
-        saveData(DataKey.HOME_APPS, homeAppSet)
     }
 
     private fun toggleHiddenApp(packageName: String, hiddenNewValue: Boolean) {
@@ -149,7 +179,8 @@ class State(context: Context) {
 
     fun saveData(key: DataKey, data: MutableSet<String>) {
         val editor = this.sharedPreferences.edit()
-        editor.putStringSet(key.toString(), data)
+        val jsonData: String = Gson().toJson(data)
+        editor.putString(key.toString(), jsonData)
         editor.apply()
     }
 
@@ -172,13 +203,16 @@ class State(context: Context) {
         return this.sharedPreferences.getInt(key.toString(), defaultValue)
     }
 
-    fun getData(key: DataKey, defaultValue: MutableSet<String>): MutableSet<String>? {
-        val originalSet = this.sharedPreferences.getStringSet(key.toString(), defaultValue)
-        return originalSet?.toMutableSet()
-    }
 
     fun getData(key: DataKey, defaultValue: Float): Float {
         return this.sharedPreferences.getFloat(key.toString(), defaultValue)
+    }
+
+    fun getData(key: DataKey, defaultValue: MutableSet<String>): MutableSet<String>? {
+        val jsonDefaultValue: String = Gson().toJson(defaultValue)
+        val result = this.sharedPreferences.getString(key.toString(), jsonDefaultValue)
+        val listType = object : TypeToken<MutableSet<String>>() {}.type
+        return Gson().fromJson(result, listType)
     }
 
     fun getData(
@@ -194,6 +228,7 @@ class State(context: Context) {
     fun showContextMenu(
         app: ItemApp,
         contextMenuContainer: ConstraintLayout,
+        fromHome: Boolean,
         onClickCallback: (item: ContextMenuItem) -> Unit = { }
     ) {
         val contextMenuView = View.inflate(context, R.layout.view_context_menu, null)
@@ -202,6 +237,11 @@ class State(context: Context) {
         val closeButton = contextMenuView.findViewById<ImageButton>(R.id.closeContextMenuButton)
         val settingsButton = contextMenuView.findViewById<ImageButton>(R.id.settingsButton)
 
+        val homeAppSet: MutableSet<String> =
+            getData(DataKey.HOME_APPS, mutableSetOf()) ?: mutableSetOf()
+
+        val moveUpButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_moveUp)
+        val moveDownButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_moveDown)
         val addToHomeButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_addToHome)
         val removeFromHomeButton =
             contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_removeFromHome)
@@ -213,6 +253,10 @@ class State(context: Context) {
         icon.setImageDrawable(app.getIcon())
         appName.text = app.getName()
 
+        moveUpButton.visibility =
+            if (!fromHome || app.homeOrderIndex <= 0) View.GONE else View.VISIBLE
+        moveDownButton.visibility =
+            if (!fromHome || app.homeOrderIndex >= homeAppSet.size - 1) View.GONE else View.VISIBLE
         addToHomeButton.visibility = if (app.home) View.GONE else View.VISIBLE
         removeFromHomeButton.visibility = if (app.home) View.VISIBLE else View.GONE
         showAppButton.visibility = if (app.hidden) View.VISIBLE else View.GONE
@@ -237,17 +281,27 @@ class State(context: Context) {
             context.startActivity(Intent(context, SettingsActivity::class.java))
         }
 
+        moveUpButton.setOnClickListener {
+            changeHomeAppOrder(app.getPackageName(), true)
+            onClickCallback(ContextMenuItem.MOVE_UP)
+            hideContextMenu()
+        }
+
+        moveDownButton.setOnClickListener {
+            changeHomeAppOrder(app.getPackageName(), false)
+            onClickCallback(ContextMenuItem.MOVE_DOWN)
+            hideContextMenu()
+        }
+
         addToHomeButton.setOnClickListener {
             toggleHomeInApp(app.getPackageName(), true)
             onClickCallback(ContextMenuItem.ADD_TO_HOME)
-            showToast("${app.getName()} added to Home")
             hideContextMenu()
         }
 
         removeFromHomeButton.setOnClickListener {
             toggleHomeInApp(app.getPackageName(), false)
             onClickCallback(ContextMenuItem.REMOVE_FROM_HOME)
-            showToast("${app.getName()} removed from Home")
             hideContextMenu()
         }
 
@@ -297,9 +351,5 @@ class State(context: Context) {
 
     fun hideContextMenu() {
         contextMenuWindow?.dismiss()
-    }
-
-    private fun showToast(text: String) {
-        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
     }
 }

@@ -141,6 +141,8 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
             ContextMenuItem.REMOVE_FROM_HOME -> getHomeAppList()
             ContextMenuItem.HIDE_APP -> getHomeAppList()
             ContextMenuItem.SHOW_APP -> getHomeAppList()
+            ContextMenuItem.MOVE_DOWN -> getHomeAppList()
+            ContextMenuItem.MOVE_UP -> getHomeAppList()
             else -> {}
         }
     }
@@ -175,7 +177,7 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
         }
 
         linearLayout.setOnLongClickListener {
-            state.showContextMenu(currentApp, contextMenuContainer, ::onContextMenuClick)
+            state.showContextMenu(currentApp, contextMenuContainer, true, ::onContextMenuClick)
             true
         }
     }

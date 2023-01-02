@@ -9,8 +9,10 @@
     <string name="removeFromHome_icon_description">Remove from home Icon</string>
     <string name="showApp_icon_description">Show app Icon</string>
     <string name="hideApp_icon_description">Hide app Icon</string>
-    <string name="showAppInfo_icon_description">Show app info icon</string>
-    <string name="uninstall_icon_description">Uninstall icon</string>
+    <string name="showAppInfo_icon_description">Show app info Icon</string>
+    <string name="uninstall_icon_description">Uninstall Icon</string>
+    <string name="moveUp_icon_description">Move up Icon</string>
+    <string name="moveDown_icon_description">Move down Icon</string>
 
 
     <string name="settings_title">Settings</string>
@@ -31,6 +33,8 @@
     <string name="contextMenu_showApp">Show app</string>
     <string name="contextMenu_appInfo">App info</string>
     <string name="contextMenu_uninstall">Uninstall</string>
+    <string name="contextMenu_moveUp">Move up</string>
+    <string name="contextMenu_moveDown">Move down</string>
 
 
     <string name="drawer_searchHint">Search Apps</string>

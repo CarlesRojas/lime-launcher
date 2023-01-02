@@ -330,7 +330,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         }
 
         linearLayout.setOnLongClickListener {
-            state.showContextMenu(currentApp, contextMenuContainer, ::onContextMenuClick)
+            state.showContextMenu(currentApp, contextMenuContainer, false, ::onContextMenuClick)
             true
         }
     }
