@@ -99,10 +99,16 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
             it.home
         }
 
-        // TODO call this when the user adds or removes an app from the home screen (if done in the home screen page)
-
         this.notifyDataSetChanged();
     }
+
+    private fun onContextMenuClick(item: ContextMenuItem): Unit {
+        when (item) {
+            ContextMenuItem.REMOVE_FROM_HOME -> getHomeAppList()
+            else -> {}
+        }
+    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemAppViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -132,7 +138,7 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
         }
 
         linearLayout.setOnLongClickListener {
-            state.showContextMenu(currentApp, contextMenuContainer)
+            state.showContextMenu(currentApp, contextMenuContainer, ::onContextMenuClick)
             true
         }
     }

@@ -277,6 +277,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         )
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: ItemAppViewHolder, position: Int) {
         val currentApp = shownAppList[position]
 
@@ -295,8 +296,12 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
             if (launchAppIntent != null) context.startActivity(launchAppIntent)
         }
 
+        linearLayout.setOnTouchListener { view, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) hideKeyboard()
+            false
+        }
+
         linearLayout.setOnLongClickListener {
-            hideKeyboard()
             state.showContextMenu(currentApp, contextMenuContainer)
             true
         }
@@ -305,5 +310,4 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
     override fun getItemCount(): Int {
         return shownAppList.size
     }
-
 }

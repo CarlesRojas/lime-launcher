@@ -5,10 +5,12 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.view.Gravity
 import android.view.View
+import android.view.WindowManager
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+
 
 enum class DataKey {
     DATE_FORMAT,
@@ -22,11 +24,18 @@ enum class DataKey {
     HOME_APPS
 }
 
+enum class ContextMenuItem {
+    ADD_TO_HOME,
+    REMOVE_FROM_HOME
+}
+
 class State(context: Context) {
 
     private val context: Context
     private val preferencesName = "LimeLauncherPreferences"
     private val sharedPreferences: SharedPreferences
+
+    private var contextMenuWindow: PopupWindow? = null
 
     private var installedAppList: MutableList<ItemApp> = mutableListOf()
 
@@ -160,7 +169,11 @@ class State(context: Context) {
     }
 
 
-    fun showContextMenu(app: ItemApp, contextMenuContainer: ConstraintLayout) {
+    fun showContextMenu(
+        app: ItemApp,
+        contextMenuContainer: ConstraintLayout,
+        onClickCallback: (item: ContextMenuItem) -> Unit = { }
+    ) {
         val contextMenuView = View.inflate(context, R.layout.context_menu, null)
         val icon = contextMenuView.findViewById<ImageView>(R.id.appIcon)
         val appName = contextMenuView.findViewById<TextView>(R.id.appName)
@@ -178,30 +191,49 @@ class State(context: Context) {
         addToHomeButton.visibility = if (app.home) View.GONE else View.VISIBLE
         removeFromHomeButton.visibility = if (app.home) View.VISIBLE else View.GONE
 
-        val contextMenuWindow = PopupWindow(
+        contextMenuWindow = PopupWindow(
             contextMenuView,
             contextMenuContainer.width - contextMenuContainer.paddingRight - contextMenuContainer.paddingLeft,
             LinearLayout.LayoutParams.WRAP_CONTENT,
             true
         )
 
-        contextMenuWindow.showAtLocation(contextMenuContainer, Gravity.BOTTOM, 0, 0)
+        contextMenuWindow?.showAtLocation(contextMenuContainer, Gravity.BOTTOM, 0, 0)
+        dimBehind()
 
         close.setOnClickListener {
-            contextMenuWindow.dismiss()
+            hideContextMenu()
         }
 
         addToHomeButton.setOnClickListener {
             toggleHomeInApp(app.getPackageName(), true)
+            onClickCallback(ContextMenuItem.ADD_TO_HOME)
             showToast("${app.getName()} added to Home")
-            contextMenuWindow.dismiss()
+            hideContextMenu()
         }
 
         removeFromHomeButton.setOnClickListener {
             toggleHomeInApp(app.getPackageName(), false)
+            onClickCallback(ContextMenuItem.REMOVE_FROM_HOME)
             showToast("${app.getName()} removed from Home")
-            contextMenuWindow.dismiss()
+            hideContextMenu()
         }
+    }
+
+    fun dimBehind() {
+        if (contextMenuWindow == null) return
+
+        val container = contextMenuWindow!!.contentView.rootView
+        val context = contextMenuWindow!!.contentView.context
+        val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val p = container.layoutParams as WindowManager.LayoutParams
+        p.flags = p.flags or WindowManager.LayoutParams.FLAG_DIM_BEHIND
+        p.dimAmount = 0.8f
+        wm.updateViewLayout(container, p)
+    }
+
+    fun hideContextMenu() {
+        contextMenuWindow?.dismiss()
     }
 
     private fun showToast(text: String) {
