@@ -20,7 +20,7 @@ Whether you're looking for a launcher that's easy to use or one that simply gets
 ## TODO
 
 - [ ] Reorder home apps
-- [ ] Hide apps
 - [ ] Rename apps
 - [ ] Change app icons
 - [ ] Wallpapers?
+- [ ] Shortcut to time and calendar in home screen

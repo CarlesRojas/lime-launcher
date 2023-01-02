@@ -270,6 +270,16 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         this.notifyDataSetChanged()
     }
 
+
+    private fun onContextMenuClick(item: ContextMenuItem): Unit {
+        when (item) {
+            ContextMenuItem.HIDE_APP -> filterAppList()
+            ContextMenuItem.SHOW_APP -> filterAppList()
+            else -> {}
+        }
+    }
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemAppViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return ItemAppViewHolder(
@@ -284,9 +294,13 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         val imageView: ImageView = holder.itemView.findViewById(R.id.appIcon)
         val textView: TextView = holder.itemView.findViewById(R.id.appName)
         val linearLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
+
+        linearLayout.alpha = if (currentApp.hidden) 0.35f else 1f
+
         imageView.setImageDrawable(currentApp.getIcon())
         val stateValue = state.getData(DataKey.ICONS_IN_DRAWER, true)
         imageView.visibility = if (stateValue) View.VISIBLE else View.GONE
+
         textView.text = currentApp.getName()
 
         linearLayout.setOnClickListener {
@@ -296,13 +310,13 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
             if (launchAppIntent != null) context.startActivity(launchAppIntent)
         }
 
-        linearLayout.setOnTouchListener { view, event ->
+        linearLayout.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) hideKeyboard()
             false
         }
 
         linearLayout.setOnLongClickListener {
-            state.showContextMenu(currentApp, contextMenuContainer)
+            state.showContextMenu(currentApp, contextMenuContainer, ::onContextMenuClick)
             true
         }
     }

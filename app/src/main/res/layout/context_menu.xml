@@ -141,6 +141,63 @@
                         </LinearLayout>
 
 
+                        <LinearLayout
+                            android:id="@+id/contextMenu_showApp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="12dp"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <ImageButton
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:layout_marginEnd="18dp"
+                                android:background="@drawable/eye_line"
+                                android:contentDescription="@string/close_button_description" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/montserrat"
+                                android:singleLine="true"
+                                android:text="@string/contextMenu_showApp"
+                                android:textColor="@color/white"
+                                android:textSize="18sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/contextMenu_hideApp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="12dp"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <ImageButton
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:layout_marginEnd="18dp"
+                                android:background="@drawable/eye_off_line"
+                                android:contentDescription="@string/close_button_description" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/montserrat"
+                                android:singleLine="true"
+                                android:text="@string/contextMenu_hideApp"
+                                android:textColor="@color/white"
+                                android:textSize="18sp" />
+                        </LinearLayout>
+
+
                     </LinearLayout>
                 </ScrollView>
             </com.bosphere.fadingedgelayout.FadingEdgeLayout>

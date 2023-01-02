@@ -105,10 +105,11 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
     private fun onContextMenuClick(item: ContextMenuItem): Unit {
         when (item) {
             ContextMenuItem.REMOVE_FROM_HOME -> getHomeAppList()
+            ContextMenuItem.HIDE_APP -> getHomeAppList()
+            ContextMenuItem.SHOW_APP -> getHomeAppList()
             else -> {}
         }
     }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemAppViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -124,12 +125,14 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
         val textView: TextView = holder.itemView.findViewById(R.id.appName)
         val linearLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
 
-        imageView.setImageDrawable(currentApp.getIcon())
+        linearLayout.alpha = if (currentApp.hidden) 0.35f else 1f
 
+        imageView.setImageDrawable(currentApp.getIcon())
         val stateValue = state.getData(DataKey.ICONS_IN_HOME, true)
         imageView.visibility = if (stateValue) View.VISIBLE else View.GONE
 
         textView.text = currentApp.getName()
+
         linearLayout.setOnClickListener {
             val launchAppIntent =
                 context.packageManager.getLaunchIntentForPackage(currentApp.getPackageName())

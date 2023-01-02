@@ -13,20 +13,11 @@ import com.google.gson.reflect.TypeToken
 
 
 enum class DataKey {
-    DATE_FORMAT,
-    TIME_FORMAT,
-    AUTO_SHOW_KEYBOARD,
-    AUTO_OPEN_APPS,
-    ICONS_IN_HOME,
-    ICONS_IN_DRAWER,
-    SHOW_SEARCH_BAR,
-    SHOW_ALPHABET_FILTER,
-    HOME_APPS
+    DATE_FORMAT, TIME_FORMAT, AUTO_SHOW_KEYBOARD, AUTO_OPEN_APPS, ICONS_IN_HOME, ICONS_IN_DRAWER, SHOW_SEARCH_BAR, SHOW_ALPHABET_FILTER, HOME_APPS, HIDDEN_APPS, SHOW_HIDDEN_APPS
 }
 
 enum class ContextMenuItem {
-    ADD_TO_HOME,
-    REMOVE_FROM_HOME
+    ADD_TO_HOME, REMOVE_FROM_HOME, HIDE_APP, SHOW_APP
 }
 
 class State(context: Context) {
@@ -50,15 +41,14 @@ class State(context: Context) {
     }
 
     fun fetchInstalledAppsAgain() {
-        getInstalledApps()
-        getHomeApps()
-    }
-
-    private fun getInstalledApps() {
         installedAppList.clear()
         val intent = Intent(Intent.ACTION_MAIN, null)
         intent.addCategory(Intent.CATEGORY_LAUNCHER)
         val untreatedAppList = context.packageManager.queryIntentActivities(intent, 0)
+
+        val hiddenApps: MutableSet<String>? = getData(DataKey.HIDDEN_APPS, mutableSetOf())
+        val homeApps: MutableSet<String>? = getData(DataKey.HOME_APPS, mutableSetOf())
+        val showHiddenApps: Boolean = getData(DataKey.SHOW_HIDDEN_APPS, false)
 
         for (untreatedApp in untreatedAppList) {
             val name = untreatedApp.activityInfo.loadLabel(context.packageManager).toString()
@@ -66,40 +56,48 @@ class State(context: Context) {
             val icon = untreatedApp.activityInfo.loadIcon(context.packageManager)
             val app = ItemApp(name, packageName, icon)
 
+            app.hidden = hiddenApps?.find { it == packageName } != null
+            app.home = homeApps?.find { it == packageName } != null
+
+            if (!showHiddenApps && app.hidden) continue
             if (!installedAppList.contains(app)) installedAppList.add(app)
         }
 
         installedAppList.sortBy { it.getName() }
     }
 
-    private fun getHomeApps() {
-        val homeApps: MutableSet<String>? = getData(DataKey.HOME_APPS, mutableSetOf()) ?: return
 
-        if (homeApps != null) {
-            for (homeApp in homeApps) {
-                val app = installedAppList.find { it.getPackageName() == homeApp } ?: continue
-                app.home = true
-            }
-        }
-    }
+    private fun toggleHomeInApp(packageName: String, homeNewValue: Boolean) {
+        val app = installedAppList.find { it.getPackageName() == packageName }
+        app?.home = homeNewValue
 
-    fun toggleHomeInApp(packageName: String, homeNewValue: Boolean) {
-        val app = installedAppList.find { it.getPackageName() == packageName } ?: return
+        val homeAppSet: MutableSet<String> =
+            getData(DataKey.HOME_APPS, mutableSetOf()) ?: mutableSetOf()
 
-        app.home = homeNewValue
-
-        val homeAppSet = mutableSetOf<String>()
-        installedAppList.forEach {
-            if (it.home) homeAppSet.add(it.getPackageName())
+        when (homeNewValue) {
+            true -> homeAppSet.add(packageName)
+            false -> homeAppSet.remove(packageName)
         }
 
         saveData(DataKey.HOME_APPS, homeAppSet)
     }
 
-    fun isAppInHome(packageName: String): Boolean {
-        val app = installedAppList.find { it.getPackageName() == packageName } ?: return false
-        return app.home
+    private fun toggleHiddenApp(packageName: String, hiddenNewValue: Boolean) {
+        val app = installedAppList.find { it.getPackageName() == packageName }
+        app?.hidden = hiddenNewValue
+
+        val hiddenAppsSet: MutableSet<String> =
+            getData(DataKey.HIDDEN_APPS, mutableSetOf()) ?: mutableSetOf()
+
+        when (hiddenNewValue) {
+            true -> hiddenAppsSet.add(packageName)
+            false -> hiddenAppsSet.remove(packageName)
+        }
+
+        saveData(DataKey.HIDDEN_APPS, hiddenAppsSet)
+        fetchInstalledAppsAgain()
     }
+
 
     fun saveData(key: DataKey, data: String) {
         val editor = this.sharedPreferences.edit()
@@ -159,8 +157,7 @@ class State(context: Context) {
     }
 
     fun getData(
-        key: DataKey,
-        defaultValue: MutableMap<String, String>
+        key: DataKey, defaultValue: MutableMap<String, String>
     ): MutableMap<String, String> {
         val jsonDefaultValue: String = Gson().toJson(defaultValue)
         val result = this.sharedPreferences.getString(key.toString(), jsonDefaultValue)
@@ -182,12 +179,16 @@ class State(context: Context) {
         val addToHomeButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_addToHome)
         val removeFromHomeButton =
             contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_removeFromHome)
+        val showAppButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_showApp)
+        val hideAppButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_hideApp)
 
         icon.setImageDrawable(app.getIcon())
         appName.text = app.getName()
 
         addToHomeButton.visibility = if (app.home) View.GONE else View.VISIBLE
         removeFromHomeButton.visibility = if (app.home) View.VISIBLE else View.GONE
+        showAppButton.visibility = if (app.hidden) View.VISIBLE else View.GONE
+        hideAppButton.visibility = if (app.hidden) View.GONE else View.VISIBLE
 
         contextMenuWindow = PopupWindow(
             contextMenuView,
@@ -216,9 +217,21 @@ class State(context: Context) {
             showToast("${app.getName()} removed from Home")
             hideContextMenu()
         }
+
+        showAppButton.setOnClickListener {
+            toggleHiddenApp(app.getPackageName(), false)
+            onClickCallback(ContextMenuItem.SHOW_APP)
+            hideContextMenu()
+        }
+
+        hideAppButton.setOnClickListener {
+            toggleHiddenApp(app.getPackageName(), true)
+            onClickCallback(ContextMenuItem.HIDE_APP)
+            hideContextMenu()
+        }
     }
 
-    fun dimBehind() {
+    private fun dimBehind() {
         if (contextMenuWindow == null) return
 
         val container = contextMenuWindow!!.contentView.rootView
@@ -237,5 +250,4 @@ class State(context: Context) {
     private fun showToast(text: String) {
         Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
     }
-
 }

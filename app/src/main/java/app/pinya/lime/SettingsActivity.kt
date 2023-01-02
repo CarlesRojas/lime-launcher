@@ -23,6 +23,7 @@ class SettingsActivity : Activity() {
         initializeDateSeekBar()
         initializeTimeSeekBar()
 
+        initializeShowHiddenApps()
         initializeAutoOpenKeyboard()
         initializeAutoOpenApps()
         initializeShowIconsInHome()
@@ -86,6 +87,19 @@ class SettingsActivity : Activity() {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
+    }
+
+
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    private fun initializeShowHiddenApps() {
+        val switch = findViewById<Switch>(R.id.showHiddenAppsSwitch)
+        val stateValue = state.getData(DataKey.SHOW_HIDDEN_APPS, false)
+
+        switch.isChecked = stateValue
+
+        switch.setOnCheckedChangeListener { _, isChecked ->
+            state.saveData(DataKey.SHOW_HIDDEN_APPS, isChecked)
+        }
     }
 
 

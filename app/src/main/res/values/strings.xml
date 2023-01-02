@@ -14,9 +14,13 @@
     <string name="settings_iconsInDrawer">Show icons in drawer</string>
     <string name="settings_showSearchBar">Show search bar</string>
     <string name="settings_showAlphabet">Show alphabet filter</string>
+    <string name="settings_showHiddenApps">Show hidden apps</string>
+
 
     <string name="contextMenu_addToHome">Add to Home</string>
     <string name="contextMenu_removeFromHome">Remove from Home</string>
+    <string name="contextMenu_hideApp">Hide app</string>
+    <string name="contextMenu_showApp">Show app</string>
 
     <string name="drawer_searchHint">Search Apps</string>
 
