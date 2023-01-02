@@ -184,8 +184,6 @@ class State(context: Context) {
             contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_removeFromHome)
 
         icon.setImageDrawable(app.getIcon())
-        val stateValue = getData(DataKey.ICONS_IN_DRAWER, true)
-        icon.visibility = if (stateValue) View.VISIBLE else View.GONE
         appName.text = app.getName()
 
         addToHomeButton.visibility = if (app.home) View.GONE else View.VISIBLE
