@@ -1,18 +1,13 @@
 package app.pinya.lime
 
 import android.content.Context
-import android.provider.Settings.Global
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
-import androidx.viewpager.widget.ViewPager
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 
 class CustomPagerAdapter(context: Context, state: State) : PagerAdapter() {
@@ -32,6 +27,7 @@ class CustomPagerAdapter(context: Context, state: State) : PagerAdapter() {
         if (this::drawer.isInitialized) drawer.onResume()
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     fun onHomePageSelected() {
         drawer.hideKeyboard()
         home.getHomeAppList()

@@ -232,6 +232,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         searchBar.setCompoundDrawablesWithIntrinsicBounds(R.drawable.search_line, 0, 0, 0)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun filterAppList() {
         shownAppList = mutableListOf()
         this.state.getInstalledAppList().forEach {
@@ -255,6 +256,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         this.notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun filterAppListByAlphabet() {
         shownAppList = mutableListOf()
         this.state.getInstalledAppList().forEach {
@@ -271,7 +273,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
     }
 
 
-    private fun onContextMenuClick(item: ContextMenuItem): Unit {
+    private fun onContextMenuClick(item: ContextMenuItem) {
         when (item) {
             ContextMenuItem.HIDE_APP -> filterAppList()
             ContextMenuItem.SHOW_APP -> filterAppList()

@@ -47,8 +47,9 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
         getHomeAppList()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun onResume() {
-        this.notifyDataSetChanged();
+        this.notifyDataSetChanged()
         getHomeAppList()
     }
 
@@ -78,7 +79,7 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
             val statusBarManager = Class.forName("android.app.StatusBarManager")
             val method = statusBarManager.getMethod("expandNotificationsPanel")
             method.invoke(statusBarService)
-        } catch (e: Error) {
+        } catch (_: Error) {
         }
     }
 
@@ -94,15 +95,16 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun getHomeAppList() {
         homeAppList = this.state.getInstalledAppList().filter {
             it.home
         }
 
-        this.notifyDataSetChanged();
+        this.notifyDataSetChanged()
     }
 
-    private fun onContextMenuClick(item: ContextMenuItem): Unit {
+    private fun onContextMenuClick(item: ContextMenuItem) {
         when (item) {
             ContextMenuItem.REMOVE_FROM_HOME -> getHomeAppList()
             ContextMenuItem.HIDE_APP -> getHomeAppList()

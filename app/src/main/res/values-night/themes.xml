@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Theme.Lime" parent="@android:style/Theme.Wallpaper.NoTitleBar">
         <!-- Primary brand color. -->

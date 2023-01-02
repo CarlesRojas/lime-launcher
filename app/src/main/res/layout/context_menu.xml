@@ -35,7 +35,7 @@
 
             <TextView
                 android:id="@+id/appName"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="@font/montserrat"
@@ -94,14 +94,14 @@
                             app:layout_constraintTop_toTopOf="parent">
 
                             <ImageButton
-                                android:layout_width="36dp"
-                                android:layout_height="36dp"
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
                                 android:layout_marginEnd="18dp"
                                 android:background="@drawable/home_line"
                                 android:contentDescription="@string/close_button_description" />
 
                             <TextView
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:fontFamily="@font/montserrat"
@@ -123,14 +123,14 @@
                             app:layout_constraintTop_toTopOf="parent">
 
                             <ImageButton
-                                android:layout_width="36dp"
-                                android:layout_height="36dp"
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
                                 android:layout_marginEnd="18dp"
                                 android:background="@drawable/close_line"
                                 android:contentDescription="@string/close_button_description" />
 
                             <TextView
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:fontFamily="@font/montserrat"
@@ -152,14 +152,14 @@
                             app:layout_constraintTop_toTopOf="parent">
 
                             <ImageButton
-                                android:layout_width="36dp"
-                                android:layout_height="36dp"
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
                                 android:layout_marginEnd="18dp"
                                 android:background="@drawable/eye_line"
                                 android:contentDescription="@string/close_button_description" />
 
                             <TextView
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:fontFamily="@font/montserrat"
@@ -180,14 +180,14 @@
                             app:layout_constraintTop_toTopOf="parent">
 
                             <ImageButton
-                                android:layout_width="36dp"
-                                android:layout_height="36dp"
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
                                 android:layout_marginEnd="18dp"
                                 android:background="@drawable/eye_off_line"
                                 android:contentDescription="@string/close_button_description" />
 
                             <TextView
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:fontFamily="@font/montserrat"

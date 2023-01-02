@@ -2,7 +2,6 @@ package app.pinya.lime
 
 import android.app.Activity
 import android.os.Bundle
-import android.view.View
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 
@@ -23,7 +22,7 @@ class MainActivity : Activity() {
     }
 
     private fun linkAdapters() {
-        viewPager = findViewById<ViewPager>(R.id.viewPager)
+        viewPager = findViewById(R.id.viewPager)
         customPageAdapter = CustomPagerAdapter(this, state).also {
             viewPager.adapter = it
 
