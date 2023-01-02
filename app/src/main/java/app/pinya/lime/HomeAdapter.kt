@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
 import java.util.*
@@ -22,6 +23,8 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
     private val context: Context
     private val state: State
     private val layout: ViewGroup
+
+    private lateinit var contextMenuContainer: ConstraintLayout
 
     private val date: TextView
     private val time: TextView
@@ -39,6 +42,7 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
         time = layout.findViewById(R.id.homeTime)
 
         startTimerToUpdateDateTime()
+        initContextMenu()
         initGestureDetector()
         getHomeAppList()
     }
@@ -78,6 +82,11 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
         }
     }
 
+
+    private fun initContextMenu() {
+        contextMenuContainer = layout.findViewById(R.id.contextMenuHome_parent)
+    }
+
     private fun initGestureDetector() {
         layout.setOnLongClickListener {
             context.startActivity(Intent(context, SettingsActivity::class.java))
@@ -89,6 +98,8 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
         homeAppList = this.state.getInstalledAppList().filter {
             it.home
         }
+
+        // TODO call this when the user adds or removes an app from the home screen (if done in the home screen page)
 
         this.notifyDataSetChanged();
     }
@@ -118,6 +129,11 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
                 context.packageManager.getLaunchIntentForPackage(currentApp.getPackageName())
 
             if (launchAppIntent != null) context.startActivity(launchAppIntent)
+        }
+
+        linearLayout.setOnLongClickListener {
+            state.showContextMenu(currentApp, contextMenuContainer)
+            true
         }
     }
 

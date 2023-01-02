@@ -39,6 +39,15 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.9" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/contextMenuHome_parent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <TextView
         android:id="@+id/homeTime"
         android:layout_width="0dp"

@@ -3,6 +3,10 @@ package app.pinya.lime
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.view.Gravity
+import android.view.View
+import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -153,6 +157,55 @@ class State(context: Context) {
         val result = this.sharedPreferences.getString(key.toString(), jsonDefaultValue)
         val listType = object : TypeToken<MutableMap<String, String>>() {}.type
         return Gson().fromJson(result, listType)
+    }
+
+
+    fun showContextMenu(app: ItemApp, contextMenuContainer: ConstraintLayout) {
+        val contextMenuView = View.inflate(context, R.layout.context_menu, null)
+        val icon = contextMenuView.findViewById<ImageView>(R.id.appIcon)
+        val appName = contextMenuView.findViewById<TextView>(R.id.appName)
+        val close = contextMenuView.findViewById<ImageButton>(R.id.closeContextMenuButton)
+
+        val addToHomeButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_addToHome)
+        val removeFromHomeButton =
+            contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_removeFromHome)
+
+        icon.setImageDrawable(app.getIcon())
+        val stateValue = getData(DataKey.ICONS_IN_DRAWER, true)
+        icon.visibility = if (stateValue) View.VISIBLE else View.GONE
+        appName.text = app.getName()
+
+        addToHomeButton.visibility = if (app.home) View.GONE else View.VISIBLE
+        removeFromHomeButton.visibility = if (app.home) View.VISIBLE else View.GONE
+
+        val contextMenuWindow = PopupWindow(
+            contextMenuView,
+            contextMenuContainer.width - contextMenuContainer.paddingRight - contextMenuContainer.paddingLeft,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            true
+        )
+
+        contextMenuWindow.showAtLocation(contextMenuContainer, Gravity.BOTTOM, 0, 0)
+
+        close.setOnClickListener {
+            contextMenuWindow.dismiss()
+        }
+
+        addToHomeButton.setOnClickListener {
+            toggleHomeInApp(app.getPackageName(), true)
+            showToast("${app.getName()} added to Home")
+            contextMenuWindow.dismiss()
+        }
+
+        removeFromHomeButton.setOnClickListener {
+            toggleHomeInApp(app.getPackageName(), false)
+            showToast("${app.getName()} removed from Home")
+            contextMenuWindow.dismiss()
+        }
+    }
+
+    private fun showToast(text: String) {
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
     }
 
 }

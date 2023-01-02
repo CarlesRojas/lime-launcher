@@ -55,6 +55,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
     private lateinit var appList: RecyclerView
     private lateinit var drawerConstraintLayout: ConstraintLayout
     private lateinit var alphabetLayout: LinearLayout
+    private lateinit var contextMenuContainer: ConstraintLayout
 
     private var searchBarText: String = ""
     private var filteringByAlphabet = false
@@ -69,6 +70,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
 
         filterAppList()
         initSearchBar()
+        initContextMenu()
         initLayout()
         initAppList()
         initAlphabet()
@@ -111,7 +113,6 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
             if (it.toString() == "") hideClearText() else showClearText()
             searchBarText = it.toString()
             if (filteringByAlphabet) filterAppListByAlphabet() else filterAppList()
-            val filter = filteringByAlphabet
             filteringByAlphabet = false
         }
 
@@ -125,6 +126,10 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
 
             view.performClick()
         }
+    }
+
+    private fun initContextMenu() {
+        contextMenuContainer = layout.findViewById(R.id.contextMenuDrawer_parent)
     }
 
     private fun initLayout() {
@@ -152,8 +157,8 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         alphabetLayout.setOnTouchListener { _, event ->
             clearText()
             hideKeyboard()
-            val startY = alphabetLayout.top;
-            val endY = alphabetLayout.bottom;
+            val startY = alphabetLayout.top
+            val endY = alphabetLayout.bottom
             val perc = (event.rawY - startY) / (endY - startY)
             val letterHeight = 1f / (ALPHABET.size + 1)
             val currentSection = floor(perc / letterHeight).toInt()
@@ -179,7 +184,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
             else if (!currentAlphabet.contains('#')) currentAlphabet.add(0, '#')
         }
 
-        alphabetLayout.removeAllViews();
+        alphabetLayout.removeAllViews()
         val alphabetHeight = alphabetLayout.height
 
         for (char in currentAlphabet) {
@@ -247,7 +252,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
             if (launchAppIntent != null) context.startActivity(launchAppIntent)
         }
 
-        this.notifyDataSetChanged();
+        this.notifyDataSetChanged()
     }
 
     private fun filterAppListByAlphabet() {
@@ -262,7 +267,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
             if (included) shownAppList.add(it)
         }
 
-        this.notifyDataSetChanged();
+        this.notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemAppViewHolder {
@@ -291,39 +296,14 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         }
 
         linearLayout.setOnLongClickListener {
-            val wrapper: Context = ContextThemeWrapper(context, R.style.PopupMenuStyle)
-            val popup = PopupMenu(wrapper, linearLayout)
-
-            if (currentApp.home) popup.menu.add(1, 0, 0, R.string.contextMenu_removeFromHome)
-            else popup.menu.add(1, 1, 1, R.string.contextMenu_addToHome)
-
-            popup.setOnMenuItemClickListener {
-                when (it.itemId) {
-                    0 -> { // Remove from home
-                        state.toggleHomeInApp(currentApp.getPackageName(), false)
-                        showToast("${currentApp.getName()} removed from Home")
-                        true
-                    }
-                    1 -> { // Add to home
-                        state.toggleHomeInApp(currentApp.getPackageName(), true)
-                        showToast("${currentApp.getName()} added to Home")
-                        true
-                    }
-                    else -> false
-                }
-            }
-
-            popup.show()
+            hideKeyboard()
+            state.showContextMenu(currentApp, contextMenuContainer)
             true
         }
-
     }
 
     override fun getItemCount(): Int {
         return shownAppList.size
     }
 
-    private fun showToast(text: String) {
-        Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
-    }
 }

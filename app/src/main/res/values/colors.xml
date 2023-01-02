@@ -8,6 +8,8 @@
     <color name="white_low">#96FFFFFF</color>
     <color name="white_extra_low">#64FFFFFF</color>
 
+    <color name="border_color">#32FFFFFF</color>
+
     <color name="primary">#88FF00</color>
     <color name="primary_variant">#69C500</color>
     <color name="secondary">#88FF00</color>

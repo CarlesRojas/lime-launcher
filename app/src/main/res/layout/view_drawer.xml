@@ -40,7 +40,6 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.9" />
 
-
     <EditText
         android:id="@+id/drawerSearchBar"
         android:layout_width="0dp"
@@ -70,6 +69,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guidelineV2"
         app:layout_constraintTop_toTopOf="@+id/guidelineH2" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/contextMenuDrawer_parent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
