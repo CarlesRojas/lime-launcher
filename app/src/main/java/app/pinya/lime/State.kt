@@ -3,6 +3,10 @@ package app.pinya.lime
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.provider.Settings
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
@@ -17,7 +21,7 @@ enum class DataKey {
 }
 
 enum class ContextMenuItem {
-    ADD_TO_HOME, REMOVE_FROM_HOME, HIDE_APP, SHOW_APP
+    ADD_TO_HOME, REMOVE_FROM_HOME, HIDE_APP, SHOW_APP, APP_INFO, UNINSTALL
 }
 
 class State(context: Context) {
@@ -46,6 +50,9 @@ class State(context: Context) {
         intent.addCategory(Intent.CATEGORY_LAUNCHER)
         val untreatedAppList = context.packageManager.queryIntentActivities(intent, 0)
 
+        val packagesInfo: List<ApplicationInfo> =
+            context.packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
+
         val hiddenApps: MutableSet<String>? = getData(DataKey.HIDDEN_APPS, mutableSetOf())
         val homeApps: MutableSet<String>? = getData(DataKey.HOME_APPS, mutableSetOf())
         val showHiddenApps: Boolean = getData(DataKey.SHOW_HIDDEN_APPS, false)
@@ -56,6 +63,10 @@ class State(context: Context) {
             val icon = untreatedApp.activityInfo.loadIcon(context.packageManager)
             val app = ItemApp(name, packageName, icon)
 
+            val packageInfo = packagesInfo.find { it.packageName == packageName }
+
+            app.system =
+                if (packageInfo != null) (packageInfo.flags and ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM else false
             app.hidden = hiddenApps?.find { it == packageName } != null
             app.home = homeApps?.find { it == packageName } != null
 
@@ -182,6 +193,8 @@ class State(context: Context) {
             contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_removeFromHome)
         val showAppButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_showApp)
         val hideAppButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_hideApp)
+        val appInfoButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_appInfo)
+        val uninstallButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_uninstall)
 
         icon.setImageDrawable(app.getIcon())
         appName.text = app.getName()
@@ -190,6 +203,7 @@ class State(context: Context) {
         removeFromHomeButton.visibility = if (app.home) View.VISIBLE else View.GONE
         showAppButton.visibility = if (app.hidden) View.VISIBLE else View.GONE
         hideAppButton.visibility = if (app.hidden) View.GONE else View.VISIBLE
+        uninstallButton.visibility = if (app.system) View.GONE else View.VISIBLE
 
         contextMenuWindow = PopupWindow(
             contextMenuView,
@@ -233,6 +247,25 @@ class State(context: Context) {
             toggleHiddenApp(app.getPackageName(), true)
             onClickCallback(ContextMenuItem.HIDE_APP)
             hideContextMenu()
+        }
+
+        appInfoButton.setOnClickListener {
+            onClickCallback(ContextMenuItem.APP_INFO)
+            hideContextMenu()
+
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            intent.addCategory(Intent.CATEGORY_DEFAULT)
+            intent.data = Uri.parse("package:" + app.getPackageName())
+            context.startActivity(intent)
+        }
+
+        uninstallButton.setOnClickListener {
+            onClickCallback(ContextMenuItem.UNINSTALL)
+            hideContextMenu()
+
+            val intent = Intent(Intent.ACTION_DELETE)
+            intent.data = Uri.parse("package:" + app.getPackageName())
+            context.startActivity(intent)
         }
     }
 
