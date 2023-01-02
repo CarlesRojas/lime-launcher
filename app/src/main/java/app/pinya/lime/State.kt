@@ -74,6 +74,14 @@ class State(context: Context) {
             if (!installedAppList.contains(app)) installedAppList.add(app)
         }
 
+        hiddenApps?.removeAll { app -> installedAppList.find { app == it.getPackageName() } == null }
+        homeApps?.removeAll { app -> installedAppList.find { app == it.getPackageName() } == null }
+
+        homeApps?.forEachIndexed { i, packageName ->
+            val app = installedAppList.find { packageName == it.getPackageName() }
+            if (app != null) app.homeOrderIndex = i
+        }
+
         installedAppList.sortBy { it.getName().lowercase() }
     }
 
@@ -88,6 +96,11 @@ class State(context: Context) {
         when (homeNewValue) {
             true -> homeAppSet.add(packageName)
             false -> homeAppSet.remove(packageName)
+        }
+
+        homeAppSet.forEachIndexed { i, packageName ->
+            val app = installedAppList.find { packageName == it.getPackageName() }
+            if (app != null) app.homeOrderIndex = i
         }
 
         saveData(DataKey.HOME_APPS, homeAppSet)
@@ -160,7 +173,8 @@ class State(context: Context) {
     }
 
     fun getData(key: DataKey, defaultValue: MutableSet<String>): MutableSet<String>? {
-        return this.sharedPreferences.getStringSet(key.toString(), defaultValue)
+        val originalSet = this.sharedPreferences.getStringSet(key.toString(), defaultValue)
+        return originalSet?.toMutableSet()
     }
 
     fun getData(key: DataKey, defaultValue: Float): Float {

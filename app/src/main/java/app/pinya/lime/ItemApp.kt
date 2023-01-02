@@ -10,6 +10,7 @@ class ItemApp(name: String, packageName: String, icon: Drawable) {
     var home: Boolean = false
     var hidden: Boolean = false
     var system: Boolean = false
+    var homeOrderIndex: Int = 0
 
     init {
         this.name = name

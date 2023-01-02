@@ -153,7 +153,7 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
     }
 
     override fun onBindViewHolder(holder: ItemAppViewHolder, position: Int) {
-        val currentApp = homeAppList[position]
+        val currentApp = homeAppList.find { it.homeOrderIndex == position } ?: return
 
         val imageView: ImageView = holder.itemView.findViewById(R.id.appIcon)
         val textView: TextView = holder.itemView.findViewById(R.id.appName)
