@@ -45,6 +45,14 @@
                 android:textSize="18sp" />
 
             <ImageButton
+                android:id="@+id/settingsButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="18dp"
+                android:background="@drawable/icon_settings"
+                android:contentDescription="@string/settings_button_description" />
+
+            <ImageButton
                 android:id="@+id/closeContextMenuButton"
                 android:layout_width="36dp"
                 android:layout_height="36dp"

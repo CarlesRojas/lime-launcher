@@ -19,7 +19,10 @@ Whether you're looking for a launcher that's easy to use or one that simply gets
 
 ## TODO
 
-- [ ] Reorder home apps
+- [ ] Add uninstall to context menu
+- [ ] Add app info to context menu
+- [ ] Open notifications on swipe down in home screen
+- [ ] Reorder home apps (add it in context menu)
 - [ ] Rename apps
 - [ ] Change app icons
 - [ ] Wallpapers?

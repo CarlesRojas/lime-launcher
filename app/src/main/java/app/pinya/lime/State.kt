@@ -174,7 +174,8 @@ class State(context: Context) {
         val contextMenuView = View.inflate(context, R.layout.view_context_menu, null)
         val icon = contextMenuView.findViewById<ImageView>(R.id.appIcon)
         val appName = contextMenuView.findViewById<TextView>(R.id.appName)
-        val close = contextMenuView.findViewById<ImageButton>(R.id.closeContextMenuButton)
+        val closeButton = contextMenuView.findViewById<ImageButton>(R.id.closeContextMenuButton)
+        val settingsButton = contextMenuView.findViewById<ImageButton>(R.id.settingsButton)
 
         val addToHomeButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_addToHome)
         val removeFromHomeButton =
@@ -200,8 +201,12 @@ class State(context: Context) {
         contextMenuWindow?.showAtLocation(contextMenuContainer, Gravity.BOTTOM, 0, 0)
         dimBehind()
 
-        close.setOnClickListener {
+        closeButton.setOnClickListener {
             hideContextMenu()
+        }
+
+        settingsButton.setOnClickListener {
+            context.startActivity(Intent(context, SettingsActivity::class.java))
         }
 
         addToHomeButton.setOnClickListener {
