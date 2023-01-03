@@ -80,7 +80,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
 
     fun onResume() {
         clearText()
-        hideKeyboard()
+        showKeyboard()
         filterAppList()
         initAlphabet()
         showHideElements()

@@ -33,7 +33,7 @@ class CustomPagerAdapter(context: Context, state: State) : PagerAdapter() {
     @OptIn(DelicateCoroutinesApi::class)
     fun onHomePageSelected() {
         drawer.hideKeyboard()
-        home.getHomeAppList()
+        home.onResume()
         GlobalScope.launch(Dispatchers.Main) {
             delay(250)
             drawer.clearText()
@@ -41,9 +41,7 @@ class CustomPagerAdapter(context: Context, state: State) : PagerAdapter() {
     }
 
     fun onDrawerPageSelected() {
-        this.drawer.clearText()
-        this.drawer.showKeyboard()
-        this.drawer.initAlphabet()
+        this.drawer.onResume()
     }
 
     override fun instantiateItem(collection: ViewGroup, position: Int): Any {

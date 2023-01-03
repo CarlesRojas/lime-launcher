@@ -15,7 +15,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
 import java.util.*
@@ -53,7 +52,6 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
 
     @SuppressLint("NotifyDataSetChanged")
     fun onResume() {
-        this.notifyDataSetChanged()
         getHomeAppList()
     }
 
