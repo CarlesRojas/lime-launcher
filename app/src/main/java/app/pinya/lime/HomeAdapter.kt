@@ -169,6 +169,7 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
             ContextMenuItem.SHOW_APP -> getHomeAppList()
             ContextMenuItem.MOVE_DOWN -> getHomeAppList()
             ContextMenuItem.MOVE_UP -> getHomeAppList()
+            ContextMenuItem.RENAME_APP -> getHomeAppList()
             else -> {}
         }
     }

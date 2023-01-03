@@ -1,5 +1,6 @@
 package app.pinya.lime
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -10,13 +11,16 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import android.preference.PreferenceManager
 import android.provider.Settings
 import android.util.DisplayMetrics
-import android.view.Gravity
-import android.view.View
-import android.view.WindowManager
+import android.view.*
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import android.widget.TextView.OnEditorActionListener
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.widget.doAfterTextChanged
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlin.math.round
@@ -27,7 +31,7 @@ enum class DataKey {
 }
 
 enum class ContextMenuItem {
-    ADD_TO_HOME, REMOVE_FROM_HOME, HIDE_APP, SHOW_APP, APP_INFO, UNINSTALL, MOVE_UP, MOVE_DOWN
+    ADD_TO_HOME, REMOVE_FROM_HOME, HIDE_APP, SHOW_APP, APP_INFO, UNINSTALL, MOVE_UP, MOVE_DOWN, RENAME_APP
 }
 
 class State(context: Context) {
@@ -37,6 +41,8 @@ class State(context: Context) {
     private val sharedPreferences: SharedPreferences
 
     private var contextMenuWindow: PopupWindow? = null
+    private var renameWindow: PopupWindow? = null
+    private var renameText: String = ""
     private var installedAppList: MutableList<ItemApp> = mutableListOf()
     private var maxNumOfAppsInHome: Int = 100
 
@@ -59,9 +65,9 @@ class State(context: Context) {
         val packagesInfo: List<ApplicationInfo> =
             context.packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
 
-        val hiddenApps: MutableSet<String>? = getData(DataKey.HIDDEN_APPS, mutableSetOf())
-        val homeApps: MutableSet<String>? = getData(DataKey.HOME_APPS, mutableSetOf())
-        val renamedApps: MutableMap<String, String>? = getData(DataKey.RENAMED_APPS, mutableMapOf())
+        val hiddenApps: MutableSet<String> = getData(DataKey.HIDDEN_APPS, mutableSetOf())
+        val homeApps: MutableSet<String> = getData(DataKey.HOME_APPS, mutableSetOf())
+        val renamedApps: MutableMap<String, String> = getData(DataKey.RENAMED_APPS, mutableMapOf())
 
         val showHiddenApps: Boolean = getData(DataKey.SHOW_HIDDEN_APPS, false)
 
@@ -75,15 +81,15 @@ class State(context: Context) {
 
             app.system =
                 if (packageInfo != null) (packageInfo.flags and ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM else false
-            app.hidden = hiddenApps?.find { it == packageName } != null
-            app.home = homeApps?.find { it == packageName } != null
-            app.name = renamedApps?.get(packageName) ?: app.originalName
+            app.hidden = hiddenApps.find { it == packageName } != null
+            app.home = homeApps.find { it == packageName } != null
+            app.name = renamedApps[packageName] ?: app.originalName
 
             if (!showHiddenApps && app.hidden) continue
             if (!installedAppList.contains(app)) installedAppList.add(app)
         }
 
-        homeApps?.forEachIndexed { i, packageName ->
+        homeApps.forEachIndexed { i, packageName ->
             val app = installedAppList.find { packageName == it.packageName }
             if (app != null) app.homeOrderIndex = i
         }
@@ -104,7 +110,7 @@ class State(context: Context) {
 
     private fun isHomeFull(): Boolean {
         val homeAppSet: MutableSet<String> =
-            getData(DataKey.HOME_APPS, mutableSetOf()) ?: mutableSetOf()
+            getData(DataKey.HOME_APPS, mutableSetOf())
 
         return homeAppSet.size >= maxNumOfAppsInHome
     }
@@ -114,14 +120,14 @@ class State(context: Context) {
         app?.home = homeNewValue
 
         val homeAppSet: MutableSet<String> =
-            getData(DataKey.HOME_APPS, mutableSetOf()) ?: mutableSetOf()
+            getData(DataKey.HOME_APPS, mutableSetOf())
 
         when (homeNewValue) {
             true -> homeAppSet.add(packageName)
             false -> homeAppSet.remove(packageName)
         }
 
-        homeAppSet.removeAll { app -> installedAppList.find { app == it.packageName } == null }
+        homeAppSet.removeAll { appPackage -> installedAppList.find { appPackage == it.packageName } == null }
 
         updateHomeAppOrder(homeAppSet)
         saveData(DataKey.HOME_APPS, homeAppSet)
@@ -129,7 +135,7 @@ class State(context: Context) {
 
     private fun changeHomeAppOrder(packageName: String, moveUp: Boolean) {
         val homeAppSet: MutableSet<String> =
-            getData(DataKey.HOME_APPS, mutableSetOf()) ?: mutableSetOf()
+            getData(DataKey.HOME_APPS, mutableSetOf())
 
         var index = -1
         homeAppSet.forEachIndexed { i, elem ->
@@ -154,7 +160,7 @@ class State(context: Context) {
     fun setMaxNumOfApps(maxNumOfAppsInHome: Int) {
         this.maxNumOfAppsInHome = maxNumOfAppsInHome
 
-        val homeAppList = getData(DataKey.HOME_APPS, mutableSetOf()) ?: mutableSetOf()
+        val homeAppList = getData(DataKey.HOME_APPS, mutableSetOf())
         val appsToRemoveFromHome = mutableListOf<String>()
         homeAppList.forEachIndexed { i, elem ->
             if (i >= maxNumOfAppsInHome) appsToRemoveFromHome.add(elem)
@@ -166,11 +172,13 @@ class State(context: Context) {
     }
 
     private fun renameApp(packageName: String, newName: String) {
+        if (newName.isEmpty()) return
+
         val app = installedAppList.find { it.packageName == packageName } ?: return
         app.name = newName
 
         val renamedAppsMap: MutableMap<String, String> =
-            getData(DataKey.RENAMED_APPS, mutableMapOf()) ?: mutableMapOf()
+            getData(DataKey.RENAMED_APPS, mutableMapOf())
 
         if (newName == app.originalName) renamedAppsMap.remove(packageName)
         else renamedAppsMap[packageName] = newName
@@ -188,14 +196,14 @@ class State(context: Context) {
         app?.hidden = hiddenNewValue
 
         val hiddenAppsSet: MutableSet<String> =
-            getData(DataKey.HIDDEN_APPS, mutableSetOf()) ?: mutableSetOf()
+            getData(DataKey.HIDDEN_APPS, mutableSetOf())
 
         when (hiddenNewValue) {
             true -> hiddenAppsSet.add(packageName)
             false -> hiddenAppsSet.remove(packageName)
         }
 
-        hiddenAppsSet.removeAll { app -> installedAppList.find { app == it.packageName } == null }
+        hiddenAppsSet.removeAll { appPackage -> installedAppList.find { appPackage == it.packageName } == null }
 
         saveData(DataKey.HIDDEN_APPS, hiddenAppsSet)
         fetchInstalledAppsAgain()
@@ -257,7 +265,7 @@ class State(context: Context) {
         return this.sharedPreferences.getFloat(key.toString(), defaultValue)
     }
 
-    fun getData(key: DataKey, defaultValue: MutableSet<String>): MutableSet<String>? {
+    fun getData(key: DataKey, defaultValue: MutableSet<String>): MutableSet<String> {
         val jsonDefaultValue: String = Gson().toJson(defaultValue)
         val result = this.sharedPreferences.getString(key.toString(), jsonDefaultValue)
         val listType = object : TypeToken<MutableSet<String>>() {}.type
@@ -273,6 +281,12 @@ class State(context: Context) {
         return Gson().fromJson(result, listType)
     }
 
+    private fun clearDataForKey(key: DataKey) {
+        val editor = this.sharedPreferences.edit()
+        editor.remove(key.toString())
+        editor.apply()
+    }
+
 
     fun showContextMenu(
         app: ItemApp,
@@ -286,8 +300,7 @@ class State(context: Context) {
         val closeButton = contextMenuView.findViewById<ImageButton>(R.id.closeContextMenuButton)
         val settingsButton = contextMenuView.findViewById<ImageButton>(R.id.settingsButton)
 
-        val homeAppSet: MutableSet<String> =
-            getData(DataKey.HOME_APPS, mutableSetOf()) ?: mutableSetOf()
+        val homeAppSet: MutableSet<String> = getData(DataKey.HOME_APPS, mutableSetOf())
 
         val moveUpButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_moveUp)
         val moveDownButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_moveDown)
@@ -298,6 +311,7 @@ class State(context: Context) {
         val hideAppButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_hideApp)
         val appInfoButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_appInfo)
         val uninstallButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_uninstall)
+        val renameButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_renameApp)
 
         icon.setImageDrawable(app.icon)
         appName.text = app.name
@@ -319,13 +333,13 @@ class State(context: Context) {
             true
         )
 
-        contextMenuWindow?.animationStyle = R.style.PopupWindowAnimation
+        contextMenuWindow?.animationStyle = R.style.BottomPopupWindowAnimation
 
         contextMenuWindow?.showAtLocation(contextMenuContainer, Gravity.BOTTOM, 0, 0)
-        dimBehind()
+        dimBehindMenu(contextMenuWindow)
 
         closeButton.setOnClickListener {
-            hideContextMenu()
+            hideMenu(contextMenuWindow)
         }
 
         settingsButton.setOnClickListener {
@@ -335,42 +349,42 @@ class State(context: Context) {
         moveUpButton.setOnClickListener {
             changeHomeAppOrder(app.packageName, true)
             onClickCallback(ContextMenuItem.MOVE_UP)
-            hideContextMenu()
+            hideMenu(contextMenuWindow)
         }
 
         moveDownButton.setOnClickListener {
             changeHomeAppOrder(app.packageName, false)
             onClickCallback(ContextMenuItem.MOVE_DOWN)
-            hideContextMenu()
+            hideMenu(contextMenuWindow)
         }
 
         addToHomeButton.setOnClickListener {
             toggleHomeInApp(app.packageName, true)
             onClickCallback(ContextMenuItem.ADD_TO_HOME)
-            hideContextMenu()
+            hideMenu(contextMenuWindow)
         }
 
         removeFromHomeButton.setOnClickListener {
             toggleHomeInApp(app.packageName, false)
             onClickCallback(ContextMenuItem.REMOVE_FROM_HOME)
-            hideContextMenu()
+            hideMenu(contextMenuWindow)
         }
 
         showAppButton.setOnClickListener {
             toggleHiddenApp(app.packageName, false)
             onClickCallback(ContextMenuItem.SHOW_APP)
-            hideContextMenu()
+            hideMenu(contextMenuWindow)
         }
 
         hideAppButton.setOnClickListener {
             toggleHiddenApp(app.packageName, true)
             onClickCallback(ContextMenuItem.HIDE_APP)
-            hideContextMenu()
+            hideMenu(contextMenuWindow)
         }
 
         appInfoButton.setOnClickListener {
             onClickCallback(ContextMenuItem.APP_INFO)
-            hideContextMenu()
+            hideMenu(contextMenuWindow)
 
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
             intent.addCategory(Intent.CATEGORY_DEFAULT)
@@ -380,19 +394,154 @@ class State(context: Context) {
 
         uninstallButton.setOnClickListener {
             onClickCallback(ContextMenuItem.UNINSTALL)
-            hideContextMenu()
+            hideMenu()
 
             val intent = Intent(Intent.ACTION_DELETE)
             intent.data = Uri.parse("package:" + app.packageName)
             context.startActivity(intent)
         }
+
+        renameButton.setOnClickListener {
+            hideMenu(contextMenuWindow)
+            showRenameMenu(app, contextMenuContainer, onClickCallback)
+        }
     }
 
-    private fun dimBehind() {
-        if (contextMenuWindow == null) return
+    fun View.focusAndShowKeyboard() {
+        fun View.showTheKeyboardNow() {
+            if (isFocused) {
+                post {
+                    // We still post the call, just in case we are being notified of the windows focus
+                    // but InputMethodManager didn't get properly setup yet.
+                    val imm =
+                        context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+                }
+            }
+        }
 
-        val container = contextMenuWindow!!.contentView.rootView
-        val context = contextMenuWindow!!.contentView.context
+        requestFocus()
+        if (hasWindowFocus()) {
+            // No need to wait for the window to get focus.
+            showTheKeyboardNow()
+        } else {
+            // We need to wait until the window gets focus.
+            viewTreeObserver.addOnWindowFocusChangeListener(
+                object : ViewTreeObserver.OnWindowFocusChangeListener {
+                    override fun onWindowFocusChanged(hasFocus: Boolean) {
+                        // This notification will arrive just before the InputMethodManager gets set up.
+                        if (hasFocus) {
+                            this@focusAndShowKeyboard.showTheKeyboardNow()
+                            // It’s very important to remove this listener once we are done.
+                            viewTreeObserver.removeOnWindowFocusChangeListener(this)
+                        }
+                    }
+                })
+        }
+    }
+
+
+    @SuppressLint("ClickableViewAccessibility")
+    fun showRenameMenu(
+        app: ItemApp,
+        renameContainer: ConstraintLayout,
+        onRenameCallback: (item: ContextMenuItem) -> Unit = { }
+    ) {
+        val renameView = View.inflate(context, R.layout.view_rename_menu, null)
+        val icon = renameView.findViewById<ImageView>(R.id.appIcon)
+        val appName = renameView.findViewById<TextView>(R.id.appName)
+        val closeButton = renameView.findViewById<ImageButton>(R.id.closeRenameMenuButton)
+        val recoverOriginalNameButton =
+            renameView.findViewById<LinearLayout>(R.id.renameMenu_recoverOriginalName)
+
+        val renameBar = renameView.findViewById<EditText>(R.id.renameBar)
+        renameText = ""
+        renameBar.setText("")
+
+        recoverOriginalNameButton.visibility =
+            if (app.name != app.originalName) View.VISIBLE else View.GONE
+
+        fun blurAndHideKeyboard() {
+            renameBar.clearFocus()
+            val inputManager =
+                context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputManager.hideSoftInputFromWindow(renameBar.windowToken, 0)
+        }
+
+        icon.setImageDrawable(app.icon)
+        appName.text = app.name
+
+        renameWindow = PopupWindow(
+            renameView,
+            renameContainer.width - renameContainer.paddingRight - renameContainer.paddingLeft,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            true
+        )
+
+        renameWindow?.animationStyle = R.style.TopPopupWindowAnimation
+
+        renameWindow?.showAtLocation(renameContainer, Gravity.TOP, 0, 0)
+        dimBehindMenu(renameWindow)
+
+        renameBar.focusAndShowKeyboard()
+
+        closeButton.setOnClickListener {
+            hideMenu(renameWindow)
+        }
+
+        fun rename(recoverOriginal: Boolean = false) {
+            renameApp(app.packageName, if (recoverOriginal) app.originalName else renameText)
+            blurAndHideKeyboard()
+            hideMenu()
+            onRenameCallback(ContextMenuItem.RENAME_APP)
+        }
+
+        renameBar.doAfterTextChanged {
+            if (it.toString() == "") renameBar.setCompoundDrawablesWithIntrinsicBounds(
+                R.drawable.icon_rename,
+                0,
+                0,
+                0
+            ) else renameBar.setCompoundDrawablesWithIntrinsicBounds(
+                0,
+                0,
+                R.drawable.icon_submit,
+                0
+            )
+
+            renameText = it.toString()
+        }
+
+        renameBar.setOnEditorActionListener(OnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                rename()
+                return@OnEditorActionListener true
+            }
+            false
+        })
+
+        renameBar.setOnTouchListener { view, event ->
+            if (event.action == MotionEvent.ACTION_UP && renameText != "") {
+                val padding: Int = renameBar.paddingRight * 2
+                val iconWidth: Int = renameBar.compoundDrawables[2].bounds.width()
+
+                if (event.rawX >= renameBar.right - iconWidth - padding) rename()
+            }
+            view.performClick()
+        }
+
+        recoverOriginalNameButton.setOnClickListener {
+            rename(true)
+        }
+
+    }
+
+
+    private fun dimBehindMenu(menu: PopupWindow?) {
+        if (menu == null) return
+
+        val container = menu.contentView.rootView
+        val context = menu.contentView.context
         val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val p = container.layoutParams as WindowManager.LayoutParams
         p.flags = p.flags or WindowManager.LayoutParams.FLAG_DIM_BEHIND
@@ -400,8 +549,11 @@ class State(context: Context) {
         wm.updateViewLayout(container, p)
     }
 
-    fun hideContextMenu() {
-        contextMenuWindow?.dismiss()
+    fun hideMenu(menu: PopupWindow? = null) {
+        if (menu == null) {
+            contextMenuWindow?.dismiss()
+            renameWindow?.dismiss()
+        } else menu.dismiss()
     }
 
     fun pxToDp(px: Int): Int {

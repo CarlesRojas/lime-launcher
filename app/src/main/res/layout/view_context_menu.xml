@@ -14,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:id="@+id/linearLayout"
+            android:id="@+id/contextMenu_titleBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -67,7 +67,7 @@
             android:id="@+id/items_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+            app:layout_constraintTop_toBottomOf="@+id/contextMenu_titleBar">
 
             <com.bosphere.fadingedgelayout.FadingEdgeLayout
                 android:layout_width="match_parent"
@@ -200,6 +200,34 @@
                                 android:fontFamily="@font/montserrat"
                                 android:singleLine="true"
                                 android:text="@string/contextMenu_removeFromHome"
+                                android:textColor="@color/white"
+                                android:textSize="18sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/contextMenu_renameApp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="12dp"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <ImageButton
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:layout_marginEnd="18dp"
+                                android:background="@drawable/icon_rename"
+                                android:contentDescription="@string/renameApp_icon_description" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/montserrat"
+                                android:singleLine="true"
+                                android:text="@string/contextMenu_renameApp"
                                 android:textColor="@color/white"
                                 android:textSize="18sp" />
                         </LinearLayout>

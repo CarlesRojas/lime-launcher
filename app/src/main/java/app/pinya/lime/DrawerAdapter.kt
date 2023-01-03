@@ -289,6 +289,10 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
                 if (lastFilterWasAlphabet) filterAppListByAlphabet() else filterAppList()
                 initAlphabet()
             }
+            ContextMenuItem.RENAME_APP -> {
+                if (lastFilterWasAlphabet) filterAppListByAlphabet() else filterAppList()
+                initAlphabet()
+            }
             else -> {}
         }
     }

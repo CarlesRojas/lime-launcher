@@ -47,7 +47,7 @@ class MainActivity : Activity() {
         super.onResume()
 
         state.fetchInstalledAppsAgain()
-        state.hideContextMenu()
+        state.hideMenu()
         viewPager.currentItem = 0
         customPageAdapter.onResume()
     }
