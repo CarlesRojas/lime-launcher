@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black_low"
+    android:background="@color/popup_background_black"
     tools:context=".SettingsActivity">
 
     <androidx.constraintlayout.widget.Guideline
@@ -185,6 +185,30 @@
                         android:progressDrawable="@drawable/seekbar_style"
                         android:splitTrack="false"
                         android:thumb="@drawable/seekbar_thumb" />
+
+                    <View
+                        android:id="@+id/divider9"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@android:color/transparent" />
+
+                    <Switch
+                        android:id="@+id/blackTextSwitch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:switchPadding="16dp"
+                        android:text="@string/settings_blackText"
+                        android:textColor="@color/white"
+                        android:textOff=""
+                        android:textOn=""
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:thumb="@drawable/switch_thumb"
+                        android:track="@drawable/switch_track"
+                        tools:ignore="UseSwitchCompatOrMaterialXml" />
 
                     <View
                         android:id="@+id/divider8"

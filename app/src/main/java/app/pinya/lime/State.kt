@@ -27,7 +27,7 @@ import kotlin.math.round
 
 
 enum class DataKey {
-    DATE_FORMAT, TIME_FORMAT, AUTO_SHOW_KEYBOARD, AUTO_OPEN_APPS, ICONS_IN_HOME, ICONS_IN_DRAWER, SHOW_SEARCH_BAR, SHOW_ALPHABET_FILTER, HOME_APPS, HIDDEN_APPS, SHOW_HIDDEN_APPS, RENAMED_APPS
+    DATE_FORMAT, TIME_FORMAT, AUTO_SHOW_KEYBOARD, AUTO_OPEN_APPS, ICONS_IN_HOME, ICONS_IN_DRAWER, SHOW_SEARCH_BAR, SHOW_ALPHABET_FILTER, HOME_APPS, HIDDEN_APPS, SHOW_HIDDEN_APPS, RENAMED_APPS, BLACK_TEXT
 }
 
 enum class ContextMenuItem {
@@ -541,13 +541,14 @@ class State(context: Context) {
 
     private fun dimBehindMenu(menu: PopupWindow?) {
         if (menu == null) return
+        val blackTextValue = getData(DataKey.BLACK_TEXT, false)
 
         val container = menu.contentView.rootView
         val context = menu.contentView.context
         val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val p = container.layoutParams as WindowManager.LayoutParams
         p.flags = p.flags or WindowManager.LayoutParams.FLAG_DIM_BEHIND
-        p.dimAmount = 0.8f
+        p.dimAmount = if (blackTextValue) 0.5f else 0.8f
         wm.updateViewLayout(container, p)
     }
 

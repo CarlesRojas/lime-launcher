@@ -27,6 +27,7 @@
     <string name="settings_showSearchBar">Show search bar</string>
     <string name="settings_showAlphabet">Show alphabet filter</string>
     <string name="settings_showHiddenApps">Show hidden apps</string>
+    <string name="settings_blackText">Use black text</string>
 
 
     <string name="contextMenu_addToHome">Add to Home</string>

@@ -190,13 +190,19 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
 
         alphabetLayout.removeAllViews()
         val alphabetHeight = alphabetLayout.height
+        val blackTextValue = state.getData(DataKey.BLACK_TEXT, false)
 
         for (char in currentAlphabet) {
             val textView = View.inflate(context, R.layout.view_alphabet_character, null) as TextView
             textView.text = char.toString()
             textView.height = alphabetHeight / (ALPHABET.size + 1)
             textView.typeface = ResourcesCompat.getFont(context, R.font.montserrat)
-            textView.setTextColor(ContextCompat.getColor(context, R.color.white_extra_low))
+            textView.setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    if (blackTextValue) R.color.black_extra_low else R.color.white_extra_low
+                )
+            )
             textView.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM)
             textView.setAutoSizeTextTypeUniformWithConfiguration(
                 8, 14, 1, TypedValue.COMPLEX_UNIT_SP
