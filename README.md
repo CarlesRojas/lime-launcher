@@ -19,6 +19,6 @@ Whether you're looking for a launcher that's easy to use or one that simply gets
 
 ## TODO
 
-- [ ] Change app icons
 - [ ] Wallpapers ?
 - [ ] Let user choose what app the time and date opens ?
+- [ ] Change text color from settings
