@@ -15,6 +15,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
 import java.util.*
@@ -53,6 +54,7 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
     @SuppressLint("NotifyDataSetChanged")
     fun onResume() {
         getHomeAppList()
+        updateTimeDateStyle()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -93,6 +95,25 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
                 context.startActivity(Intent(context, SettingsActivity::class.java))
             }
         })
+
+        updateTimeDateStyle()
+    }
+
+    private fun updateTimeDateStyle() {
+        val blackTextValue = state.getData(DataKey.BLACK_TEXT, false)
+
+        date.setTextColor(
+            ContextCompat.getColor(
+                context,
+                if (blackTextValue) R.color.black else R.color.white
+            )
+        )
+        time.setTextColor(
+            ContextCompat.getColor(
+                context,
+                if (blackTextValue) R.color.black else R.color.white
+            )
+        )
     }
 
     private fun startTimerToUpdateDateTime() {
@@ -183,6 +204,8 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
     override fun onBindViewHolder(holder: ItemAppViewHolder, position: Int) {
         val currentApp = homeAppList.find { it.homeOrderIndex == position } ?: return
 
+        val blackTextValue = state.getData(DataKey.BLACK_TEXT, false)
+
         val imageView: ImageView = holder.itemView.findViewById(R.id.appIcon)
         val textView: TextView = holder.itemView.findViewById(R.id.appName)
         val linearLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
@@ -194,6 +217,12 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
         imageView.visibility = if (stateValue) View.VISIBLE else View.GONE
 
         textView.text = currentApp.name
+        textView.setTextColor(
+            ContextCompat.getColor(
+                context,
+                if (blackTextValue) R.color.black else R.color.white
+            )
+        )
 
         linearLayout.setOnTouchListener(object : OnSwipeTouchListener(context) {
             override fun onFlingDown() {

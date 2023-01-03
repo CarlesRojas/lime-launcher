@@ -200,7 +200,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
             textView.setTextColor(
                 ContextCompat.getColor(
                     context,
-                    if (blackTextValue) R.color.black_extra_low else R.color.white_extra_low
+                    if (blackTextValue) R.color.black else R.color.white
                 )
             )
             textView.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM)
@@ -315,6 +315,8 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
     override fun onBindViewHolder(holder: ItemAppViewHolder, position: Int) {
         val currentApp = shownAppList[position]
 
+        val blackTextValue = state.getData(DataKey.BLACK_TEXT, false)
+
         val imageView: ImageView = holder.itemView.findViewById(R.id.appIcon)
         val textView: TextView = holder.itemView.findViewById(R.id.appName)
         val linearLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
@@ -326,6 +328,12 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         imageView.visibility = if (stateValue) View.VISIBLE else View.GONE
 
         textView.text = currentApp.name
+        textView.setTextColor(
+            ContextCompat.getColor(
+                context,
+                if (blackTextValue) R.color.black else R.color.white
+            )
+        )
 
         linearLayout.setOnClickListener {
             val launchAppIntent =
