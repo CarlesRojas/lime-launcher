@@ -6,8 +6,8 @@ import android.view.View
 import android.view.View.OnTouchListener
 import kotlin.math.abs
 
-private const val SWIPE_THRESHOLD: Int = 0
-private const val SWIPE_VELOCITY_THRESHOLD: Int = 0
+private const val SWIPE_THRESHOLD: Int = 100
+private const val SWIPE_VELOCITY_THRESHOLD: Int = 100
 
 internal open class OnSwipeTouchListener(c: Context) :
     OnTouchListener {

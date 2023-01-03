@@ -23,6 +23,7 @@ class SettingsActivity : Activity() {
         initializeDateSeekBar()
         initializeTimeSeekBar()
 
+        initializeDimBackgroundText()
         initializeUseBlackText()
         initializeShowHiddenApps()
         initializeAutoOpenKeyboard()
@@ -88,6 +89,18 @@ class SettingsActivity : Activity() {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
+    }
+
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    private fun initializeDimBackgroundText() {
+        val switch = findViewById<Switch>(R.id.dimBackgroundSwitch)
+        val stateValue = state.getData(DataKey.DIM_BACKGROUND, false)
+
+        switch.isChecked = stateValue
+
+        switch.setOnCheckedChangeListener { _, isChecked ->
+            state.saveData(DataKey.DIM_BACKGROUND, isChecked)
+        }
     }
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")

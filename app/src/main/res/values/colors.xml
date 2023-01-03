@@ -8,6 +8,8 @@
     <color name="white_low">#96FFFFFF</color>
     <color name="white_extra_low">#64FFFFFF</color>
 
+    <color name="transparent">@android:color/transparent</color>
+
     <color name="popup_background_black">#1E1E1E</color>
     <color name="popup_background_white">#ECECEC</color>
 

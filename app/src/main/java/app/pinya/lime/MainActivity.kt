@@ -2,6 +2,7 @@ package app.pinya.lime
 
 import android.app.Activity
 import android.os.Bundle
+import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 
@@ -19,6 +20,7 @@ class MainActivity : Activity() {
         state = State(this)
 
         linkAdapters()
+        dimBackground()
     }
 
     private fun linkAdapters() {
@@ -50,5 +52,18 @@ class MainActivity : Activity() {
         state.hideMenu()
         viewPager.currentItem = 0
         customPageAdapter.onResume()
+        dimBackground()
+    }
+
+    private fun dimBackground() {
+        val blackTextValue = state.getData(DataKey.BLACK_TEXT, false)
+        val dimBackgroundValue = state.getData(DataKey.DIM_BACKGROUND, false)
+
+        viewPager.setBackgroundColor(
+            ContextCompat.getColor(
+                this,
+                if (dimBackgroundValue) (if (blackTextValue) R.color.white_extra_low else R.color.black_extra_low) else R.color.transparent
+            )
+        )
     }
 }
