@@ -362,12 +362,14 @@ class State(context: Context) {
             toggleHomeInApp(app.packageName, true)
             onClickCallback(ContextMenuItem.ADD_TO_HOME)
             hideMenu(contextMenuWindow)
+            if (!fromHome) showToast("${app.name} added to Home")
         }
 
         removeFromHomeButton.setOnClickListener {
             toggleHomeInApp(app.packageName, false)
             onClickCallback(ContextMenuItem.REMOVE_FROM_HOME)
             hideMenu(contextMenuWindow)
+            if (!fromHome) showToast("${app.name} removed from Home")
         }
 
         showAppButton.setOnClickListener {
@@ -578,4 +580,9 @@ class State(context: Context) {
             vibrator.vibrate(VibrationEffect.createOneShot(timeInMs, amplitude))
         }
     }
+
+    private fun showToast(text: String) {
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+    }
+
 }

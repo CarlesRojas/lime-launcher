@@ -22,4 +22,3 @@ Whether you're looking for a launcher that's easy to use or one that simply gets
 - [ ] Change app icons
 - [ ] Wallpapers ?
 - [ ] Let user choose what app the time and date opens ?
-- [ ] Show toast when adding or removing from the home screen from the drawer
