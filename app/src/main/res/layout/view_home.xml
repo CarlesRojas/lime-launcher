@@ -74,6 +74,7 @@
         app:layout_constraintTop_toBottomOf="@+id/homeTime" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/homeAppListContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/guidelineH3"
@@ -81,24 +82,14 @@
         app:layout_constraintStart_toStartOf="@+id/guidelineV1"
         app:layout_constraintTop_toBottomOf="@+id/guidelineH2">
 
-        <com.bosphere.fadingedgelayout.FadingEdgeLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/homeAppList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:fel_edge="bottom|top"
-            app:fel_size_bottom="14dp"
-            app:fel_size_top="14dp"
+            android:overScrollMode="never"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/homeAppList"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:overScrollMode="never"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </com.bosphere.fadingedgelayout.FadingEdgeLayout>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

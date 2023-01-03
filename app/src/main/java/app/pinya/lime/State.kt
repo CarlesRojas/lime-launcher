@@ -7,6 +7,7 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
+import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
@@ -14,6 +15,7 @@ import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlin.math.round
 
 
 enum class DataKey {
@@ -31,8 +33,8 @@ class State(context: Context) {
     private val sharedPreferences: SharedPreferences
 
     private var contextMenuWindow: PopupWindow? = null
-
     private var installedAppList: MutableList<ItemApp> = mutableListOf()
+    private var maxNumOfAppsInHome: Int = 100
 
     init {
         this.context = context
@@ -96,6 +98,13 @@ class State(context: Context) {
         list.forEach { this.add(it) }
     }
 
+    private fun isHomeFull(): Boolean {
+        val homeAppSet: MutableSet<String> =
+            getData(DataKey.HOME_APPS, mutableSetOf()) ?: mutableSetOf()
+
+        return homeAppSet.size >= maxNumOfAppsInHome
+    }
+
     private fun toggleHomeInApp(packageName: String, homeNewValue: Boolean) {
         val app = installedAppList.find { it.getPackageName() == packageName }
         app?.home = homeNewValue
@@ -116,7 +125,7 @@ class State(context: Context) {
         val homeAppSet: MutableSet<String> =
             getData(DataKey.HOME_APPS, mutableSetOf()) ?: mutableSetOf()
 
-        var index = -1;
+        var index = -1
         homeAppSet.forEachIndexed { i, elem ->
             if (elem == packageName) index = i
         }
@@ -133,6 +142,21 @@ class State(context: Context) {
         homeAppSet.forEachIndexed { i, packageName ->
             val app = installedAppList.find { packageName == it.getPackageName() }
             if (app != null) app.homeOrderIndex = i
+        }
+    }
+
+
+    fun setMaxNumOfApps(maxNumOfAppsInHome: Int) {
+        this.maxNumOfAppsInHome = maxNumOfAppsInHome
+
+        var homeAppList = getData(DataKey.HOME_APPS, mutableSetOf()) ?: mutableSetOf()
+        val appsToRemoveFromHome = mutableListOf<String>()
+        homeAppList.forEachIndexed { i, elem ->
+            if (i >= maxNumOfAppsInHome) appsToRemoveFromHome.add(elem)
+        }
+
+        appsToRemoveFromHome.forEach {
+            toggleHomeInApp(it, false)
         }
     }
 
@@ -257,7 +281,7 @@ class State(context: Context) {
             if (!fromHome || app.homeOrderIndex <= 0) View.GONE else View.VISIBLE
         moveDownButton.visibility =
             if (!fromHome || app.homeOrderIndex >= homeAppSet.size - 1) View.GONE else View.VISIBLE
-        addToHomeButton.visibility = if (app.home) View.GONE else View.VISIBLE
+        addToHomeButton.visibility = if (app.home || isHomeFull()) View.GONE else View.VISIBLE
         removeFromHomeButton.visibility = if (app.home) View.VISIBLE else View.GONE
         showAppButton.visibility = if (app.hidden) View.VISIBLE else View.GONE
         hideAppButton.visibility = if (app.hidden) View.GONE else View.VISIBLE
@@ -351,5 +375,15 @@ class State(context: Context) {
 
     fun hideContextMenu() {
         contextMenuWindow?.dismiss()
+    }
+
+    fun pxToDp(px: Int): Int {
+        val displayMetrics: DisplayMetrics = context.resources.displayMetrics
+        return round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).toInt()
+    }
+
+    fun dpToPx(dp: Int): Int {
+        val displayMetrics: DisplayMetrics = context.resources.displayMetrics
+        return round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).toInt()
     }
 }

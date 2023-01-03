@@ -2,7 +2,6 @@ package app.pinya.lime
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -15,6 +14,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
 import java.util.*
@@ -35,7 +35,6 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
     private lateinit var time: TextView
 
     private var timer: Timer? = Timer()
-
     private var homeAppList: List<ItemApp> = mutableListOf()
 
     init {

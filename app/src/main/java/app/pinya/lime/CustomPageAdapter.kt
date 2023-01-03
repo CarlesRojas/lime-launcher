@@ -4,10 +4,13 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
 import kotlinx.coroutines.*
+import kotlin.math.floor
 
 
 class CustomPagerAdapter(context: Context, state: State) : PagerAdapter() {
@@ -57,6 +60,23 @@ class CustomPagerAdapter(context: Context, state: State) : PagerAdapter() {
             viewHome.adapter = it
             viewHome.layoutManager = LinearLayoutManager(context)
         }
+
+        layout.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                layout.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                val homeAppListContainer =
+                    layout.findViewById<View>(R.id.homeAppListContainer) as ConstraintLayout
+
+                val heightInDp = state.pxToDp(homeAppListContainer.height)
+                val appHeightInDp = 58f
+                val maxNumOfAppsInHome =
+                    floor(heightInDp / appHeightInDp).toInt() - 1
+
+                state.setMaxNumOfApps(maxNumOfAppsInHome)
+                home.getHomeAppList()
+            }
+        })
 
         collection.addView(layout)
         return layout
