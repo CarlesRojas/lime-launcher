@@ -20,8 +20,6 @@ Whether you're looking for a launcher that's easy to use or one that simply gets
 ## TODO
 
 - [ ] Rename apps
-- [ ] Open notifications on swipe down in home screen
 - [ ] Change app icons
 - [ ] Wallpapers ?
 - [ ] Let user choose what app the time and date opens ?
-- [ ] Limit the ammount of apps in the home screen (check the total height divided by the app height to get the limit) ?

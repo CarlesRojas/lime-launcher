@@ -6,6 +6,10 @@ import android.content.SharedPreferences
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import android.provider.Settings
 import android.util.DisplayMetrics
 import android.view.Gravity
@@ -149,7 +153,7 @@ class State(context: Context) {
     fun setMaxNumOfApps(maxNumOfAppsInHome: Int) {
         this.maxNumOfAppsInHome = maxNumOfAppsInHome
 
-        var homeAppList = getData(DataKey.HOME_APPS, mutableSetOf()) ?: mutableSetOf()
+        val homeAppList = getData(DataKey.HOME_APPS, mutableSetOf()) ?: mutableSetOf()
         val appsToRemoveFromHome = mutableListOf<String>()
         homeAppList.forEachIndexed { i, elem ->
             if (i >= maxNumOfAppsInHome) appsToRemoveFromHome.add(elem)
@@ -385,5 +389,18 @@ class State(context: Context) {
     fun dpToPx(dp: Int): Int {
         val displayMetrics: DisplayMetrics = context.resources.displayMetrics
         return round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).toInt()
+    }
+
+    @Suppress("DEPRECATION")
+    fun vibrate(timeInMs: Long = 64, amplitude: Int = 64) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val vibratorManager =
+                context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+            val vibrator = vibratorManager.defaultVibrator
+            vibrator.vibrate(VibrationEffect.createOneShot(timeInMs, amplitude))
+        } else {
+            val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            vibrator.vibrate(VibrationEffect.createOneShot(timeInMs, amplitude))
+        }
     }
 }
