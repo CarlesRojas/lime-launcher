@@ -12,12 +12,15 @@ class MainActivity : Activity() {
     private lateinit var state: State
     private lateinit var customPageAdapter: CustomPagerAdapter
     private lateinit var viewPager: ViewPager
+    private lateinit var dailyWallpaper: DailyWallpaper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         state = State(this)
+        dailyWallpaper = DailyWallpaper(this, state)
+
 
         linkAdapters()
         dimBackground()
@@ -48,6 +51,7 @@ class MainActivity : Activity() {
     override fun onResume() {
         super.onResume()
 
+        dailyWallpaper.updateWallpaper()
         state.fetchInstalledAppsAgain()
         state.hideMenu()
         viewPager.currentItem = 0

@@ -11,7 +11,6 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
-import android.preference.PreferenceManager
 import android.provider.Settings
 import android.util.DisplayMetrics
 import android.view.*
@@ -27,7 +26,7 @@ import kotlin.math.round
 
 
 enum class DataKey {
-    DATE_FORMAT, TIME_FORMAT, AUTO_SHOW_KEYBOARD, AUTO_OPEN_APPS, ICONS_IN_HOME, ICONS_IN_DRAWER, SHOW_SEARCH_BAR, SHOW_ALPHABET_FILTER, HOME_APPS, HIDDEN_APPS, SHOW_HIDDEN_APPS, RENAMED_APPS, BLACK_TEXT, DIM_BACKGROUND
+    DATE_FORMAT, TIME_FORMAT, AUTO_SHOW_KEYBOARD, AUTO_OPEN_APPS, ICONS_IN_HOME, ICONS_IN_DRAWER, SHOW_SEARCH_BAR, SHOW_ALPHABET_FILTER, HOME_APPS, HIDDEN_APPS, SHOW_HIDDEN_APPS, RENAMED_APPS, BLACK_TEXT, DIM_BACKGROUND, DAILY_WALLPAPER, WALLPAPER_DATE
 }
 
 enum class ContextMenuItem {

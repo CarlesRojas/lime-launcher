@@ -29,6 +29,7 @@
     <string name="settings_showHiddenApps">Show hidden apps</string>
     <string name="settings_blackText">Use black text</string>
     <string name="settings_dimBackground">Dim wallpaper</string>
+    <string name="settings_dailyWallpaper">Update wallpaper daily</string>
 
 
     <string name="contextMenu_addToHome">Add to Home</string>

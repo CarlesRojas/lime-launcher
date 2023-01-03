@@ -23,6 +23,7 @@ class SettingsActivity : Activity() {
         initializeDateSeekBar()
         initializeTimeSeekBar()
 
+        initializeDailyWallpaperText()
         initializeDimBackgroundText()
         initializeUseBlackText()
         initializeShowHiddenApps()
@@ -89,6 +90,18 @@ class SettingsActivity : Activity() {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
+    }
+
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    private fun initializeDailyWallpaperText() {
+        val switch = findViewById<Switch>(R.id.dailyWallpaperSwitch)
+        val stateValue = state.getData(DataKey.DAILY_WALLPAPER, false)
+
+        switch.isChecked = stateValue
+
+        switch.setOnCheckedChangeListener { _, isChecked ->
+            state.saveData(DataKey.DAILY_WALLPAPER, isChecked)
+        }
     }
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
