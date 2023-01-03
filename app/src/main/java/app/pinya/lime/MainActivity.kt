@@ -57,7 +57,7 @@ class MainActivity : Activity() {
 
     private fun dimBackground() {
         val blackTextValue = state.getData(DataKey.BLACK_TEXT, false)
-        val dimBackgroundValue = state.getData(DataKey.DIM_BACKGROUND, false)
+        val dimBackgroundValue = state.getData(DataKey.DIM_BACKGROUND, true)
 
         viewPager.setBackgroundColor(
             ContextCompat.getColor(

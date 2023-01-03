@@ -94,7 +94,7 @@ class SettingsActivity : Activity() {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private fun initializeDimBackgroundText() {
         val switch = findViewById<Switch>(R.id.dimBackgroundSwitch)
-        val stateValue = state.getData(DataKey.DIM_BACKGROUND, false)
+        val stateValue = state.getData(DataKey.DIM_BACKGROUND, true)
 
         switch.isChecked = stateValue
 
