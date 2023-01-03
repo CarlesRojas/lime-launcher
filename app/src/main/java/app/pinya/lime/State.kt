@@ -23,7 +23,7 @@ import kotlin.math.round
 
 
 enum class DataKey {
-    DATE_FORMAT, TIME_FORMAT, AUTO_SHOW_KEYBOARD, AUTO_OPEN_APPS, ICONS_IN_HOME, ICONS_IN_DRAWER, SHOW_SEARCH_BAR, SHOW_ALPHABET_FILTER, HOME_APPS, HIDDEN_APPS, SHOW_HIDDEN_APPS
+    DATE_FORMAT, TIME_FORMAT, AUTO_SHOW_KEYBOARD, AUTO_OPEN_APPS, ICONS_IN_HOME, ICONS_IN_DRAWER, SHOW_SEARCH_BAR, SHOW_ALPHABET_FILTER, HOME_APPS, HIDDEN_APPS, SHOW_HIDDEN_APPS, RENAMED_APPS
 }
 
 enum class ContextMenuItem {
@@ -61,6 +61,8 @@ class State(context: Context) {
 
         val hiddenApps: MutableSet<String>? = getData(DataKey.HIDDEN_APPS, mutableSetOf())
         val homeApps: MutableSet<String>? = getData(DataKey.HOME_APPS, mutableSetOf())
+        val renamedApps: MutableMap<String, String>? = getData(DataKey.RENAMED_APPS, mutableMapOf())
+
         val showHiddenApps: Boolean = getData(DataKey.SHOW_HIDDEN_APPS, false)
 
         for (untreatedApp in untreatedAppList) {
@@ -75,20 +77,18 @@ class State(context: Context) {
                 if (packageInfo != null) (packageInfo.flags and ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM else false
             app.hidden = hiddenApps?.find { it == packageName } != null
             app.home = homeApps?.find { it == packageName } != null
+            app.name = renamedApps?.get(packageName) ?: app.originalName
 
             if (!showHiddenApps && app.hidden) continue
             if (!installedAppList.contains(app)) installedAppList.add(app)
         }
 
-        hiddenApps?.removeAll { app -> installedAppList.find { app == it.getPackageName() } == null }
-        homeApps?.removeAll { app -> installedAppList.find { app == it.getPackageName() } == null }
-
         homeApps?.forEachIndexed { i, packageName ->
-            val app = installedAppList.find { packageName == it.getPackageName() }
+            val app = installedAppList.find { packageName == it.packageName }
             if (app != null) app.homeOrderIndex = i
         }
 
-        installedAppList.sortBy { it.getName().lowercase() }
+        installedAppList.sortBy { it.name.lowercase() }
     }
 
     private fun <T> MutableSet<T>.swap(index1: Int, index2: Int) {
@@ -110,7 +110,7 @@ class State(context: Context) {
     }
 
     private fun toggleHomeInApp(packageName: String, homeNewValue: Boolean) {
-        val app = installedAppList.find { it.getPackageName() == packageName }
+        val app = installedAppList.find { it.packageName == packageName }
         app?.home = homeNewValue
 
         val homeAppSet: MutableSet<String> =
@@ -120,6 +120,8 @@ class State(context: Context) {
             true -> homeAppSet.add(packageName)
             false -> homeAppSet.remove(packageName)
         }
+
+        homeAppSet.removeAll { app -> installedAppList.find { app == it.packageName } == null }
 
         updateHomeAppOrder(homeAppSet)
         saveData(DataKey.HOME_APPS, homeAppSet)
@@ -144,11 +146,10 @@ class State(context: Context) {
 
     private fun updateHomeAppOrder(homeAppSet: MutableSet<String>) {
         homeAppSet.forEachIndexed { i, packageName ->
-            val app = installedAppList.find { packageName == it.getPackageName() }
+            val app = installedAppList.find { packageName == it.packageName }
             if (app != null) app.homeOrderIndex = i
         }
     }
-
 
     fun setMaxNumOfApps(maxNumOfAppsInHome: Int) {
         this.maxNumOfAppsInHome = maxNumOfAppsInHome
@@ -164,8 +165,26 @@ class State(context: Context) {
         }
     }
 
+    private fun renameApp(packageName: String, newName: String) {
+        val app = installedAppList.find { it.packageName == packageName } ?: return
+        app.name = newName
+
+        val renamedAppsMap: MutableMap<String, String> =
+            getData(DataKey.RENAMED_APPS, mutableMapOf()) ?: mutableMapOf()
+
+        if (newName == app.originalName) renamedAppsMap.remove(packageName)
+        else renamedAppsMap[packageName] = newName
+
+        for (key in renamedAppsMap.keys)
+            if (installedAppList.find { key == it.packageName } == null)
+                renamedAppsMap.remove(key)
+
+        saveData(DataKey.RENAMED_APPS, renamedAppsMap)
+        fetchInstalledAppsAgain()
+    }
+
     private fun toggleHiddenApp(packageName: String, hiddenNewValue: Boolean) {
-        val app = installedAppList.find { it.getPackageName() == packageName }
+        val app = installedAppList.find { it.packageName == packageName }
         app?.hidden = hiddenNewValue
 
         val hiddenAppsSet: MutableSet<String> =
@@ -175,6 +194,8 @@ class State(context: Context) {
             true -> hiddenAppsSet.add(packageName)
             false -> hiddenAppsSet.remove(packageName)
         }
+
+        hiddenAppsSet.removeAll { app -> installedAppList.find { app == it.packageName } == null }
 
         saveData(DataKey.HIDDEN_APPS, hiddenAppsSet)
         fetchInstalledAppsAgain()
@@ -278,8 +299,8 @@ class State(context: Context) {
         val appInfoButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_appInfo)
         val uninstallButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_uninstall)
 
-        icon.setImageDrawable(app.getIcon())
-        appName.text = app.getName()
+        icon.setImageDrawable(app.icon)
+        appName.text = app.name
 
         moveUpButton.visibility =
             if (!fromHome || app.homeOrderIndex <= 0) View.GONE else View.VISIBLE
@@ -310,37 +331,37 @@ class State(context: Context) {
         }
 
         moveUpButton.setOnClickListener {
-            changeHomeAppOrder(app.getPackageName(), true)
+            changeHomeAppOrder(app.packageName, true)
             onClickCallback(ContextMenuItem.MOVE_UP)
             hideContextMenu()
         }
 
         moveDownButton.setOnClickListener {
-            changeHomeAppOrder(app.getPackageName(), false)
+            changeHomeAppOrder(app.packageName, false)
             onClickCallback(ContextMenuItem.MOVE_DOWN)
             hideContextMenu()
         }
 
         addToHomeButton.setOnClickListener {
-            toggleHomeInApp(app.getPackageName(), true)
+            toggleHomeInApp(app.packageName, true)
             onClickCallback(ContextMenuItem.ADD_TO_HOME)
             hideContextMenu()
         }
 
         removeFromHomeButton.setOnClickListener {
-            toggleHomeInApp(app.getPackageName(), false)
+            toggleHomeInApp(app.packageName, false)
             onClickCallback(ContextMenuItem.REMOVE_FROM_HOME)
             hideContextMenu()
         }
 
         showAppButton.setOnClickListener {
-            toggleHiddenApp(app.getPackageName(), false)
+            toggleHiddenApp(app.packageName, false)
             onClickCallback(ContextMenuItem.SHOW_APP)
             hideContextMenu()
         }
 
         hideAppButton.setOnClickListener {
-            toggleHiddenApp(app.getPackageName(), true)
+            toggleHiddenApp(app.packageName, true)
             onClickCallback(ContextMenuItem.HIDE_APP)
             hideContextMenu()
         }
@@ -351,7 +372,7 @@ class State(context: Context) {
 
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
             intent.addCategory(Intent.CATEGORY_DEFAULT)
-            intent.data = Uri.parse("package:" + app.getPackageName())
+            intent.data = Uri.parse("package:" + app.packageName)
             context.startActivity(intent)
         }
 
@@ -360,7 +381,7 @@ class State(context: Context) {
             hideContextMenu()
 
             val intent = Intent(Intent.ACTION_DELETE)
-            intent.data = Uri.parse("package:" + app.getPackageName())
+            intent.data = Uri.parse("package:" + app.packageName)
             context.startActivity(intent)
         }
     }

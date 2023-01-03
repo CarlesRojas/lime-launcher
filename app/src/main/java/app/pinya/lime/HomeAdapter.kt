@@ -190,11 +190,11 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
 
         linearLayout.alpha = if (currentApp.hidden) 0.35f else 1f
 
-        imageView.setImageDrawable(currentApp.getIcon())
+        imageView.setImageDrawable(currentApp.icon)
         val stateValue = state.getData(DataKey.ICONS_IN_HOME, true)
         imageView.visibility = if (stateValue) View.VISIBLE else View.GONE
 
-        textView.text = currentApp.getName()
+        textView.text = currentApp.name
 
         linearLayout.setOnTouchListener(object : OnSwipeTouchListener(context) {
             override fun onFlingDown() {
@@ -203,7 +203,7 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
 
             override fun onClick() {
                 val launchAppIntent =
-                    context.packageManager.getLaunchIntentForPackage(currentApp.getPackageName())
+                    context.packageManager.getLaunchIntentForPackage(currentApp.packageName)
 
                 if (launchAppIntent != null) context.startActivity(launchAppIntent)
             }

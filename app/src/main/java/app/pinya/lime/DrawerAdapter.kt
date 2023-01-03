@@ -181,7 +181,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         currentAlphabet.clear()
 
         for (app in this.state.getInstalledAppList()) {
-            val char = app.getName().first().uppercaseChar()
+            val char = app.name.first().uppercaseChar()
 
             if (currentAlphabet.contains(char)) continue
             if (ALPHABET.contains(char)) currentAlphabet.add(char)
@@ -243,7 +243,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         val installedList = this.state.getInstalledAppList()
         installedList.forEach {
             val included =
-                if (searchBarText == "") true else it.getName().contains(searchBarText, true)
+                if (searchBarText == "") true else it.name.contains(searchBarText, true)
 
             if (included) shownAppList.add(it)
         }
@@ -255,7 +255,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
             val app = shownAppList[0]
             clearText()
             val launchAppIntent =
-                context.packageManager.getLaunchIntentForPackage(app.getPackageName())
+                context.packageManager.getLaunchIntentForPackage(app.packageName)
             if (launchAppIntent != null) context.startActivity(launchAppIntent)
         }
 
@@ -268,8 +268,8 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         this.state.getInstalledAppList().forEach {
             val included = when (searchBarText) {
                 "" -> true
-                "#" -> !ALPHABET.contains(it.getName().first().uppercaseChar())
-                else -> it.getName().startsWith(searchBarText, true)
+                "#" -> !ALPHABET.contains(it.name.first().uppercaseChar())
+                else -> it.name.startsWith(searchBarText, true)
             }
 
             if (included) shownAppList.add(it)
@@ -311,15 +311,15 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
 
         linearLayout.alpha = if (currentApp.hidden) 0.35f else 1f
 
-        imageView.setImageDrawable(currentApp.getIcon())
+        imageView.setImageDrawable(currentApp.icon)
         val stateValue = state.getData(DataKey.ICONS_IN_DRAWER, true)
         imageView.visibility = if (stateValue) View.VISIBLE else View.GONE
 
-        textView.text = currentApp.getName()
+        textView.text = currentApp.name
 
         linearLayout.setOnClickListener {
             val launchAppIntent =
-                context.packageManager.getLaunchIntentForPackage(currentApp.getPackageName())
+                context.packageManager.getLaunchIntentForPackage(currentApp.packageName)
 
             if (launchAppIntent != null) context.startActivity(launchAppIntent)
         }
