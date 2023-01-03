@@ -319,6 +319,8 @@ class State(context: Context) {
             true
         )
 
+        contextMenuWindow?.animationStyle = R.style.PopupWindowAnimation
+
         contextMenuWindow?.showAtLocation(contextMenuContainer, Gravity.BOTTOM, 0, 0)
         dimBehind()
 
