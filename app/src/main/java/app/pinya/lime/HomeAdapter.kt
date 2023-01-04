@@ -30,10 +30,10 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
     private val state: State
     private val layout: ViewGroup
 
-    private lateinit var contextMenuContainer: ConstraintLayout
+    private var contextMenuContainer: ConstraintLayout? = null
 
-    private lateinit var date: TextView
-    private lateinit var time: TextView
+    private var date: TextView? = null
+    private var time: TextView? = null
 
     private var timer: Timer? = Timer()
     private var homeAppList: List<ItemApp> = mutableListOf()
@@ -60,7 +60,7 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
     @SuppressLint("ClickableViewAccessibility")
     private fun initDateTime() {
         date = layout.findViewById(R.id.homeDate)
-        date.setOnTouchListener(object : OnSwipeTouchListener(context) {
+        date?.setOnTouchListener(object : OnSwipeTouchListener(context) {
             override fun onFlingDown() {
                 expandNotificationBar()
             }
@@ -89,7 +89,7 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
         })
 
         time = layout.findViewById(R.id.homeTime)
-        time.setOnTouchListener(object : OnSwipeTouchListener(context) {
+        time?.setOnTouchListener(object : OnSwipeTouchListener(context) {
             override fun onFlingDown() {
                 expandNotificationBar()
             }
@@ -122,13 +122,13 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
     private fun updateTimeDateStyle() {
         val blackTextValue = state.getData(DataKey.BLACK_TEXT, false)
 
-        date.setTextColor(
+        date?.setTextColor(
             ContextCompat.getColor(
                 context,
                 if (blackTextValue) R.color.black else R.color.white
             )
         )
-        time.setTextColor(
+        time?.setTextColor(
             ContextCompat.getColor(
                 context,
                 if (blackTextValue) R.color.black else R.color.white
@@ -144,10 +144,10 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
                     val dateStateValue = state.getData(DataKey.DATE_FORMAT, 1)
                     val timeStateValue = state.getData(DataKey.TIME_FORMAT, 0)
 
-                    date.text =
+                    date?.text =
                         SimpleDateFormat.getDateInstance(SettingsActivity.mapFormat(dateStateValue))
                             .format(Date())
-                    time.text =
+                    time?.text =
                         SimpleDateFormat.getTimeInstance(SettingsActivity.mapFormat(timeStateValue))
                             .format(Date())
                 }
@@ -253,7 +253,12 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
 
             override fun onLongClick() {
                 state.vibrate()
-                state.showContextMenu(currentApp, contextMenuContainer, true, ::onContextMenuClick)
+                if (contextMenuContainer != null) state.showContextMenu(
+                    currentApp,
+                    contextMenuContainer!!,
+                    true,
+                    ::onContextMenuClick
+                )
             }
         })
     }

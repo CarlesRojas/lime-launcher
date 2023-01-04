@@ -12,14 +12,14 @@ import java.util.*
 
 
 class SettingsActivity : Activity() {
-    private lateinit var state: State
+    private var state: State? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
         state = State(this)
-        state.fetchInstalledAppsAgain()
+        state?.fetchInstalledAppsAgain()
 
         initializeBackButton()
 
@@ -44,8 +44,8 @@ class SettingsActivity : Activity() {
     override fun onResume() {
         super.onResume()
 
-        state.fetchInstalledAppsAgain()
-        state.hideMenu()
+        state?.fetchInstalledAppsAgain()
+        state?.hideMenu()
     }
 
     private fun initializeBackButton() {
@@ -59,7 +59,7 @@ class SettingsActivity : Activity() {
         val dateSeekBar = findViewById<SeekBar>(R.id.dateFormat)
         val dateExample = findViewById<TextView>(R.id.dateExample)
 
-        val stateValue = state.getData(DataKey.DATE_FORMAT, 1)
+        val stateValue = state?.getData(DataKey.DATE_FORMAT, 1) ?: 1
 
         dateSeekBar.progress = stateValue
         dateExample.text = SimpleDateFormat.getDateInstance(mapFormat(stateValue)).format(Date())
@@ -72,8 +72,8 @@ class SettingsActivity : Activity() {
                 dateExample.text =
                     SimpleDateFormat.getDateInstance(mapFormat(progress)).format(Date())
 
-                state.vibrate()
-                state.saveData(DataKey.DATE_FORMAT, progress)
+                state?.vibrate()
+                state?.saveData(DataKey.DATE_FORMAT, progress)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -85,7 +85,7 @@ class SettingsActivity : Activity() {
         val timeSeekBar = findViewById<SeekBar>(R.id.timeFormat)
         val timeExample = findViewById<TextView>(R.id.timeExample)
 
-        val stateValue = state.getData(DataKey.TIME_FORMAT, 0)
+        val stateValue = state?.getData(DataKey.TIME_FORMAT, 0) ?: 0
 
         timeSeekBar.progress = stateValue
         timeExample.text = SimpleDateFormat.getTimeInstance(mapFormat(stateValue)).format(Date())
@@ -98,8 +98,8 @@ class SettingsActivity : Activity() {
                 timeExample.text =
                     SimpleDateFormat.getTimeInstance(mapFormat(progress)).format(Date())
 
-                state.vibrate()
-                state.saveData(DataKey.TIME_FORMAT, progress)
+                state?.vibrate()
+                state?.saveData(DataKey.TIME_FORMAT, progress)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -110,39 +110,39 @@ class SettingsActivity : Activity() {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private fun initializeDailyWallpaperText() {
         val switch = findViewById<Switch>(R.id.dailyWallpaperSwitch)
-        val stateValue = state.getData(DataKey.DAILY_WALLPAPER, false)
+        val stateValue = state?.getData(DataKey.DAILY_WALLPAPER, false) ?: false
 
         switch.isChecked = stateValue
 
         switch.setOnCheckedChangeListener { _, isChecked ->
-            state.vibrate()
-            state.saveData(DataKey.DAILY_WALLPAPER, isChecked)
+            state?.vibrate()
+            state?.saveData(DataKey.DAILY_WALLPAPER, isChecked)
         }
     }
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private fun initializeDimBackgroundText() {
         val switch = findViewById<Switch>(R.id.dimBackgroundSwitch)
-        val stateValue = state.getData(DataKey.DIM_BACKGROUND, true)
+        val stateValue = state?.getData(DataKey.DIM_BACKGROUND, true) ?: true
 
         switch.isChecked = stateValue
 
         switch.setOnCheckedChangeListener { _, isChecked ->
-            state.vibrate()
-            state.saveData(DataKey.DIM_BACKGROUND, isChecked)
+            state?.vibrate()
+            state?.saveData(DataKey.DIM_BACKGROUND, isChecked)
         }
     }
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private fun initializeUseBlackText() {
         val switch = findViewById<Switch>(R.id.blackTextSwitch)
-        val stateValue = state.getData(DataKey.BLACK_TEXT, false)
+        val stateValue = state?.getData(DataKey.BLACK_TEXT, false) ?: false
 
         switch.isChecked = stateValue
 
         switch.setOnCheckedChangeListener { _, isChecked ->
-            state.vibrate()
-            state.saveData(DataKey.BLACK_TEXT, isChecked)
+            state?.vibrate()
+            state?.saveData(DataKey.BLACK_TEXT, isChecked)
         }
     }
 
@@ -150,13 +150,13 @@ class SettingsActivity : Activity() {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private fun initializeShowHiddenApps() {
         val switch = findViewById<Switch>(R.id.showHiddenAppsSwitch)
-        val stateValue = state.getData(DataKey.SHOW_HIDDEN_APPS, false)
+        val stateValue = state?.getData(DataKey.SHOW_HIDDEN_APPS, false) ?: false
 
         switch.isChecked = stateValue
 
         switch.setOnCheckedChangeListener { _, isChecked ->
-            state.vibrate()
-            state.saveData(DataKey.SHOW_HIDDEN_APPS, isChecked)
+            state?.vibrate()
+            state?.saveData(DataKey.SHOW_HIDDEN_APPS, isChecked)
         }
     }
 
@@ -164,13 +164,13 @@ class SettingsActivity : Activity() {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private fun initializeAutoOpenKeyboard() {
         val autoKeyboardSwitch = findViewById<Switch>(R.id.autoKeyboardSwitch)
-        val stateValue = state.getData(DataKey.AUTO_SHOW_KEYBOARD, true)
+        val stateValue = state?.getData(DataKey.AUTO_SHOW_KEYBOARD, true) ?: true
 
         autoKeyboardSwitch.isChecked = stateValue
 
         autoKeyboardSwitch.setOnCheckedChangeListener { _, isChecked ->
-            state.vibrate()
-            state.saveData(DataKey.AUTO_SHOW_KEYBOARD, isChecked)
+            state?.vibrate()
+            state?.saveData(DataKey.AUTO_SHOW_KEYBOARD, isChecked)
         }
     }
 
@@ -178,13 +178,13 @@ class SettingsActivity : Activity() {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private fun initializeAutoOpenApps() {
         val autoOpenAppsSwitch = findViewById<Switch>(R.id.autoOpenAppsSwitch)
-        val stateValue = state.getData(DataKey.AUTO_OPEN_APPS, true)
+        val stateValue = state?.getData(DataKey.AUTO_OPEN_APPS, true) ?: true
 
         autoOpenAppsSwitch.isChecked = stateValue
 
         autoOpenAppsSwitch.setOnCheckedChangeListener { _, isChecked ->
-            state.vibrate()
-            state.saveData(DataKey.AUTO_OPEN_APPS, isChecked)
+            state?.vibrate()
+            state?.saveData(DataKey.AUTO_OPEN_APPS, isChecked)
         }
     }
 
@@ -192,13 +192,13 @@ class SettingsActivity : Activity() {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private fun initializeShowIconsInHome() {
         val iconsInHomeSwitch = findViewById<Switch>(R.id.iconsInHomeSwitch)
-        val stateValue = state.getData(DataKey.ICONS_IN_HOME, true)
+        val stateValue = state?.getData(DataKey.ICONS_IN_HOME, true) ?: true
 
         iconsInHomeSwitch.isChecked = stateValue
 
         iconsInHomeSwitch.setOnCheckedChangeListener { _, isChecked ->
-            state.vibrate()
-            state.saveData(DataKey.ICONS_IN_HOME, isChecked)
+            state?.vibrate()
+            state?.saveData(DataKey.ICONS_IN_HOME, isChecked)
         }
     }
 
@@ -206,39 +206,39 @@ class SettingsActivity : Activity() {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private fun initializeShowIconsInDrawer() {
         val iconsInDrawerSwitch = findViewById<Switch>(R.id.iconsInDrawerSwitch)
-        val stateValue = state.getData(DataKey.ICONS_IN_DRAWER, true)
+        val stateValue = state?.getData(DataKey.ICONS_IN_DRAWER, true) ?: true
 
         iconsInDrawerSwitch.isChecked = stateValue
 
         iconsInDrawerSwitch.setOnCheckedChangeListener { _, isChecked ->
-            state.vibrate()
-            state.saveData(DataKey.ICONS_IN_DRAWER, isChecked)
+            state?.vibrate()
+            state?.saveData(DataKey.ICONS_IN_DRAWER, isChecked)
         }
     }
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private fun initializeShowSearchBarInDrawer() {
         val switch = findViewById<Switch>(R.id.showSearchBarSwitch)
-        val stateValue = state.getData(DataKey.SHOW_SEARCH_BAR, true)
+        val stateValue = state?.getData(DataKey.SHOW_SEARCH_BAR, true) ?: true
 
         switch.isChecked = stateValue
 
         switch.setOnCheckedChangeListener { _, isChecked ->
-            state.vibrate()
-            state.saveData(DataKey.SHOW_SEARCH_BAR, isChecked)
+            state?.vibrate()
+            state?.saveData(DataKey.SHOW_SEARCH_BAR, isChecked)
         }
     }
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private fun initializeShowAlphabetFilterInDrawer() {
         val switch = findViewById<Switch>(R.id.showAlphabetSwitch)
-        val stateValue = state.getData(DataKey.SHOW_ALPHABET_FILTER, true)
+        val stateValue = state?.getData(DataKey.SHOW_ALPHABET_FILTER, true) ?: true
 
         switch.isChecked = stateValue
 
         switch.setOnCheckedChangeListener { _, isChecked ->
-            state.vibrate()
-            state.saveData(DataKey.SHOW_ALPHABET_FILTER, isChecked)
+            state?.vibrate()
+            state?.saveData(DataKey.SHOW_ALPHABET_FILTER, isChecked)
         }
     }
 
@@ -247,18 +247,18 @@ class SettingsActivity : Activity() {
         useDefault: Boolean, useNone: Boolean, newAppPackage: String
     ) {
         if (useDefault) {
-            state.saveData(DataKey.TIME_CLICK_APP, "default")
+            state?.saveData(DataKey.TIME_CLICK_APP, "default")
             updateTimeLaunchApp()
             return
         }
 
         if (useNone) {
-            state.saveData(DataKey.TIME_CLICK_APP, "none")
+            state?.saveData(DataKey.TIME_CLICK_APP, "none")
             updateTimeLaunchApp()
             return
         }
 
-        state.saveData(DataKey.TIME_CLICK_APP, newAppPackage)
+        state?.saveData(DataKey.TIME_CLICK_APP, newAppPackage)
         updateTimeLaunchApp()
     }
 
@@ -270,20 +270,20 @@ class SettingsActivity : Activity() {
         updateTimeLaunchApp()
 
         button.setOnClickListener {
-            state.vibrate()
-            state.showAppListMenu(true, container, ::onTimeChangeApp)
+            state?.vibrate()
+            state?.showAppListMenu(true, container, ::onTimeChangeApp)
         }
 
         appLayout.setOnClickListener {
-            state.vibrate()
-            state.showAppListMenu(true, container, ::onTimeChangeApp)
+            state?.vibrate()
+            state?.showAppListMenu(true, container, ::onTimeChangeApp)
         }
     }
 
 
     @SuppressLint("SetTextI18n")
     private fun updateTimeLaunchApp() {
-        val stateValue = state.getData(DataKey.TIME_CLICK_APP, "default")
+        val stateValue = state?.getData(DataKey.TIME_CLICK_APP, "default") ?: "default"
         val timeAppIcon = findViewById<ImageView>(R.id.timeAppIcon)
         val timeAppName = findViewById<TextView>(R.id.timeAppName)
 
@@ -301,8 +301,8 @@ class SettingsActivity : Activity() {
                 timeAppName.text = "Don't open any app"
             }
             else -> {
-                val app =
-                    state.getCompleteAppList().find { it.packageName == stateValue } ?: return
+                val appList = state?.getCompleteAppList() ?: mutableListOf()
+                val app = appList.find { it.packageName == stateValue } ?: return
                 timeAppIcon.setImageDrawable(app.icon)
                 timeAppName.text = app.name
             }
@@ -314,18 +314,18 @@ class SettingsActivity : Activity() {
         useDefault: Boolean, useNone: Boolean, newAppPackage: String
     ) {
         if (useDefault) {
-            state.saveData(DataKey.DATE_CLICK_APP, "default")
+            state?.saveData(DataKey.DATE_CLICK_APP, "default")
             updateDateLaunchApp()
             return
         }
 
         if (useNone) {
-            state.saveData(DataKey.DATE_CLICK_APP, "none")
+            state?.saveData(DataKey.DATE_CLICK_APP, "none")
             updateDateLaunchApp()
             return
         }
 
-        state.saveData(DataKey.DATE_CLICK_APP, newAppPackage)
+        state?.saveData(DataKey.DATE_CLICK_APP, newAppPackage)
         updateDateLaunchApp()
     }
 
@@ -337,19 +337,19 @@ class SettingsActivity : Activity() {
         updateDateLaunchApp()
 
         button.setOnClickListener {
-            state.vibrate()
-            state.showAppListMenu(false, container, ::onDateChangeApp)
+            state?.vibrate()
+            state?.showAppListMenu(false, container, ::onDateChangeApp)
         }
 
         appLayout.setOnClickListener {
-            state.vibrate()
-            state.showAppListMenu(false, container, ::onDateChangeApp)
+            state?.vibrate()
+            state?.showAppListMenu(false, container, ::onDateChangeApp)
         }
     }
 
     @SuppressLint("SetTextI18n")
     private fun updateDateLaunchApp() {
-        val stateValue = state.getData(DataKey.DATE_CLICK_APP, "default")
+        val stateValue = state?.getData(DataKey.DATE_CLICK_APP, "default") ?: "default"
         val dateAppIcon = findViewById<ImageView>(R.id.dateAppIcon)
         val dateAppName = findViewById<TextView>(R.id.dateAppName)
 
@@ -367,8 +367,8 @@ class SettingsActivity : Activity() {
                 dateAppName.text = "Don't open any app"
             }
             else -> {
-                val app =
-                    state.getCompleteAppList().find { it.packageName == stateValue } ?: return
+                val appList = state?.getCompleteAppList() ?: mutableListOf()
+                val app = appList.find { it.packageName == stateValue } ?: return
                 dateAppIcon.setImageDrawable(app.icon)
                 dateAppName.text = app.name
             }

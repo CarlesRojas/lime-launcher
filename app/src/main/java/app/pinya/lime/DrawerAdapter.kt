@@ -51,11 +51,11 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
     private val state: State
     private val layout: ViewGroup
 
-    private lateinit var searchBar: EditText
-    private lateinit var appList: RecyclerView
-    private lateinit var drawerConstraintLayout: ConstraintLayout
-    private lateinit var alphabetLayout: LinearLayout
-    private lateinit var contextMenuContainer: ConstraintLayout
+    private var searchBar: EditText? = null
+    private var appList: RecyclerView? = null
+    private var drawerConstraintLayout: ConstraintLayout? = null
+    private var alphabetLayout: LinearLayout? = null
+    private var contextMenuContainer: ConstraintLayout? = null
 
     private var searchBarText: String = ""
     private var filteringByAlphabet = false
@@ -90,8 +90,8 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         val showSearchBar = state.getData(DataKey.SHOW_SEARCH_BAR, true)
         val showAlphabetFilter = state.getData(DataKey.SHOW_ALPHABET_FILTER, true)
 
-        searchBar.visibility = if (showSearchBar) View.VISIBLE else View.GONE
-        alphabetLayout.visibility = if (showAlphabetFilter) View.VISIBLE else View.GONE
+        searchBar?.visibility = if (showSearchBar) View.VISIBLE else View.GONE
+        alphabetLayout?.visibility = if (showAlphabetFilter) View.VISIBLE else View.GONE
 
         val constraintSet = ConstraintSet()
         constraintSet.clone(drawerConstraintLayout)
@@ -111,7 +111,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
     private fun initSearchBar() {
         searchBar = layout.findViewById(R.id.drawerSearchBar)
 
-        searchBar.doAfterTextChanged {
+        searchBar?.doAfterTextChanged {
             if (it.toString() == "") hideClearText() else showClearText()
             searchBarText = it.toString()
             if (filteringByAlphabet) filterAppListByAlphabet() else filterAppList()
@@ -119,12 +119,12 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
             lastFilterWasAlphabet = false
         }
 
-        searchBar.setOnTouchListener { view, event ->
+        searchBar?.setOnTouchListener { view, event ->
             if (event.action == MotionEvent.ACTION_UP && searchBarText != "") {
-                val padding: Int = searchBar.paddingRight * 2
-                val iconWidth: Int = searchBar.compoundDrawables[2].bounds.width()
+                val padding: Int = searchBar!!.paddingRight * 2
+                val iconWidth: Int = searchBar!!.compoundDrawables[2].bounds.width()
 
-                if (event.rawX >= searchBar.right - iconWidth - padding) clearText()
+                if (event.rawX >= searchBar!!.right - iconWidth - padding) clearText()
             }
 
             view.performClick()
@@ -146,7 +146,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         drawerConstraintLayout = layout.findViewById(R.id.drawerConstraintLayout)
         appList = layout.findViewById(R.id.drawerAppList)
 
-        appList.setOnTouchListener { view, _ ->
+        appList?.setOnTouchListener { view, _ ->
             hideKeyboard()
             view.performClick()
         }
@@ -157,11 +157,11 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
         alphabetLayout = layout.findViewById(R.id.alphabetLayout)
         updateAlphabetLetters()
 
-        alphabetLayout.setOnTouchListener { _, event ->
+        alphabetLayout?.setOnTouchListener { _, event ->
             clearText()
             hideKeyboard()
-            val startY = alphabetLayout.top
-            val endY = alphabetLayout.bottom
+            val startY = alphabetLayout!!.top
+            val endY = alphabetLayout!!.bottom
             val perc = (event.rawY - startY) / (endY - startY)
             val letterHeight = 1f / (ALPHABET.size + 1)
             val currentSection = floor(perc / letterHeight).toInt()
@@ -169,7 +169,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
             if (currentSection >= 0 && currentSection < currentAlphabet.size) {
                 val currentChar = currentAlphabet[currentSection]
                 filteringByAlphabet = true
-                searchBar.setText(currentChar.toString())
+                searchBar?.setText(currentChar.toString())
                 lastFilterWasAlphabet = true
             }
 
@@ -180,7 +180,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
     private fun updateAlphabetLetters() {
         currentAlphabet.clear()
 
-        for (app in this.state.getInstalledAppList()) {
+        for (app in state.getInstalledAppList()) {
             val char = app.name.first().uppercaseChar()
 
             if (currentAlphabet.contains(char)) continue
@@ -188,8 +188,8 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
             else if (!currentAlphabet.contains('#')) currentAlphabet.add(0, '#')
         }
 
-        alphabetLayout.removeAllViews()
-        val alphabetHeight = alphabetLayout.height
+        alphabetLayout?.removeAllViews()
+        val alphabetHeight = alphabetLayout?.height ?: 20
         val blackTextValue = state.getData(DataKey.BLACK_TEXT, false)
 
         for (char in currentAlphabet) {
@@ -207,19 +207,19 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
             textView.setAutoSizeTextTypeUniformWithConfiguration(
                 8, 14, 1, TypedValue.COMPLEX_UNIT_SP
             )
-            alphabetLayout.addView(textView)
+            alphabetLayout?.addView(textView)
         }
     }
 
     fun clearText() {
-        searchBar.text.clear()
+        searchBar?.text?.clear()
     }
 
     fun showKeyboard() {
         val autoOpenKeyboard = state.getData(DataKey.AUTO_SHOW_KEYBOARD, true)
 
         if (autoOpenKeyboard) {
-            searchBar.requestFocus()
+            searchBar?.requestFocus()
             val inputManager =
                 context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputManager.showSoftInput(searchBar, InputMethodManager.SHOW_IMPLICIT)
@@ -227,19 +227,20 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
     }
 
     fun hideKeyboard() {
-        searchBar.clearFocus()
+        searchBar?.clearFocus()
 
         val inputManager =
             context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputManager.hideSoftInputFromWindow(searchBar.windowToken, 0)
+
+        if (searchBar != null) inputManager.hideSoftInputFromWindow(searchBar!!.windowToken, 0)
     }
 
     private fun showClearText() {
-        searchBar.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_close, 0)
+        searchBar?.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_close, 0)
     }
 
     private fun hideClearText() {
-        searchBar.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_search, 0, 0, 0)
+        searchBar?.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_search, 0, 0, 0)
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -347,10 +348,16 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
             false
         }
 
-        linearLayout.setOnLongClickListener {
-            state.showContextMenu(currentApp, contextMenuContainer, false, ::onContextMenuClick)
-            true
-        }
+        if (contextMenuContainer != null)
+            linearLayout.setOnLongClickListener {
+                state.showContextMenu(
+                    currentApp,
+                    contextMenuContainer!!,
+                    false,
+                    ::onContextMenuClick
+                )
+                true
+            }
     }
 
     override fun getItemCount(): Int {

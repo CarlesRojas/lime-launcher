@@ -3,7 +3,6 @@ package app.pinya.lime
 import android.app.Activity
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import android.view.WindowInsetsController
 import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
@@ -12,17 +11,17 @@ import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 
 class MainActivity : Activity() {
 
-    private lateinit var state: State
-    private lateinit var customPageAdapter: CustomPagerAdapter
-    private lateinit var viewPager: ViewPager
-    private lateinit var dailyWallpaper: DailyWallpaper
+    private var state: State? = null
+    private var customPageAdapter: CustomPagerAdapter? = null
+    private var viewPager: ViewPager? = null
+    private var dailyWallpaper: DailyWallpaper? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         state = State(this)
-        dailyWallpaper = DailyWallpaper(this, state)
+        dailyWallpaper = DailyWallpaper(this, state!!)
 
 
         linkAdapters()
@@ -32,10 +31,13 @@ class MainActivity : Activity() {
 
     private fun linkAdapters() {
         viewPager = findViewById(R.id.viewPager)
-        customPageAdapter = CustomPagerAdapter(this, state).also {
-            viewPager.adapter = it
 
-            viewPager.addOnPageChangeListener(object : OnPageChangeListener {
+        if (state == null) return
+
+        customPageAdapter = CustomPagerAdapter(this, state!!).also {
+            viewPager?.adapter = it
+
+            viewPager?.addOnPageChangeListener(object : OnPageChangeListener {
                 override fun onPageScrolled(
                     position: Int,
                     positionOffset: Float,
@@ -55,20 +57,20 @@ class MainActivity : Activity() {
     override fun onResume() {
         super.onResume()
 
-        dailyWallpaper.updateWallpaper()
-        state.fetchInstalledAppsAgain()
-        state.hideMenu()
-        viewPager.currentItem = 0
-        customPageAdapter.onResume()
+        dailyWallpaper?.updateWallpaper()
+        state?.fetchInstalledAppsAgain()
+        state?.hideMenu()
+        viewPager?.currentItem = 0
+        customPageAdapter?.onResume()
         dimBackground()
         updateStatusBarTextColor()
     }
 
     private fun dimBackground() {
-        val blackTextValue = state.getData(DataKey.BLACK_TEXT, false)
-        val dimBackgroundValue = state.getData(DataKey.DIM_BACKGROUND, true)
+        val blackTextValue = state?.getData(DataKey.BLACK_TEXT, false) ?: false
+        val dimBackgroundValue = state?.getData(DataKey.DIM_BACKGROUND, true) ?: true
 
-        viewPager.setBackgroundColor(
+        viewPager?.setBackgroundColor(
             ContextCompat.getColor(
                 this,
                 if (dimBackgroundValue) (if (blackTextValue) R.color.white_extra_low else R.color.black_extra_low) else R.color.transparent
@@ -77,7 +79,7 @@ class MainActivity : Activity() {
     }
 
     private fun updateStatusBarTextColor() {
-        val blackTextValue = state.getData(DataKey.BLACK_TEXT, false)
+        val blackTextValue = state?.getData(DataKey.BLACK_TEXT, false) ?: false
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (blackTextValue) {
                 window.insetsController?.setSystemBarsAppearance(

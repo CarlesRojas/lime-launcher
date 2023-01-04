@@ -17,8 +17,8 @@ class CustomPagerAdapter(context: Context, state: State) : PagerAdapter() {
     private val context: Context
     private val state: State
 
-    private lateinit var home: HomeAdapter
-    private lateinit var drawer: DrawerAdapter
+    private var home: HomeAdapter? = null
+    private var drawer: DrawerAdapter? = null
 
     init {
         this.context = context
@@ -26,26 +26,27 @@ class CustomPagerAdapter(context: Context, state: State) : PagerAdapter() {
     }
 
     fun onResume() {
-        if (this::home.isInitialized) home.onResume()
-        if (this::drawer.isInitialized) drawer.onResume()
+        home?.onResume()
+        drawer?.onResume()
     }
 
     @OptIn(DelicateCoroutinesApi::class)
     fun onHomePageSelected() {
-        drawer.hideKeyboard()
-        home.onResume()
+        drawer?.hideKeyboard()
+        home?.onResume()
+
         GlobalScope.launch(Dispatchers.Main) {
             delay(250)
-            drawer.clearText()
+            drawer?.clearText()
         }
     }
 
     fun onDrawerPageSelected() {
-        this.drawer.clearText()
-        this.drawer.showKeyboard()
-        this.drawer.filterAppList()
-        this.drawer.initAlphabet()
-        this.drawer.showHideElements()
+        this.drawer?.clearText()
+        this.drawer?.showKeyboard()
+        this.drawer?.filterAppList()
+        this.drawer?.initAlphabet()
+        this.drawer?.showHideElements()
     }
 
     override fun instantiateItem(collection: ViewGroup, position: Int): Any {
@@ -76,7 +77,7 @@ class CustomPagerAdapter(context: Context, state: State) : PagerAdapter() {
                     floor(heightInDp / appHeightInDp).toInt() - 1
 
                 state.setMaxNumOfApps(maxNumOfAppsInHome)
-                home.getHomeAppList()
+                home?.getHomeAppList()
             }
         })
 

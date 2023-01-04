@@ -25,3 +25,19 @@ Whether you're looking for a launcher that's easy to use or one that simply gets
 - No data sent to anyone
 - Customize it to your liking
 - Alphabetical filtering
+
+## Debug using ADB
+
+1. Install ADB
+   `brew install android-platform-tools`
+
+2. Connect your device via USB and run
+   `adb devices`
+
+3. Create a Logs.txt file and copy its path (Right click on the file and select "Copy as path")
+
+4. Clear the logs
+   `adb logcat -c`
+
+5. Run the following command
+   `adb logcat -v time > <path to Logs.txt>`
