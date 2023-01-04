@@ -49,6 +49,8 @@ class State(context: Context) {
     private var renameText: String = ""
 
     private var installedAppList: MutableList<ItemApp> = mutableListOf()
+    private var completeAppList: MutableList<ItemApp> = mutableListOf()
+
     private var maxNumOfAppsInHome: Int = 100
 
     init {
@@ -61,8 +63,14 @@ class State(context: Context) {
         return this.installedAppList
     }
 
+    fun getComleteAppList(): MutableList<ItemApp> {
+        return this.completeAppList
+    }
+
     fun fetchInstalledAppsAgain() {
         installedAppList.clear()
+        completeAppList.clear()
+
         val intent = Intent(Intent.ACTION_MAIN, null)
         intent.addCategory(Intent.CATEGORY_LAUNCHER)
         val untreatedAppList = context.packageManager.queryIntentActivities(intent, 0)
@@ -90,16 +98,21 @@ class State(context: Context) {
             app.home = homeApps.find { it == packageName } != null
             app.name = renamedApps[packageName] ?: app.originalName
 
+            if (!completeAppList.contains(app)) completeAppList.add(app)
             if (!showHiddenApps && app.hidden) continue
             if (!installedAppList.contains(app)) installedAppList.add(app)
         }
 
         homeApps.forEachIndexed { i, packageName ->
             val app = installedAppList.find { packageName == it.packageName }
+            val completeListApp = completeAppList.find { packageName == it.packageName }
+
             if (app != null) app.homeOrderIndex = i
+            if (completeListApp != null) completeListApp.homeOrderIndex = i
         }
 
         installedAppList.sortBy { it.name.lowercase() }
+        completeAppList.sortBy { it.name.lowercase() }
     }
 
     private fun <T> MutableSet<T>.swap(index1: Int, index2: Int) {

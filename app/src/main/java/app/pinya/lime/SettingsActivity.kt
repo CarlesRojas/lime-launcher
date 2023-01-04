@@ -262,7 +262,6 @@ class SettingsActivity : Activity() {
         updateTimeLaunchApp()
     }
 
-    @SuppressLint("SetTextI18n")
     private fun initializeTimeAppLaunch() {
         val button = findViewById<TextView>(R.id.timeAppLaunchButton)
         val container = findViewById<ConstraintLayout>(R.id.contextMenuSettings_parent)
@@ -282,6 +281,7 @@ class SettingsActivity : Activity() {
     }
 
 
+    @SuppressLint("SetTextI18n")
     private fun updateTimeLaunchApp() {
         val stateValue = state.getData(DataKey.TIME_CLICK_APP, "default")
         val timeAppIcon = findViewById<ImageView>(R.id.timeAppIcon)
@@ -302,7 +302,7 @@ class SettingsActivity : Activity() {
             }
             else -> {
                 val app =
-                    state.getInstalledAppList().find { it.packageName == stateValue } ?: return
+                    state.getComleteAppList().find { it.packageName == stateValue } ?: return
                 timeAppIcon.setImageDrawable(app.icon)
                 timeAppName.text = app.name
             }
@@ -329,7 +329,6 @@ class SettingsActivity : Activity() {
         updateDateLaunchApp()
     }
 
-    @SuppressLint("SetTextI18n")
     private fun initializeDateAppLaunch() {
         val button = findViewById<TextView>(R.id.dateAppLaunchButton)
         val container = findViewById<ConstraintLayout>(R.id.contextMenuSettings_parent)
@@ -348,6 +347,7 @@ class SettingsActivity : Activity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateDateLaunchApp() {
         val stateValue = state.getData(DataKey.DATE_CLICK_APP, "default")
         val dateAppIcon = findViewById<ImageView>(R.id.dateAppIcon)
@@ -368,7 +368,7 @@ class SettingsActivity : Activity() {
             }
             else -> {
                 val app =
-                    state.getInstalledAppList().find { it.packageName == stateValue } ?: return
+                    state.getComleteAppList().find { it.packageName == stateValue } ?: return
                 dateAppIcon.setImageDrawable(app.icon)
                 dateAppName.text = app.name
             }

@@ -66,10 +66,20 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
             }
 
             override fun onClick() {
-                val builder: Uri.Builder =
-                    CalendarContract.CONTENT_URI.buildUpon().appendPath("time")
-                val intent = Intent(Intent.ACTION_VIEW).setData(builder.build())
-                context.startActivity(intent)
+                when (val stateValue = state.getData(DataKey.DATE_CLICK_APP, "default")) {
+                    "default" -> {
+                        val builder: Uri.Builder =
+                            CalendarContract.CONTENT_URI.buildUpon().appendPath("time")
+                        val intent = Intent(Intent.ACTION_VIEW).setData(builder.build())
+                        context.startActivity(intent)
+                    }
+                    "none" -> return
+                    else -> {
+                        val launchAppIntent =
+                            context.packageManager.getLaunchIntentForPackage(stateValue)
+                        if (launchAppIntent != null) context.startActivity(launchAppIntent)
+                    }
+                }
             }
 
             override fun onLongClick() {
@@ -85,9 +95,19 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
             }
 
             override fun onClick() {
-                val intent = Intent(AlarmClock.ACTION_SHOW_ALARMS)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                context.startActivity(intent)
+                when (val stateValue = state.getData(DataKey.TIME_CLICK_APP, "default")) {
+                    "default" -> {
+                        val intent = Intent(AlarmClock.ACTION_SHOW_ALARMS)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        context.startActivity(intent)
+                    }
+                    "none" -> return
+                    else -> {
+                        val launchAppIntent =
+                            context.packageManager.getLaunchIntentForPackage(stateValue)
+                        if (launchAppIntent != null) context.startActivity(launchAppIntent)
+                    }
+                }
             }
 
             override fun onLongClick() {
