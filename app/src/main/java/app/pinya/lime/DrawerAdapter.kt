@@ -80,13 +80,13 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
 
     fun onResume() {
         clearText()
-        showKeyboard()
+        hideKeyboard()
         filterAppList()
         initAlphabet()
         showHideElements()
     }
 
-    private fun showHideElements() {
+    fun showHideElements() {
         val showSearchBar = state.getData(DataKey.SHOW_SEARCH_BAR, true)
         val showAlphabetFilter = state.getData(DataKey.SHOW_ALPHABET_FILTER, true)
 
@@ -243,7 +243,7 @@ class DrawerAdapter(context: Context, state: State, layout: ViewGroup) :
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun filterAppList() {
+    fun filterAppList() {
         shownAppList = mutableListOf()
 
         val installedList = this.state.getInstalledAppList()

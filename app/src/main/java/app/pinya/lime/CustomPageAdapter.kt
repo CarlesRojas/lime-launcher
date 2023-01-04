@@ -41,7 +41,11 @@ class CustomPagerAdapter(context: Context, state: State) : PagerAdapter() {
     }
 
     fun onDrawerPageSelected() {
-        this.drawer.onResume()
+        this.drawer.clearText()
+        this.drawer.showKeyboard()
+        this.drawer.filterAppList()
+        this.drawer.initAlphabet()
+        this.drawer.showHideElements()
     }
 
     override fun instantiateItem(collection: ViewGroup, position: Int): Any {
