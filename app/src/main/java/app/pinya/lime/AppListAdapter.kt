@@ -73,7 +73,7 @@ class AppListAdapter(
                 }
             }
             else -> {
-                val currentApp = state.getComleteAppList()[position + 2]
+                val currentApp = state.getCompleteAppList()[position + 2]
 
                 imageView.setImageDrawable(currentApp.icon)
                 textView.text = currentApp.name
@@ -87,6 +87,6 @@ class AppListAdapter(
     }
 
     override fun getItemCount(): Int {
-        return state.getComleteAppList().size + 2
+        return state.getCompleteAppList().size + 2
     }
 }

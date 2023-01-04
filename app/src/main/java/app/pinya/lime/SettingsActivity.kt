@@ -302,7 +302,7 @@ class SettingsActivity : Activity() {
             }
             else -> {
                 val app =
-                    state.getComleteAppList().find { it.packageName == stateValue } ?: return
+                    state.getCompleteAppList().find { it.packageName == stateValue } ?: return
                 timeAppIcon.setImageDrawable(app.icon)
                 timeAppName.text = app.name
             }
@@ -368,7 +368,7 @@ class SettingsActivity : Activity() {
             }
             else -> {
                 val app =
-                    state.getComleteAppList().find { it.packageName == stateValue } ?: return
+                    state.getCompleteAppList().find { it.packageName == stateValue } ?: return
                 dateAppIcon.setImageDrawable(app.icon)
                 dateAppName.text = app.name
             }

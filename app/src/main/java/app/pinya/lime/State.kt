@@ -63,7 +63,7 @@ class State(context: Context) {
         return this.installedAppList
     }
 
-    fun getComleteAppList(): MutableList<ItemApp> {
+    fun getCompleteAppList(): MutableList<ItemApp> {
         return this.completeAppList
     }
 
@@ -274,7 +274,6 @@ class State(context: Context) {
         return this.sharedPreferences.getInt(key.toString(), defaultValue)
     }
 
-
     fun getData(key: DataKey, defaultValue: Float): Float {
         return this.sharedPreferences.getFloat(key.toString(), defaultValue)
     }
@@ -313,8 +312,6 @@ class State(context: Context) {
         val appName = contextMenuView.findViewById<TextView>(R.id.appName)
         val closeButton = contextMenuView.findViewById<ImageButton>(R.id.closeContextMenuButton)
         val settingsButton = contextMenuView.findViewById<ImageButton>(R.id.settingsButton)
-
-        val homeAppSet: MutableSet<String> = getData(DataKey.HOME_APPS, mutableSetOf())
 
         val reorderButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_reorder)
         val addToHomeButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_addToHome)
@@ -545,7 +542,7 @@ class State(context: Context) {
         val homeAppsContainer = reorderView.findViewById<LinearLayout>(R.id.homeAppsContainer)
 
         fun showHomeApps(container: LinearLayout) {
-            container.removeAllViews();
+            container.removeAllViews()
             val homeApps: MutableSet<String> = getData(DataKey.HOME_APPS, mutableSetOf())
 
             for (homeApp in homeApps) {
@@ -586,7 +583,7 @@ class State(context: Context) {
                     showHomeApps(container)
                 }
 
-                container.addView(appView);
+                container.addView(appView)
             }
         }
 
