@@ -30,7 +30,7 @@ enum class DataKey {
 }
 
 enum class ContextMenuItem {
-    ADD_TO_HOME, REMOVE_FROM_HOME, HIDE_APP, SHOW_APP, APP_INFO, UNINSTALL, MOVE_UP, MOVE_DOWN, RENAME_APP
+    ADD_TO_HOME, REMOVE_FROM_HOME, HIDE_APP, SHOW_APP, APP_INFO, UNINSTALL, REORDER, RENAME_APP
 }
 
 class State(context: Context) {
@@ -41,7 +41,10 @@ class State(context: Context) {
 
     private var contextMenuWindow: PopupWindow? = null
     private var renameWindow: PopupWindow? = null
+    private var reorderWindow: PopupWindow? = null
+
     private var renameText: String = ""
+
     private var installedAppList: MutableList<ItemApp> = mutableListOf()
     private var maxNumOfAppsInHome: Int = 100
 
@@ -108,8 +111,7 @@ class State(context: Context) {
     }
 
     private fun isHomeFull(): Boolean {
-        val homeAppSet: MutableSet<String> =
-            getData(DataKey.HOME_APPS, mutableSetOf())
+        val homeAppSet: MutableSet<String> = getData(DataKey.HOME_APPS, mutableSetOf())
 
         return homeAppSet.size >= maxNumOfAppsInHome
     }
@@ -301,8 +303,7 @@ class State(context: Context) {
 
         val homeAppSet: MutableSet<String> = getData(DataKey.HOME_APPS, mutableSetOf())
 
-        val moveUpButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_moveUp)
-        val moveDownButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_moveDown)
+        val reorderButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_reorder)
         val addToHomeButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_addToHome)
         val removeFromHomeButton =
             contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_removeFromHome)
@@ -315,10 +316,7 @@ class State(context: Context) {
         icon.setImageDrawable(app.icon)
         appName.text = app.name
 
-        moveUpButton.visibility =
-            if (!fromHome || app.homeOrderIndex <= 0) View.GONE else View.VISIBLE
-        moveDownButton.visibility =
-            if (!fromHome || app.homeOrderIndex >= homeAppSet.size - 1) View.GONE else View.VISIBLE
+        reorderButton.visibility = if (fromHome) View.VISIBLE else View.GONE
         addToHomeButton.visibility = if (app.home || isHomeFull()) View.GONE else View.VISIBLE
         removeFromHomeButton.visibility = if (app.home) View.VISIBLE else View.GONE
         showAppButton.visibility = if (app.hidden) View.VISIBLE else View.GONE
@@ -345,16 +343,9 @@ class State(context: Context) {
             context.startActivity(Intent(context, SettingsActivity::class.java))
         }
 
-        moveUpButton.setOnClickListener {
-            changeHomeAppOrder(app.packageName, true)
-            onClickCallback(ContextMenuItem.MOVE_UP)
+        reorderButton.setOnClickListener {
             hideMenu(contextMenuWindow)
-        }
-
-        moveDownButton.setOnClickListener {
-            changeHomeAppOrder(app.packageName, false)
-            onClickCallback(ContextMenuItem.MOVE_DOWN)
-            hideMenu(contextMenuWindow)
+            showReorderMenu(contextMenuContainer, onClickCallback)
         }
 
         addToHomeButton.setOnClickListener {
@@ -538,6 +529,83 @@ class State(context: Context) {
     }
 
 
+    @SuppressLint("ClickableViewAccessibility")
+    fun showReorderMenu(
+        renameContainer: ConstraintLayout,
+        onReorderCallback: (item: ContextMenuItem) -> Unit = { }
+    ) {
+        val reorderView = View.inflate(context, R.layout.view_reorder_menu, null)
+        val closeButton = reorderView.findViewById<ImageButton>(R.id.closeMenuButton)
+        val homeAppsContainer = reorderView.findViewById<LinearLayout>(R.id.homeAppsContainer)
+
+        fun showHomeApps(container: LinearLayout) {
+            container.removeAllViews();
+            val homeApps: MutableSet<String> = getData(DataKey.HOME_APPS, mutableSetOf())
+
+            for (homeApp in homeApps) {
+                val appView = View.inflate(context, R.layout.view_reorder_app, null)
+                val appIcon = appView.findViewById<ImageView>(R.id.appIcon)
+                val appName = appView.findViewById<TextView>(R.id.appName)
+                val moveUpButton = appView.findViewById<ImageButton>(R.id.reorderMenu_moveUpButton)
+                val moveDownButton =
+                    appView.findViewById<ImageButton>(R.id.reorderMenu_moveDownButton)
+                val reorderMenu_space = appView.findViewById<ImageButton>(R.id.reorderMenu_space)
+
+                val app = installedAppList.find { it.packageName == homeApp } ?: continue
+
+                appIcon.setImageDrawable(app.icon)
+                appName.text = app.name
+
+                val showIcons = getData(DataKey.ICONS_IN_HOME, true)
+
+                appIcon.visibility = if (showIcons) View.VISIBLE else View.GONE
+                moveUpButton.visibility =
+                    if (app.homeOrderIndex <= 0) View.GONE else View.VISIBLE
+                moveDownButton.visibility =
+                    if (app.homeOrderIndex >= homeApps.size - 1) View.GONE else View.VISIBLE
+                reorderMenu_space.visibility =
+                    if (app.homeOrderIndex <= 0) View.VISIBLE else View.GONE
+
+
+                moveUpButton.setOnClickListener {
+                    vibrate()
+                    changeHomeAppOrder(app.packageName, true)
+                    onReorderCallback(ContextMenuItem.REORDER)
+                    showHomeApps(container)
+                }
+
+                moveDownButton.setOnClickListener {
+                    vibrate()
+                    changeHomeAppOrder(app.packageName, false)
+                    onReorderCallback(ContextMenuItem.REORDER)
+                    showHomeApps(container)
+                }
+
+                container.addView(appView);
+            }
+        }
+
+        showHomeApps(homeAppsContainer)
+
+
+        reorderWindow = PopupWindow(
+            reorderView,
+            renameContainer.width - renameContainer.paddingRight - renameContainer.paddingLeft,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            true
+        )
+
+        reorderWindow?.animationStyle = R.style.TopPopupWindowAnimation
+
+        reorderWindow?.showAtLocation(renameContainer, Gravity.TOP, 0, 0)
+        dimBehindMenu(reorderWindow)
+
+        closeButton.setOnClickListener {
+            hideMenu(reorderWindow)
+        }
+    }
+
+
     private fun dimBehindMenu(menu: PopupWindow?) {
         if (menu == null) return
         val blackTextValue = getData(DataKey.BLACK_TEXT, false)
@@ -555,6 +623,7 @@ class State(context: Context) {
         if (menu == null) {
             contextMenuWindow?.dismiss()
             renameWindow?.dismiss()
+            reorderWindow?.dismiss()
         } else menu.dismiss()
     }
 

@@ -15,6 +15,7 @@
     <string name="moveDown_icon_description">Move down Icon</string>
     <string name="renameApp_icon_description">Rename Icon</string>
     <string name="recoverOriginalName_icon_description">Recover original name Icon</string>
+    <string name="reorder_icon_description">Reorder home apps Icon</string>
 
 
     <string name="settings_title">Settings</string>
@@ -41,11 +42,14 @@
     <string name="contextMenu_moveUp">Move up</string>
     <string name="contextMenu_moveDown">Move down</string>
     <string name="contextMenu_renameApp">Rename</string>
+    <string name="contextMenu_reorder">Reorder home apps</string>
 
 
     <string name="renameMenu_hint">Rename to</string>
     <string name="renameMenu_submit">Submit</string>
     <string name="renameMenu_recoverOriginalName">Recover original name</string>
+
+    <string name="reorderMenu_title">Reorder home apps</string>
 
 
     <string name="drawer_searchHint">Search Apps</string>

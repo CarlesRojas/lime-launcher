@@ -20,4 +20,3 @@ Whether you're looking for a launcher that's easy to use or one that simply gets
 ## TODO
 
 - [ ] Let user choose what app the time and date opens ?
-- [ ] status bar and navigation bar color
