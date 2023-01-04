@@ -23,7 +23,7 @@ Whether you're looking for a launcher that's easy to use or one that simply gets
 - Auto open apps while searching
 - Fresh new wallpaper every day
 - No data sent to anyone
-- Customize it to your liking
+- Customize to your liking
 - Alphabetical filtering
 
 ## Debug using ADB
