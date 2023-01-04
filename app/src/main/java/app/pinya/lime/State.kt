@@ -105,10 +105,8 @@ class State(context: Context) {
 
         homeApps.forEachIndexed { i, packageName ->
             val app = installedAppList.find { packageName == it.packageName }
-            val completeListApp = completeAppList.find { packageName == it.packageName }
 
             if (app != null) app.homeOrderIndex = i
-            if (completeListApp != null) completeListApp.homeOrderIndex = i
         }
 
         installedAppList.sortBy { it.name.lowercase() }
@@ -189,7 +187,7 @@ class State(context: Context) {
     private fun renameApp(packageName: String, newName: String) {
         if (newName.isEmpty()) return
 
-        val app = installedAppList.find { it.packageName == packageName } ?: return
+        val app = completeAppList.find { it.packageName == packageName } ?: return
         app.name = newName
 
         val renamedAppsMap: MutableMap<String, String> =
@@ -198,16 +196,18 @@ class State(context: Context) {
         if (newName == app.originalName) renamedAppsMap.remove(packageName)
         else renamedAppsMap[packageName] = newName
 
-        for (key in renamedAppsMap.keys) if (installedAppList.find { key == it.packageName } == null) renamedAppsMap.remove(
-            key
-        )
+        for (key in renamedAppsMap.keys) {
+            if (completeAppList.find { key == it.packageName } == null) renamedAppsMap.remove(
+                key
+            )
+        }
 
         saveData(DataKey.RENAMED_APPS, renamedAppsMap)
         fetchInstalledAppsAgain()
     }
 
     private fun toggleHiddenApp(packageName: String, hiddenNewValue: Boolean) {
-        val app = installedAppList.find { it.packageName == packageName }
+        val app = completeAppList.find { it.packageName == packageName }
         app?.hidden = hiddenNewValue
 
         val hiddenAppsSet: MutableSet<String> = getData(DataKey.HIDDEN_APPS, mutableSetOf())
@@ -217,7 +217,7 @@ class State(context: Context) {
             false -> hiddenAppsSet.remove(packageName)
         }
 
-        hiddenAppsSet.removeAll { appPackage -> installedAppList.find { appPackage == it.packageName } == null }
+        hiddenAppsSet.removeAll { appPackage -> completeAppList.find { appPackage == it.packageName } == null }
 
         saveData(DataKey.HIDDEN_APPS, hiddenAppsSet)
         fetchInstalledAppsAgain()
@@ -554,7 +554,7 @@ class State(context: Context) {
                     appView.findViewById<ImageButton>(R.id.reorderMenu_moveDownButton)
                 val reorderMenuSpace = appView.findViewById<ImageButton>(R.id.reorderMenu_space)
 
-                val app = installedAppList.find { it.packageName == homeApp } ?: continue
+                val app = completeAppList.find { it.packageName == homeApp } ?: continue
 
                 appIcon.setImageDrawable(app.icon)
                 appName.text = app.name
