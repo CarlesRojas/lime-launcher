@@ -117,6 +117,7 @@ class SettingsActivity : Activity() {
         switch.setOnCheckedChangeListener { _, isChecked ->
             state?.vibrate()
             state?.saveData(DataKey.DAILY_WALLPAPER, isChecked)
+            state?.saveData(DataKey.WALLPAPER_DATE, -1)
         }
     }
 

@@ -24,12 +24,8 @@ class DailyWallpaper(context: Context, state: State) {
 
     fun updateWallpaper() {
         val dailyWallpaperActive = state.getData(DataKey.DAILY_WALLPAPER, false)
-        if (!dailyWallpaperActive) {
-            state.saveData(DataKey.WALLPAPER_DATE, -1)
-            return
-        }
-
-
+        if (!dailyWallpaperActive) return
+        
         val wallpaperDate = state.getData(DataKey.WALLPAPER_DATE, -1)
 
         val cal: Calendar = Calendar.getInstance()
