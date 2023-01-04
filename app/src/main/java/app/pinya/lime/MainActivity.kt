@@ -1,7 +1,10 @@
 package app.pinya.lime
 
 import android.app.Activity
+import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.WindowInsetsController
 import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
@@ -24,6 +27,7 @@ class MainActivity : Activity() {
 
         linkAdapters()
         dimBackground()
+        updateStatusBarTextColor()
     }
 
     private fun linkAdapters() {
@@ -57,6 +61,7 @@ class MainActivity : Activity() {
         viewPager.currentItem = 0
         customPageAdapter.onResume()
         dimBackground()
+        updateStatusBarTextColor()
     }
 
     private fun dimBackground() {
@@ -69,5 +74,22 @@ class MainActivity : Activity() {
                 if (dimBackgroundValue) (if (blackTextValue) R.color.white_extra_low else R.color.black_extra_low) else R.color.transparent
             )
         )
+    }
+
+    private fun updateStatusBarTextColor() {
+        val blackTextValue = state.getData(DataKey.BLACK_TEXT, false)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (blackTextValue) {
+                window.insetsController?.setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                )
+            } else {
+                window.insetsController?.setSystemBarsAppearance(
+                    0,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                )
+            }
+        }
     }
 }
