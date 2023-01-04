@@ -31,7 +31,8 @@
     <string name="settings_blackText">Use black text</string>
     <string name="settings_dimBackground">Dim wallpaper</string>
     <string name="settings_dailyWallpaper">Update wallpaper daily</string>
-
+    <string name="settings_timeAppLaunch">Choose app to open on clock click</string>
+    <string name="settings_dateAppLaunch">Choose app to open on date click</string>
 
     <string name="contextMenu_addToHome">Add to Home</string>
     <string name="contextMenu_removeFromHome">Remove from Home</string>
@@ -48,6 +49,10 @@
     <string name="renameMenu_hint">Rename to</string>
     <string name="renameMenu_submit">Submit</string>
     <string name="renameMenu_recoverOriginalName">Recover original name</string>
+
+
+    <string name="appListMenu_title">Choose app</string>
+
 
     <string name="reorderMenu_title">Reorder home apps</string>
 

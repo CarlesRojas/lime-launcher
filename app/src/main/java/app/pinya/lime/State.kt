@@ -20,13 +20,15 @@ import android.widget.*
 import android.widget.TextView.OnEditorActionListener
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.doAfterTextChanged
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlin.math.round
 
 
 enum class DataKey {
-    DATE_FORMAT, TIME_FORMAT, AUTO_SHOW_KEYBOARD, AUTO_OPEN_APPS, ICONS_IN_HOME, ICONS_IN_DRAWER, SHOW_SEARCH_BAR, SHOW_ALPHABET_FILTER, HOME_APPS, HIDDEN_APPS, SHOW_HIDDEN_APPS, RENAMED_APPS, BLACK_TEXT, DIM_BACKGROUND, DAILY_WALLPAPER, WALLPAPER_DATE
+    DATE_FORMAT, TIME_FORMAT, AUTO_SHOW_KEYBOARD, AUTO_OPEN_APPS, ICONS_IN_HOME, ICONS_IN_DRAWER, SHOW_SEARCH_BAR, SHOW_ALPHABET_FILTER, HOME_APPS, HIDDEN_APPS, SHOW_HIDDEN_APPS, RENAMED_APPS, BLACK_TEXT, DIM_BACKGROUND, DAILY_WALLPAPER, WALLPAPER_DATE, TIME_CLICK_APP, DATE_CLICK_APP
 }
 
 enum class ContextMenuItem {
@@ -42,6 +44,7 @@ class State(context: Context) {
     private var contextMenuWindow: PopupWindow? = null
     private var renameWindow: PopupWindow? = null
     private var reorderWindow: PopupWindow? = null
+    private var appListWindow: PopupWindow? = null
 
     private var renameText: String = ""
 
@@ -120,8 +123,7 @@ class State(context: Context) {
         val app = installedAppList.find { it.packageName == packageName }
         app?.home = homeNewValue
 
-        val homeAppSet: MutableSet<String> =
-            getData(DataKey.HOME_APPS, mutableSetOf())
+        val homeAppSet: MutableSet<String> = getData(DataKey.HOME_APPS, mutableSetOf())
 
         when (homeNewValue) {
             true -> homeAppSet.add(packageName)
@@ -135,8 +137,7 @@ class State(context: Context) {
     }
 
     private fun changeHomeAppOrder(packageName: String, moveUp: Boolean) {
-        val homeAppSet: MutableSet<String> =
-            getData(DataKey.HOME_APPS, mutableSetOf())
+        val homeAppSet: MutableSet<String> = getData(DataKey.HOME_APPS, mutableSetOf())
 
         var index = -1
         homeAppSet.forEachIndexed { i, elem ->
@@ -184,9 +185,9 @@ class State(context: Context) {
         if (newName == app.originalName) renamedAppsMap.remove(packageName)
         else renamedAppsMap[packageName] = newName
 
-        for (key in renamedAppsMap.keys)
-            if (installedAppList.find { key == it.packageName } == null)
-                renamedAppsMap.remove(key)
+        for (key in renamedAppsMap.keys) if (installedAppList.find { key == it.packageName } == null) renamedAppsMap.remove(
+            key
+        )
 
         saveData(DataKey.RENAMED_APPS, renamedAppsMap)
         fetchInstalledAppsAgain()
@@ -196,8 +197,7 @@ class State(context: Context) {
         val app = installedAppList.find { it.packageName == packageName }
         app?.hidden = hiddenNewValue
 
-        val hiddenAppsSet: MutableSet<String> =
-            getData(DataKey.HIDDEN_APPS, mutableSetOf())
+        val hiddenAppsSet: MutableSet<String> = getData(DataKey.HIDDEN_APPS, mutableSetOf())
 
         when (hiddenNewValue) {
             true -> hiddenAppsSet.add(packageName)
@@ -418,17 +418,17 @@ class State(context: Context) {
             showTheKeyboardNow()
         } else {
             // We need to wait until the window gets focus.
-            viewTreeObserver.addOnWindowFocusChangeListener(
-                object : ViewTreeObserver.OnWindowFocusChangeListener {
-                    override fun onWindowFocusChanged(hasFocus: Boolean) {
-                        // This notification will arrive just before the InputMethodManager gets set up.
-                        if (hasFocus) {
-                            this@focusAndShowKeyboard.showTheKeyboardNow()
-                            // It’s very important to remove this listener once we are done.
-                            viewTreeObserver.removeOnWindowFocusChangeListener(this)
-                        }
+            viewTreeObserver.addOnWindowFocusChangeListener(object :
+                ViewTreeObserver.OnWindowFocusChangeListener {
+                override fun onWindowFocusChanged(hasFocus: Boolean) {
+                    // This notification will arrive just before the InputMethodManager gets set up.
+                    if (hasFocus) {
+                        this@focusAndShowKeyboard.showTheKeyboardNow()
+                        // It’s very important to remove this listener once we are done.
+                        viewTreeObserver.removeOnWindowFocusChangeListener(this)
                     }
-                })
+                }
+            })
         }
     }
 
@@ -490,15 +490,9 @@ class State(context: Context) {
 
         renameBar.doAfterTextChanged {
             if (it.toString() == "") renameBar.setCompoundDrawablesWithIntrinsicBounds(
-                R.drawable.icon_rename,
-                0,
-                0,
-                0
+                R.drawable.icon_rename, 0, 0, 0
             ) else renameBar.setCompoundDrawablesWithIntrinsicBounds(
-                0,
-                0,
-                R.drawable.icon_submit,
-                0
+                0, 0, R.drawable.icon_submit, 0
             )
 
             renameText = it.toString()
@@ -531,8 +525,7 @@ class State(context: Context) {
 
     @SuppressLint("ClickableViewAccessibility")
     fun showReorderMenu(
-        renameContainer: ConstraintLayout,
-        onReorderCallback: (item: ContextMenuItem) -> Unit = { }
+        reorderContainer: ConstraintLayout, onReorderCallback: (item: ContextMenuItem) -> Unit = { }
     ) {
         val reorderView = View.inflate(context, R.layout.view_reorder_menu, null)
         val closeButton = reorderView.findViewById<ImageButton>(R.id.closeMenuButton)
@@ -549,7 +542,7 @@ class State(context: Context) {
                 val moveUpButton = appView.findViewById<ImageButton>(R.id.reorderMenu_moveUpButton)
                 val moveDownButton =
                     appView.findViewById<ImageButton>(R.id.reorderMenu_moveDownButton)
-                val reorderMenu_space = appView.findViewById<ImageButton>(R.id.reorderMenu_space)
+                val reorderMenuSpace = appView.findViewById<ImageButton>(R.id.reorderMenu_space)
 
                 val app = installedAppList.find { it.packageName == homeApp } ?: continue
 
@@ -559,11 +552,10 @@ class State(context: Context) {
                 val showIcons = getData(DataKey.ICONS_IN_HOME, true)
 
                 appIcon.visibility = if (showIcons) View.VISIBLE else View.GONE
-                moveUpButton.visibility =
-                    if (app.homeOrderIndex <= 0) View.GONE else View.VISIBLE
+                moveUpButton.visibility = if (app.homeOrderIndex <= 0) View.GONE else View.VISIBLE
                 moveDownButton.visibility =
                     if (app.homeOrderIndex >= homeApps.size - 1) View.GONE else View.VISIBLE
-                reorderMenu_space.visibility =
+                reorderMenuSpace.visibility =
                     if (app.homeOrderIndex <= 0) View.VISIBLE else View.GONE
 
 
@@ -590,18 +582,60 @@ class State(context: Context) {
 
         reorderWindow = PopupWindow(
             reorderView,
-            renameContainer.width - renameContainer.paddingRight - renameContainer.paddingLeft,
+            reorderContainer.width - reorderContainer.paddingRight - reorderContainer.paddingLeft,
             LinearLayout.LayoutParams.WRAP_CONTENT,
             true
         )
 
         reorderWindow?.animationStyle = R.style.TopPopupWindowAnimation
 
-        reorderWindow?.showAtLocation(renameContainer, Gravity.TOP, 0, 0)
+        reorderWindow?.showAtLocation(reorderContainer, Gravity.TOP, 0, 0)
         dimBehindMenu(reorderWindow)
 
         closeButton.setOnClickListener {
             hideMenu(reorderWindow)
+        }
+    }
+
+
+    @SuppressLint("ClickableViewAccessibility")
+    fun showAppListMenu(
+        isTime: Boolean,
+        appListContainer: ConstraintLayout,
+        onChangeAppCallback: (useDefault: Boolean, useNone: Boolean, newAppPackage: String) -> Unit
+    ) {
+        val appListView = View.inflate(context, R.layout.view_app_list_menu, null) as ViewGroup
+        val titleText = appListView.findViewById<TextView>(R.id.appListMenu_title)
+        val closeButton = appListView.findViewById<ImageButton>(R.id.closeMenuButton)
+        val appListRecyclerView =
+            appListView.findViewById<RecyclerView>(R.id.appListMenu_recyclerView)
+
+        titleText.text = if (isTime) "On clock click, open:" else "On date click, open:"
+
+        fun onChangeApp(useDefault: Boolean, useNone: Boolean, newAppPackage: String) {
+            hideMenu(appListWindow)
+            onChangeAppCallback(useDefault, useNone, newAppPackage)
+        }
+
+        AppListAdapter(context, this, appListView, isTime, ::onChangeApp).also {
+            appListRecyclerView.adapter = it
+            appListRecyclerView.layoutManager = LinearLayoutManager(context)
+        }
+
+        appListWindow = PopupWindow(
+            appListView,
+            appListContainer.width - appListContainer.paddingRight - appListContainer.paddingLeft,
+            (appListContainer.height * 0.75f).toInt(),
+            true
+        )
+
+        appListWindow?.animationStyle = R.style.TopPopupWindowAnimation
+
+        appListWindow?.showAtLocation(appListContainer, Gravity.TOP, 0, 0)
+        dimBehindMenu(appListWindow)
+
+        closeButton.setOnClickListener {
+            hideMenu(appListWindow)
         }
     }
 
@@ -624,6 +658,7 @@ class State(context: Context) {
             contextMenuWindow?.dismiss()
             renameWindow?.dismiss()
             reorderWindow?.dismiss()
+            appListWindow?.dismiss()
         } else menu.dismiss()
     }
 

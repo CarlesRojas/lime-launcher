@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
 import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -17,6 +19,7 @@ class SettingsActivity : Activity() {
         setContentView(R.layout.activity_settings)
 
         state = State(this)
+        state.fetchInstalledAppsAgain()
 
         initializeBackButton()
 
@@ -33,6 +36,16 @@ class SettingsActivity : Activity() {
         initializeShowIconsInDrawer()
         initializeShowSearchBarInDrawer()
         initializeShowAlphabetFilterInDrawer()
+        initializeTimeAppLaunch()
+        initializeDateAppLaunch()
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+
+        state.fetchInstalledAppsAgain()
+        state.hideMenu()
     }
 
     private fun initializeBackButton() {
@@ -59,6 +72,7 @@ class SettingsActivity : Activity() {
                 dateExample.text =
                     SimpleDateFormat.getDateInstance(mapFormat(progress)).format(Date())
 
+                state.vibrate()
                 state.saveData(DataKey.DATE_FORMAT, progress)
             }
 
@@ -84,6 +98,7 @@ class SettingsActivity : Activity() {
                 timeExample.text =
                     SimpleDateFormat.getTimeInstance(mapFormat(progress)).format(Date())
 
+                state.vibrate()
                 state.saveData(DataKey.TIME_FORMAT, progress)
             }
 
@@ -100,6 +115,7 @@ class SettingsActivity : Activity() {
         switch.isChecked = stateValue
 
         switch.setOnCheckedChangeListener { _, isChecked ->
+            state.vibrate()
             state.saveData(DataKey.DAILY_WALLPAPER, isChecked)
         }
     }
@@ -112,6 +128,7 @@ class SettingsActivity : Activity() {
         switch.isChecked = stateValue
 
         switch.setOnCheckedChangeListener { _, isChecked ->
+            state.vibrate()
             state.saveData(DataKey.DIM_BACKGROUND, isChecked)
         }
     }
@@ -124,6 +141,7 @@ class SettingsActivity : Activity() {
         switch.isChecked = stateValue
 
         switch.setOnCheckedChangeListener { _, isChecked ->
+            state.vibrate()
             state.saveData(DataKey.BLACK_TEXT, isChecked)
         }
     }
@@ -137,6 +155,7 @@ class SettingsActivity : Activity() {
         switch.isChecked = stateValue
 
         switch.setOnCheckedChangeListener { _, isChecked ->
+            state.vibrate()
             state.saveData(DataKey.SHOW_HIDDEN_APPS, isChecked)
         }
     }
@@ -150,6 +169,7 @@ class SettingsActivity : Activity() {
         autoKeyboardSwitch.isChecked = stateValue
 
         autoKeyboardSwitch.setOnCheckedChangeListener { _, isChecked ->
+            state.vibrate()
             state.saveData(DataKey.AUTO_SHOW_KEYBOARD, isChecked)
         }
     }
@@ -163,6 +183,7 @@ class SettingsActivity : Activity() {
         autoOpenAppsSwitch.isChecked = stateValue
 
         autoOpenAppsSwitch.setOnCheckedChangeListener { _, isChecked ->
+            state.vibrate()
             state.saveData(DataKey.AUTO_OPEN_APPS, isChecked)
         }
     }
@@ -176,6 +197,7 @@ class SettingsActivity : Activity() {
         iconsInHomeSwitch.isChecked = stateValue
 
         iconsInHomeSwitch.setOnCheckedChangeListener { _, isChecked ->
+            state.vibrate()
             state.saveData(DataKey.ICONS_IN_HOME, isChecked)
         }
     }
@@ -189,6 +211,7 @@ class SettingsActivity : Activity() {
         iconsInDrawerSwitch.isChecked = stateValue
 
         iconsInDrawerSwitch.setOnCheckedChangeListener { _, isChecked ->
+            state.vibrate()
             state.saveData(DataKey.ICONS_IN_DRAWER, isChecked)
         }
     }
@@ -201,6 +224,7 @@ class SettingsActivity : Activity() {
         switch.isChecked = stateValue
 
         switch.setOnCheckedChangeListener { _, isChecked ->
+            state.vibrate()
             state.saveData(DataKey.SHOW_SEARCH_BAR, isChecked)
         }
     }
@@ -213,10 +237,143 @@ class SettingsActivity : Activity() {
         switch.isChecked = stateValue
 
         switch.setOnCheckedChangeListener { _, isChecked ->
+            state.vibrate()
             state.saveData(DataKey.SHOW_ALPHABET_FILTER, isChecked)
         }
     }
 
+
+    private fun onTimeChangeApp(
+        useDefault: Boolean, useNone: Boolean, newAppPackage: String
+    ) {
+        if (useDefault) {
+            state.saveData(DataKey.TIME_CLICK_APP, "default")
+            updateTimeLaunchApp()
+            return
+        }
+
+        if (useNone) {
+            state.saveData(DataKey.TIME_CLICK_APP, "none")
+            updateTimeLaunchApp()
+            return
+        }
+
+        state.saveData(DataKey.TIME_CLICK_APP, newAppPackage)
+        updateTimeLaunchApp()
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun initializeTimeAppLaunch() {
+        val button = findViewById<TextView>(R.id.timeAppLaunchButton)
+        val container = findViewById<ConstraintLayout>(R.id.contextMenuSettings_parent)
+        val appLayout = findViewById<LinearLayout>(R.id.timeAppLaunchApp)
+
+        updateTimeLaunchApp()
+
+        button.setOnClickListener {
+            state.vibrate()
+            state.showAppListMenu(true, container, ::onTimeChangeApp)
+        }
+
+        appLayout.setOnClickListener {
+            state.vibrate()
+            state.showAppListMenu(true, container, ::onTimeChangeApp)
+        }
+    }
+
+
+    private fun updateTimeLaunchApp() {
+        val stateValue = state.getData(DataKey.TIME_CLICK_APP, "default")
+        val timeAppIcon = findViewById<ImageView>(R.id.timeAppIcon)
+        val timeAppName = findViewById<TextView>(R.id.timeAppName)
+
+        when (stateValue) {
+            "default" -> {
+                timeAppIcon.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        this, R.drawable.icon_clock
+                    )
+                )
+                timeAppName.text = "Default clock app"
+            }
+            "none" -> {
+                timeAppIcon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.icon_close))
+                timeAppName.text = "Don't open any app"
+            }
+            else -> {
+                val app =
+                    state.getInstalledAppList().find { it.packageName == stateValue } ?: return
+                timeAppIcon.setImageDrawable(app.icon)
+                timeAppName.text = app.name
+            }
+        }
+    }
+
+
+    private fun onDateChangeApp(
+        useDefault: Boolean, useNone: Boolean, newAppPackage: String
+    ) {
+        if (useDefault) {
+            state.saveData(DataKey.DATE_CLICK_APP, "default")
+            updateDateLaunchApp()
+            return
+        }
+
+        if (useNone) {
+            state.saveData(DataKey.DATE_CLICK_APP, "none")
+            updateDateLaunchApp()
+            return
+        }
+
+        state.saveData(DataKey.DATE_CLICK_APP, newAppPackage)
+        updateDateLaunchApp()
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun initializeDateAppLaunch() {
+        val button = findViewById<TextView>(R.id.dateAppLaunchButton)
+        val container = findViewById<ConstraintLayout>(R.id.contextMenuSettings_parent)
+        val appLayout = findViewById<LinearLayout>(R.id.dateAppLaunchApp)
+
+        updateDateLaunchApp()
+
+        button.setOnClickListener {
+            state.vibrate()
+            state.showAppListMenu(false, container, ::onDateChangeApp)
+        }
+
+        appLayout.setOnClickListener {
+            state.vibrate()
+            state.showAppListMenu(false, container, ::onDateChangeApp)
+        }
+    }
+
+    private fun updateDateLaunchApp() {
+        val stateValue = state.getData(DataKey.DATE_CLICK_APP, "default")
+        val dateAppIcon = findViewById<ImageView>(R.id.dateAppIcon)
+        val dateAppName = findViewById<TextView>(R.id.dateAppName)
+
+        when (stateValue) {
+            "default" -> {
+                dateAppIcon.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        this, R.drawable.icon_calendar
+                    )
+                )
+                dateAppName.text = "Default calendar app"
+            }
+            "none" -> {
+                dateAppIcon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.icon_close))
+                dateAppName.text = "Don't open any app"
+            }
+            else -> {
+                val app =
+                    state.getInstalledAppList().find { it.packageName == stateValue } ?: return
+                dateAppIcon.setImageDrawable(app.icon)
+                dateAppName.text = app.name
+            }
+        }
+    }
 
     companion object {
         fun mapFormat(num: Int): Int {

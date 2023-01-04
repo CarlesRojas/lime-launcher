@@ -42,6 +42,16 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.9" />
 
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/contextMenuSettings_parent"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:padding="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -114,8 +124,7 @@
                         android:paddingRight="16dp"
                         android:text="@string/settings_dateFormat"
                         android:textColor="@color/white"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/dateExample"
@@ -157,8 +166,7 @@
                         android:paddingRight="16dp"
                         android:text="@string/settings_timeFormat"
                         android:textColor="@color/white"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/timeExample"
@@ -205,7 +213,6 @@
                         android:textOff=""
                         android:textOn=""
                         android:textSize="18sp"
-                        android:textStyle="bold"
                         android:thumb="@drawable/switch_thumb"
                         android:track="@drawable/switch_track"
                         tools:ignore="UseSwitchCompatOrMaterialXml" />
@@ -229,7 +236,6 @@
                         android:textOff=""
                         android:textOn=""
                         android:textSize="18sp"
-                        android:textStyle="bold"
                         android:thumb="@drawable/switch_thumb"
                         android:track="@drawable/switch_track"
                         tools:ignore="UseSwitchCompatOrMaterialXml" />
@@ -253,7 +259,6 @@
                         android:textOff=""
                         android:textOn=""
                         android:textSize="18sp"
-                        android:textStyle="bold"
                         android:thumb="@drawable/switch_thumb"
                         android:track="@drawable/switch_track"
                         tools:ignore="UseSwitchCompatOrMaterialXml" />
@@ -277,7 +282,6 @@
                         android:textOff=""
                         android:textOn=""
                         android:textSize="18sp"
-                        android:textStyle="bold"
                         android:thumb="@drawable/switch_thumb"
                         android:track="@drawable/switch_track"
                         tools:ignore="UseSwitchCompatOrMaterialXml" />
@@ -301,7 +305,6 @@
                         android:textOff=""
                         android:textOn=""
                         android:textSize="18sp"
-                        android:textStyle="bold"
                         android:thumb="@drawable/switch_thumb"
                         android:track="@drawable/switch_track"
                         tools:ignore="UseSwitchCompatOrMaterialXml" />
@@ -325,7 +328,6 @@
                         android:textOff=""
                         android:textOn=""
                         android:textSize="18sp"
-                        android:textStyle="bold"
                         android:thumb="@drawable/switch_thumb"
                         android:track="@drawable/switch_track"
                         tools:ignore="UseSwitchCompatOrMaterialXml" />
@@ -348,7 +350,6 @@
                         android:textOff=""
                         android:textOn=""
                         android:textSize="18sp"
-                        android:textStyle="bold"
                         android:thumb="@drawable/switch_thumb"
                         android:track="@drawable/switch_track"
                         tools:ignore="UseSwitchCompatOrMaterialXml" />
@@ -372,7 +373,6 @@
                         android:textOff=""
                         android:textOn=""
                         android:textSize="18sp"
-                        android:textStyle="bold"
                         android:thumb="@drawable/switch_thumb"
                         android:track="@drawable/switch_track"
                         tools:ignore="UseSwitchCompatOrMaterialXml" />
@@ -396,7 +396,6 @@
                         android:textOff=""
                         android:textOn=""
                         android:textSize="18sp"
-                        android:textStyle="bold"
                         android:thumb="@drawable/switch_thumb"
                         android:track="@drawable/switch_track"
                         tools:ignore="UseSwitchCompatOrMaterialXml" />
@@ -420,10 +419,103 @@
                         android:textOff=""
                         android:textOn=""
                         android:textSize="18sp"
-                        android:textStyle="bold"
                         android:thumb="@drawable/switch_thumb"
                         android:track="@drawable/switch_track"
                         tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+                    <View
+                        android:id="@+id/divider12"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@android:color/transparent" />
+
+                    <TextView
+                        android:id="@+id/timeAppLaunchButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:singleLine="true"
+                        android:text="@string/settings_timeAppLaunch"
+                        android:textColor="@color/white"
+                        android:textSize="18sp" />
+
+                    <LinearLayout
+                        android:id="@+id/timeAppLaunchApp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:paddingStart="40dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="16dp">
+
+                        <ImageView
+                            android:id="@+id/timeAppIcon"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="12dp"
+                            android:contentDescription="@string/app_icon_description"
+                            android:src="@mipmap/ic_launcher" />
+
+                        <TextView
+                            android:id="@+id/timeAppName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat"
+                            android:singleLine="true"
+                            android:text="@string/app_name"
+                            android:textColor="@color/white_low"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/divider13"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@android:color/transparent" />
+
+                    <TextView
+                        android:id="@+id/dateAppLaunchButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:singleLine="true"
+                        android:text="@string/settings_dateAppLaunch"
+                        android:textColor="@color/white"
+                        android:textSize="18sp" />
+
+                    <LinearLayout
+                        android:id="@+id/dateAppLaunchApp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:paddingStart="40dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="16dp">
+
+                        <ImageView
+                            android:id="@+id/dateAppIcon"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="12dp"
+                            android:contentDescription="@string/app_icon_description"
+                            android:src="@mipmap/ic_launcher" />
+
+                        <TextView
+                            android:id="@+id/dateAppName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat"
+                            android:singleLine="true"
+                            android:text="@string/app_name"
+                            android:textColor="@color/white_low"
+                            android:textSize="14sp" />
+                    </LinearLayout>
 
                     <View
                         android:id="@+id/dividerLast"
