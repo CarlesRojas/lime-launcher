@@ -244,10 +244,6 @@ class HomeAdapter(context: Context, state: State, layout: ViewGroup) :
         )
 
         linearLayout.setOnTouchListener(object : OnSwipeTouchListener(context) {
-            override fun onFlingDown() {
-                expandNotificationBar()
-            }
-
             override fun onClick() {
                 val launchAppIntent =
                     context.packageManager.getLaunchIntentForPackage(currentApp.packageName)
