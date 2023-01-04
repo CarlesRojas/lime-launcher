@@ -457,7 +457,7 @@
                             android:layout_height="24dp"
                             android:layout_marginEnd="12dp"
                             android:contentDescription="@string/app_icon_description"
-                            android:src="@mipmap/ic_launcher" />
+                            android:src="@mipmap/main_icon" />
 
                         <TextView
                             android:id="@+id/timeAppName"
@@ -504,7 +504,7 @@
                             android:layout_height="24dp"
                             android:layout_marginEnd="12dp"
                             android:contentDescription="@string/app_icon_description"
-                            android:src="@mipmap/ic_launcher" />
+                            android:src="@mipmap/main_icon" />
 
                         <TextView
                             android:id="@+id/dateAppName"
